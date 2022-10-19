@@ -1,0 +1,32 @@
+.main-nav{
+    height: 100vh;
+    background-color: #ADC2A9;
+    width: 18vw;
+}
+
+body{
+    background: #FAF7F0;
+}
+
+.nav-link .active{
+    background: #FEF5ED !important;
+}
+.logo{
+    height:50px;
+    width: 50px;
+}
+
+.main-content-holder{
+    background: #FAF7F0;
+    height: 100vh;
+    margin-left: 18vw;
+    width: 100%;
+}
+
+.modal-backdrop {
+    z-index: -1;
+}
+
+.dataTables_filter{
+    margin-bottom: 18px;
+}
