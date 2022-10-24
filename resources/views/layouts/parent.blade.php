@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -14,13 +15,16 @@
     <script src="https://kit.fontawesome.com/d991a5e65c.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"
         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+        integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <script src="{{ asset('js/bootstrapValidation.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/functions.js') }}"></script>
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 
@@ -32,7 +36,7 @@
         <div class="d-flex flex-column fixed-left fixed-bottom main-nav flex-shrink-0 p-3">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
                 <img src="{{ asset('images/logo.png') }}" class="logo mx-4" />
-                <span class="fs-4">Dashboard</span>
+                <span class="fs-4">{{ auth()->user()->name }}</span>
             </a>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
@@ -43,9 +47,21 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('mytasksK') }}" class="nav-link link-dark  @yield('tasks-nav')">
+                        <i class="fa-solid fa-list mx-2 px-2"></i>
+                        My Tasks
+                    </a>
+                </li>
+                <li>
                     <a href="/projects" class="nav-link link-dark @yield('project-nav')">
                         <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
                         Projects
+                    </a>
+                </li>
+                <li>
+                    <a href="/myprojects" class="nav-link link-dark @yield('myprojects-nav')">
+                        <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
+                        My Projects
                     </a>
                 </li>
                 <li>
@@ -78,9 +94,9 @@
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-        
+
                             <x-responsive-nav-link class="dropdown-item" :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-responsive-nav-link>

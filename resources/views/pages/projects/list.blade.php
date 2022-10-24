@@ -126,11 +126,14 @@
                     {
                         data: 'completed',
                         "render": function(data, type, row, meta) {
-                            return '<div class="progress"><div class="progress-bar text-end" role="progressbar" style="font-size:12px;width:' +
-                                data + '%;" aria-valuenow="' + data +
-                                '" aria-valuemin="0" aria-valuemax="100">' +
-                                data + '%</div></div>';
-
+                            if (type === "sort" || type === 'type') {
+                                return data;
+                            } else {
+                                return '<div class="progress"><div class="progress-bar text-end" role="progressbar" style="font-size:12px;width:' +
+                                    data + '%;" aria-valuenow="' + data +
+                                    '" aria-valuemin="0" aria-valuemax="100">' +
+                                    data + '%</div></div>';
+                            }
                         }
                     },
                     {
@@ -154,6 +157,7 @@
                     {
                         "targets": 6,
                         "data": null,
+                        "orderable": false,
                         "defaultContent": "<button class='btn btn-primary'>Show Tasks</button>"
                     }
                 ],

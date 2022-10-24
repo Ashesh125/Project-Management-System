@@ -23,17 +23,17 @@ class Project extends Model
 
     public function taskList()
     {
-       return $this->hasMany(Tasks::class,'project_id','id'); 
-    }
-
-    public function progress()
-    {
-        return $this->count();
+        return $this->hasMany(Tasks::class, 'project_id', 'id');
     }
 
     public function getAvgTaskAttribute()
     {
         $tasks = $this->taskList;
-        return round($tasks->avg('status')*100);
+        
+        return round($tasks->avg('status') * 100);
     }
+
+    // public function users(){
+    //     return $this->hasMany(User::class);
+    // }
 }

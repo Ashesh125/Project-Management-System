@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Tasks;
+use App\Models\Project;
 
 class User extends Authenticatable
 {
@@ -41,4 +43,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function task()
+    {
+         return $this->hasMany(Tasks::class,'assigned_to','id'); 
+    }
+
+    public function taska(){
+        return $this->hasMany(Tasks::class,'assigned_to','id');
+    }
+
+    public function projects(){
+        return $this->hasManyThrough(Project::class,Tasks::class,'project_id','id','id','assigned_to');
+    }
 }

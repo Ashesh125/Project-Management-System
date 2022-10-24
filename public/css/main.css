@@ -30,3 +30,30 @@ body{
 .dataTables_filter{
     margin-bottom: 18px;
 }
+
+.nav-tabs .nav-item .active{
+    background: #faf7f0;
+}
+
+.bg-gray{
+    background: #C0C0C0;
+}
+
+.bg-dimgary{
+    background: #696969;
+}
+
+.border-gray{
+    border: #141414;
+}
+
+
+.task-holder{
+    height: auto;
+    padding-bottom: 25px;
+    opacity: 0.2;
+}
+
+.ui-draggable-dragging{
+    width: 180px;
+}

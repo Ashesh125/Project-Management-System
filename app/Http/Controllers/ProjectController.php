@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Models\Tasks;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -33,24 +33,17 @@ class ProjectController extends Controller
     public function tasks(int $id)
     {
         $project = Project::findOrFail($id);
+        $userController = new UserController();
+        $users = $userController->index();
         
-        return view('pages.tasks.list', compact('project'));
+        return view('pages.tasks.list', compact('project','users'));
     }
-
 
     public function index()
     {
         $projects = Project::all();
 
         return view('pages.projects.list')->with(compact('projects'));
-    }
-
-    public function progress(int $id)
-    {
-        $projectprogress = Project::with('avgTask')->where('id','=',$id)->avg('status');
-        //SELECT projects.*,avg(tasks.status)*100 as avg_tasks FROM projects JOIN tasks on projects.id = tasks.project_id GROUP BY tasks.project_id;
-        dd($projectprogress);
-        return view('pages.tasks.list')->with(compact('projectdetail'));
     }
 
 
@@ -76,9 +69,6 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        $project->save();
-        return redirect('/projects')
-            ->with('success', 'Data updated successfully');
     }
 
 

@@ -96,16 +96,24 @@ class TasksController extends Controller
      * @param  \App\Models\Tasks  $tasks
      * @return \Illuminate\Http\Response
      */
+
+    public function updateType(Request $request){
+        Tasks::where('id', $request->id)->update(array('type' => $request->type));
+        
+        return redirect()->route('mytasksK'); 
+    }
+
+
     public function update(Request $request, Tasks $task)
     {
         $request->validate([
             'name' => 'required',
             'assigned_to' => 'required',
+            'type' => 'required',
             'due_date' => 'required',
             'status' => 'required', 
             'description' => 'required'
         ]);
-        
         $task->fill($request->post())->save();
 
         return redirect()->route('projectdetail',$request->project_id)
@@ -124,6 +132,12 @@ class TasksController extends Controller
 
         return redirect()->route('projectdetail',$tasks->project_id)
             ->with('success', 'Task deleted successfully');
+    }
+
+    public function test($id){
+        $project = Tasks::with('project')->where('assigned_to',$id)->where('project_id',$id)->get();
+        dd($project);
+        return view('pages.projects.myprojects', compact('project'));
     }
 
 

@@ -16,16 +16,9 @@
         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-    <script src="{{ asset('js/bootstrapValidation.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
-    <script src="{{ asset('js/functions.js') }}"></script>
 
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-
-
-</head>
+</head> 
 
 <body>
     <x-guest-layout>

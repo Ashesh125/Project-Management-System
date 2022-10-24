@@ -19,9 +19,11 @@ return new class extends Migration
             $table->date("due_date");
             $table->boolean("status")->default(0);
             $table->string("description");
-            $table->unsignedBigInteger("project_id");
+            $table->enum('type', ['assigned', 'ongoing','completed']);
+            $table->unsignedBigInteger("project_id");   
             $table->unsignedBigInteger('assigned_to');
             $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete(); 
+            $table->foreign('assigned_to')->references('id')->on('users')->cascadeOnDelete(); 
             $table->timestamps();
         });
     }

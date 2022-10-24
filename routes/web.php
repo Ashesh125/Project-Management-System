@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TasksController;
-
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +31,13 @@ Route::post('/projects/check', [ProjectController::class, 'check'])->middleware(
 
 Route::get('/projectdetail/{id?}', [ProjectController::class, 'tasks'])->middleware(['auth', 'verified'])->name('projectdetail');
 Route::post('/tasks/check', [TasksController::class, 'check'])->middleware(['auth', 'verified'])->name('checkTask');
+
+Route::get('/mytasks/table', [UserController::class, 'mytasks'])->middleware(['auth', 'verified'])->name('mytasksT');
+Route::post('/tasks/updateType', [TasksController::class, 'updateType'])->middleware(['auth', 'verified'])->name('taskTypeUpdate');
+Route::get('/mytasks/kanban', [UserController::class, 'mytaskskanban'])->middleware(['auth', 'verified'])->name('mytasksK');
+
+Route::get('/myprojects/{id?}', [TasksController::class, 'test'])->middleware(['auth', 'verified'])->name('myprojects');
+
 
 Route::get('/test', function(){
     return view('test');
