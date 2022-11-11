@@ -4,8 +4,16 @@
 @section('project-nav', 'active')
 
 @section('main-content')
-    <!-- Modal -->
-    <div class="modal fade" id="new-project-modal" data-bs-backdrop="static" data-bs-keyboard="false"
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('projectCard') }}">Card</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="{{ route('projects')}}">Table</a>
+    </li>
+</ul>
+    @if(auth()->user()->role != 0)
+    <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false"
         aria-labelledby="staticBackdropLabel" aria-hidden="true" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -41,6 +49,20 @@
                                 Looks good!
                             </div>
                         </div>
+                        <div class="col-md-6" id="userlist-holder">
+                            <label for="user_id" class="form-label">Project Lead</label>
+                            <select class="form-select w-0" data-live-search="true" id="user_id" name="user_id" required>
+                                <option value="0" disabled required selected>Choose...</option>
+                                @if($users)
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                                @endif
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a valid User.
+                            </div>
+                        </div>
                         <div class="col-12">
                             <div class="form-floating">
                                 <textarea class="form-control" placeholder="Leave a description" id="description" name="description"
@@ -61,23 +83,28 @@
             </div>
         </div>
     </div>
-
+    @endif
     <div class="d-flex m-3 p-3 flex-column">
         <div class="fw-bold fs-2"><u>Projects</u></div>
+
+        @if(auth()->user()->role != 0)
         <div class="d-flex justify-contents-between my-3">
             <button class="btn btn-primary" data-bs-toggle="modal" id="new"
-                data-bs-target="#new-project-modal">New</button>
+                data-bs-target="#modal">New</button>
         </div>
+        @endif
         <div>
-            <table id="data-table" class="table table-success table-striped align-middle" style="width:100%">
+            <table id="data-table" class="table table-hover table-light table-striped align-middle" style="width:100%">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Status</th>
-                        <th style="width:50%;">Description</th>
+                        <th>Lead</th>
+                        <th style="width:10%;">Status</th>
+                        <th>Description</th>
+                        <th>User Id</th>
                         <th>Show</th>
                     </tr>
                 </thead>
@@ -89,14 +116,16 @@
                                 <td> {{ $project->name }} </td>
                                 <td> {{ date('F j Y', strtotime($project->start_date)) }} </td>
                                 <td> {{ date('F j Y', strtotime($project->end_date)) }} </td>
-                                <td> {{ $project->avg_task }} </td>
-                                <td> {{ $project->description }} </td>
+                                <td> {{ $project->lead->name }} </td>
+                                <td> {{ $project->avg_activities }} </td>
+                                <td class="text-truncate" style="max-width: 220px;"> {{ $project->description }} </td>
+                                <td> {{ $project->lead->id }}</td>
                                 <td> </td>
                             </tr>
                         @endforeach
                     @else
                         <tr class="text-center">
-                            <td colspan='7'>No data available !!!</td>
+                            <td colspan='8'>No data available !!!</td>
                         </tr>
                     @endif
                 </tbody>
@@ -106,6 +135,10 @@
 
     <script>
         $(document).ready(function() {
+
+            $("#user_id").select2({dropdownParent: '#userlist-holder'});
+            $('.select2-container').addClass('col-12 w-100');
+
             var table = $('#data-table').DataTable({
                 "pageLength": 10,
                 "info": false,
@@ -124,6 +157,9 @@
                         data: 'end_date'
                     },
                     {
+                        data: 'lead'
+                    },
+                    {
                         data: 'completed',
                         "render": function(data, type, row, meta) {
                             if (type === "sort" || type === 'type') {
@@ -140,25 +176,22 @@
                         data: 'description'
                     },
                     {
+                        data: 'user_id'
+                    },
+                    {
                         "targets": 8,
                         "data": null,
                         "render": function(data, type, row, meta) {
-                            return "<a class='btn btn-primary' class='showTaskBtn' href=' {{ route('projectdetail') }}/" +
-                                data['id'] + "'>Show Tasks</a>";
+                            return "<a class='btn btn-primary' class='showTaskBtn' href=' {{ route('projectDetail')}}/" +
+                                data['id'] + "'>Show Activities</a>";
                         }
                     }
 
                 ],
                 "columnDefs": [{
-                        "targets": [0],
+                        "targets": [0,7],
                         "visible": false,
                         "searchable": false
-                    },
-                    {
-                        "targets": 6,
-                        "data": null,
-                        "orderable": false,
-                        "defaultContent": "<button class='btn btn-primary'>Show Tasks</button>"
                     }
                 ],
                 order: [
@@ -168,6 +201,7 @@
 
 
 
+            @if(auth()->user()->role != 0)
             $("#new").on("click", function() {
                 $('#deleteBtn').show();
                 $('#id').val(0);
@@ -175,11 +209,14 @@
                 $('#start_date').val("");
                 $('#end_date').val("");
                 $("#status").val("");
+
+                $('#user_id').val(0);
+                $('#user_id').trigger('change');
+
                 $('#description').val("");
                 $("#deleteBtn").hide();
-                $('#new-project-modal').modal('show');
+                $('#modal').modal('show');
             });
-
 
             $('#data-table tbody').on('dblclick', 'tr', function() {
                 var data = table.row(this).data();
@@ -191,9 +228,14 @@
                 $("#status").val(data['status']);
                 $('#description').val(data['description']);
 
+                $('#user_id').val(data['user_id']);
+                $('#user_id').trigger('change');
+
+                $(".search2-search__field").val(data['lead']);
                 $("#deleteBtn").show();
-                $('#new-project-modal').modal('show');
+                $('#modal').modal('show');
             });
+            @endif
         });
     </script>
 @endsection

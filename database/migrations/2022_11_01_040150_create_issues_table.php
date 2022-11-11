@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('issues', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->date("due_date");
             $table->boolean("status")->default(0);
-            $table->string("description");
-            $table->enum('type', ['assigned', 'ongoing','completed']);
             $table->unsignedBigInteger("activity_id");
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('activity_id')->references('id')->on('activities')->cascadeOnDelete();
@@ -35,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-       Schema::dropIfExists('tasks');
+        Schema::dropIfExists('issues');
     }
 };

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Activity;
 use App\Http\Controllers\UserController;
+
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -32,21 +34,22 @@ class ProjectController extends Controller
 
     public function tasks(int $id)
     {
-        $project = Project::findOrFail($id);
+        $project = Project::with('tasks.user')->findOrFail($id);
         $userController = new UserController();
-        $users = $userController->index();
-        
+        $users = $userController->getUsers();
+        // dd($users);
         return view('pages.tasks.list', compact('project','users'));
     }
 
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::with('lead')->get();
 
-        return view('pages.projects.list')->with(compact('projects'));
+        $userController = new UserController();
+        $users = $userController->getUsers();
+
+        return view('pages.projects.list')->with(compact('projects','users'));
     }
-
-
 
     public function create()
     {
@@ -63,8 +66,13 @@ class ProjectController extends Controller
             ->with('success', 'Project created successfully.');
     }
 
-    public function show(Project $projects)
+    public function show($id)
     {
+        $project = Project::with('lead')->with('activities.supervisor')->findOrFail($id);
+        $userController = new UserController();
+        $users = $userController->getUsers();
+
+        return view('pages.projects.detail')->with(compact('project','users'));
     }
 
     public function edit(Project $project)
@@ -93,5 +101,11 @@ class ProjectController extends Controller
 
         return redirect()->route('projects')
             ->with('success', 'Project deleted successfully');
+    }
+
+    public function cardView(){
+        $projects = Activity::with('project')->whereHas('tasks')->get()->groupBy('project.name');
+
+        return view('pages.projects.projectcard', compact('projects'));
     }
 }

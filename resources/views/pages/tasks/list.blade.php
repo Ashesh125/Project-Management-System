@@ -1,13 +1,13 @@
 @extends('layouts.parent')
 
-@section('title', 'Tasks')
+@section('title', 'Activity Detail')
 @section('project-nav', 'active')
 
 @section('main-content')
-    <!-- Modal -->
-    
+
+    @if(auth()->user()->role != 0)
     <div class="modal fade" id="new-task-modal" data-bs-backdrop="static" data-bs-keyboard="false"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true" tabindex="-1">
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -23,8 +23,8 @@
                             <label for="name" class="form-label">Task Name</label>
                             <input type="hidden" class="form-control" id="id" name="id" value="0"
                                 required>
-                            <input type="hidden" class="form-control" id="project_id" name="project_id"
-                                value="{{ request('id') }}" required>
+                            <input type="hidden" class="form-control" id="activity_id" name="activity_id"
+                                value="{{ $activity->id }}" required>
                             <input type="hidden" class="form-control" id="status" name="status" value="0"
                                 required>
 
@@ -33,28 +33,27 @@
                                 Looks good!
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <label for="assigned_to" class="form-label">Assigned To</label>
-                            <select class="form-select" id="assigned_to" name="assigned_to" required>
-                                <option selected value="0">No one</option>
+                        <div class="col-md-6" id="userlist-holder">
+                            <label for="user_id" class="form-label">Assigned To</label>
+                            <select class="form-select w-0" data-live-search="true" id="user_id" name="user_id" required>
+                                <option value="0" disabled required selected>Choose...</option>
+                                @if($users)
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
+                                @endif
                             </select>
                             <div class="invalid-feedback">
                                 Please select a valid User.
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="type" class="form-label">Assigned To</label>
+                            <label for="type" class="form-label col-12">Status</label>
                             <select class="form-select" id="type" name="type" required>
                                 <option selected value="assigned">Assigned</option>
                                 <option selected value="ongoing">Ongoing</option>
                                 <option selected value="completed">Completed</option>
                             </select>
-                            <div class="invalid-feedback">
-                                Please select a valid User.
-                            </div>
                         </div>
                         <div class="col-md-6">
                             <label for="due_date" class="form-label">Due Date</label>
@@ -84,56 +83,17 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="d-flex m-3 p-3 flex-column">
-        <div class="d-flex justify-content-between">
-            <div class="fw-bold fs-2"><u>Project Detail</u></div>
-            <button class="border-0 bg-transparent"><i class="fa-solid fa-gear"></i></button>
-        </div>
-        <div class="d-flex my-1 mt-2">
-            <img src="{{ asset('images/no-img.png') }}" class="img-thumbnail" style="height: 200px;width:200px;" />
-            <div class="ms-5 d-flex flex-column w-75">
-                <div class="fw-bold fs-4 ">{{ $project->name }}</div>
-                <div class="d-flex justify-content-between">
-                    <div class="col-md-4">
-                        <label for="start_date" class="form-label">Start Date</label>
-                        <input type="text" class="form-control" id="start_date"
-                            value="{{ date('F j, Y', strtotime($project->start_date)) }}" name="start_date" disabled
-                            required>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="end_date" class="form-label">End Date</label>
-                        <input type="text" class="form-control" id="end_date"
-                            value="{{ date('F j, Y', strtotime($project->end_date)) }}" name="end_date" disabled required>
-                    </div>
-
-                </div>
-                <div class="mt-3">Progress :</div>
-                <div class="progress col-8 w-100  d-flex my-3">
-                    <div class="progress-bar text-end" role="progressbar" style="font-size:12px;width:0%;"
-                        aria-valuemin="0" aria-valuemax="100">%</div>
-                </div>
-            </div>
-
-        </div>
-        <div class="d-flex my-1 justify-content-between">
-
-        </div>
-        <div class="my-2">
-            <div class="fw-bold fs-5">Description</div>
-            <div class="col-12">
-                <textarea class="form-control" placeholder="Leave a description" id="description" name="description"
-                    style="height: 100px" required disabled>{{ $project->description }}</textarea>
-
+        <h2>{{ $activity->name }}</h2>
+        <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
+            <u></u>
+            <div>
+                <a class="btn btn-danger" href="{{ route('issues',$activity->id) }}" >Issues</a>
             </div>
         </div>
         <div class="d-flex my-5 w-75 justify-content-around">
-            
-            <div class="workload-graph col-4" style="background: #e9ecef">
-                <canvas id="workload-graph" style="height: 300px"></canvas>
-            </div>
-            <div class="overdew-tasks col-4 bg-dark">
-                <canvas id="due-graph"></canvas>
-            </div>
+
             <div class="ps-3 pe-5 stats d-flex flex-column col-4">
                 <div class="total-tasks info-card">
                     <div class="my-2 dashboard-card">
@@ -186,12 +146,16 @@
             </div>
         </div>
         <div class="fw-bold fs-2 mt-3"><u>Tasks</u></div>
+
+        @if(auth()->user()->role != 0)
         <div class="d-flex justify-contents-between my-3">
             <button class="btn btn-primary" data-bs-toggle="modal" id="new" data-bs-target="#new-task-modal">Add
                 Task</button>
         </div>
+        @endif
+
         <div>
-            <table id="data-table" class="table table-success table-striped align-middle" style="width:100%">
+            <table id="data-table" class="table table-hover table-light table-striped align-middle" style="width:100%">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -201,11 +165,12 @@
                         <th>Type</th>
                         <th style="width:50%;">Description</th>
                         <th>Assigned</th>
+                        <th>User Id</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if ($project->taskList)
-                        @foreach ($project->taskList as $task)
+                    @if ($activity->tasks)
+                        @foreach ($activity->tasks as $task)
                             <tr>
                                 <td> {{ $task->id }} </td>
                                 <td> {{ $task->name }} </td>
@@ -213,7 +178,8 @@
                                 <td> {{ $task->status }} </td>
                                 <td> {{ $task->type }} </td>
                                 <td> {{ $task->description }} </td>
-                                <td> {{ $task->user->name }} </td>
+                                <td> {!! empty($task->user->name) ? "<span class='text-danger'>Deleted User</span>" : $task->user->name !!} </td>
+                                <td> {{ empty($task->user->id) ? 0 : $task->user->id }} </td>
                             </tr>
                         @endforeach
                     @else
@@ -228,6 +194,11 @@
 
     <script>
         $(document).ready(function() {
+
+
+            $("#user_id").select2({dropdownParent: '#userlist-holder'});
+            $('.select2-container').addClass('col-12 w-100');
+
             var table = $('#data-table').DataTable({
                 "pageLength": 10,
                 "info": false,
@@ -266,12 +237,15 @@
                         data: 'description'
                     },
                     {
-                        data: 'assigned_to'
+                        data: 'user'
+                    },
+                    {
+                        data: 'user_id'
                     }
 
                 ],
                 "columnDefs": [{
-                    "targets": [0],
+                    "targets": [0,7],
                     "visible": false,
                     "searchable": false
                 }],
@@ -285,11 +259,12 @@
             insertTaskCard(table);
 
 
+            @if(auth()->user()->role != 0)
             $("#new").on("click", function() {
-                $('#deleteBtn').show();
                 $('#id').val(0);
                 $('#name').val("");
-                $('#assigned_to').val("0");
+                $('#user_id').val(0);
+                $('#user_id').trigger('change');
                 $('#end_date').val("");
                 $("#status").val(0);
                 $('#type').val('assigned');
@@ -311,7 +286,10 @@
                 $('#description').val(data['description']);
                 $('#type').val(data['type']);
 
-                $("#assigned_to option:contains(" + data['assigned_to'] + ")").attr('selected', 'selected');
+                $('#user_id').val(data['user_id']);
+                $('#user_id').trigger('change');
+
+
                 if (data['status'] == 1) {
                     $("#undoBtn").show();
                     $("#completeBtn1").hide();
@@ -324,7 +302,6 @@
                 $('#new-task-modal').modal('show');
             });
 
-
             $(".complete").on('click', function() {
                 if (confirm("Confirm Completion")) {
                     let status = $("#status").val();
@@ -333,6 +310,7 @@
                 }
             });
 
+
             $(".undo").on('click', function() {
                 if (confirm("Confirm Undo")) {
                     let status = $("#status").val();
@@ -340,6 +318,7 @@
                     $("#form").submit();
                 }
             });
+            @endif
 
             anime({
                 targets: '.stats .info-card',
@@ -347,7 +326,7 @@
                 delay: anime.stagger(100)
             });
 
-            $(".progress-bar").on('load',animateProgress({{ $project->avg_task }}));
+            $(".progress-bar").on('load',animateProgress({{ $activity->avg_task }}));
 
         });
     </script>

@@ -4,21 +4,27 @@
 @section('tasks-nav', 'active')
 
 @section('main-content')
-    <ul class="nav nav-tabs bg-light">
+    <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{ route('mytasksK') }}">Kanban</a>
+            <a class="nav-link active" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">Kanban</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('mytasksT') }}">Table</a>
+            <a class="nav-link" aria-current="page" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
         </li>
     </ul>
     <div class="d-flex m-3 p-3 flex-column">
-        <div class="fw-bold fs-2 my-3"><u>My Tasks</u></div>
+        <h2>{{ $activity->name }}</h2>
+        <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
+            <u>My Tasks</u>
+            <div>
+                <a class="btn btn-danger" href="{{ route('issues',$activity->id) }}" >Issues</a>
+            </div>
+        </div>
         <div>
             <div class="kanban-main d-flex col-12 px-5 justify-content-between">
                 <div class="col-4 me-2 task-holder d-flex flex-column bg-gray rounded" id="assigned-task-holder">
                     <div class="kanban-title bg-dimgary p-3 rounded-top text-light w-100">Assigned</div>
-                    @foreach ($user->tasklist as $task)
+                    @foreach ($tasks as $task)
                         @if ($task->type == 'assigned')
                             <div class="m-2 mx-4 dashboard-card task-card" id="task-{{ $task->id }}">
                                 <div
@@ -43,7 +49,7 @@
 
                 <div class="col-4 mx-2 task-holder d-flex flex-column bg-gray rounded" id="ongoing-task-holder">
                     <div class="kanban-title bg-primary p-3 rounded-top text-light w-100">Ongoing</div>
-                    @foreach ($user->tasklist as $task)
+                    @foreach ($tasks as $task)
                         @if ($task->type == 'ongoing')
                             <div class="m-2 mx-4 dashboard-card task-card" id="task-{{ $task->id }}">
                                 <div
@@ -68,7 +74,7 @@
                 </div>
                 <div class="col-4 ms-2 task-holder d-flex flex-column bg-gray rounded" id="completed-task-holder">
                     <div class="kanban-title bg-success p-3 rounded-top text-light w-100">Completed</div>
-                    @foreach ($user->tasklist as $task)
+                    @foreach ($tasks as $task)
                         @if ($task->type == 'completed')
                             <div class="m-2 mx-4 dashboard-card task-card" id="task-{{ $task->id }}">
                                 <div

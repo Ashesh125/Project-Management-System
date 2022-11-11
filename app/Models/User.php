@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -47,14 +48,16 @@ class User extends Authenticatable
 
     public function task()
     {
-         return $this->hasMany(Tasks::class,'assigned_to','id'); 
+         return $this->hasMany(Tasks::class,'user_id','id');
     }
 
-    public function taska(){
-        return $this->hasMany(Tasks::class,'assigned_to','id');
+    public function activity()
+    {
+        return $this->hasManyThrough(Activity::class, Tasks::class,'user_id','id','id','activity_id');
     }
 
-    public function projects(){
-        return $this->hasManyThrough(Project::class,Tasks::class,'project_id','id','id','assigned_to');
+    public function issues()
+    {
+        return $this->hasMany(Issue::class)->where('issues.status','0');
     }
 }

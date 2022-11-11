@@ -18,22 +18,30 @@ class Project extends Model
         'start_date',
         'end_date',
         'status',
+        'user_id',
         'description'
     ];
 
-    public function taskList()
-    {
-        return $this->hasMany(Tasks::class, 'project_id', 'id');
+    public function users(){
+        return $this->hasManyThrough(User::class,Tasks::class,'user_id','id','id','project_id');
     }
 
-    public function getAvgTaskAttribute()
-    {
-        $tasks = $this->taskList;
-        
-        return round($tasks->avg('status') * 100);
+    public function issue(){
+        return $this->hasMany(Issue::class,'project_id','id');
     }
 
-    // public function users(){
-    //     return $this->hasMany(User::class);
-    // }
+    public function lead(){
+        return $this->hasOne(User::class,'id','user_id');
+    }
+
+    public function activities(){
+        return $this->hasMany(Activity::class,'project_id','id');
+    }
+
+    public function getAvgActivitiesAttribute()
+    {
+        $activity = $this->activities;
+
+        return round($activity->avg('status'));
+    }
 }

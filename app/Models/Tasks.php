@@ -20,17 +20,17 @@ class Tasks extends Model
         'status',
         'description',
         'type',
-        'project_id',
-        'assigned_to'
+        'activity_id',
+        'user_id'
     ];
 
     public function user()
     {
-       return $this->hasOne(User::class,'id','assigned_to'); 
+       return $this->hasOne(User::class,'id','user_id');
     }
 
-    public function project()
+    public function activity()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Activity::class);
     }
 }

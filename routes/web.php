@@ -4,7 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\IssueController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ActivityController;
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,29 +21,57 @@ use App\Http\Controllers\UserController;
 |
 */
 
+require __DIR__ . '/auth.php';
+
 Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::get('/projects', [ProjectController::class, 'index'])->middleware(['auth', 'verified'])->name('projects');
-Route::post('/projects/check', [ProjectController::class, 'check'])->middleware(['auth', 'verified'])->name('checkProject');
+    Route::get('/home', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/chartDatas/{id?}', [DashboardController::class, 'chartData'])->name('chart');
 
-Route::get('/projectdetail/{id?}', [ProjectController::class, 'tasks'])->middleware(['auth', 'verified'])->name('projectdetail');
-Route::post('/tasks/check', [TasksController::class, 'check'])->middleware(['auth', 'verified'])->name('checkTask');
+    Route::get('/project', [ProjectController::class, 'index'])->name('projects');
+    Route::get('/projectCard', [ProjectController::class, 'cardView'])->name('projectCard');
 
-Route::get('/mytasks/table', [UserController::class, 'mytasks'])->middleware(['auth', 'verified'])->name('mytasksT');
-Route::post('/tasks/updateType', [TasksController::class, 'updateType'])->middleware(['auth', 'verified'])->name('taskTypeUpdate');
-Route::get('/mytasks/kanban', [UserController::class, 'mytaskskanban'])->middleware(['auth', 'verified'])->name('mytasksK');
+    Route::get('/activity', [ActivityController::class, 'index'])->name('activity');
+    Route::get('/activitydetail/{id?}', [ActivityController::class, 'show'])->name('activityDetail');
+    Route::get('/projectdetail/{id?}', [ProjectController::class, 'show'])->name('projectDetail');
 
-Route::get('/myprojects/{id?}', [TasksController::class, 'test'])->middleware(['auth', 'verified'])->name('myprojects');
+    Route::get('/mytasks/{type}/{id?}', [TasksController::class, 'usertasks'])->name('myTasks');
 
+    Route::post('/tasks/updateType', [TasksController::class, 'updateType'])->name('taskTypeUpdate');
 
-Route::get('/test', function(){
-    return view('test');
-})->name('test');
+    Route::get('/myactivity/{type?}', [UserController::class, 'myActivities'])->name('myActivities');
+    Route::get('/myissues', [UserController::class, 'myIssues'])->name('myIssues');
+    Route::get('/myprojects ', [UserController::class, 'myProjects'])->name('myProjects');
+
+    Route::get('/profile', [UserController::class, 'edit'])->name('profile');
+    Route::get('/users', [UserController::class, 'index'])->name('users');
+
+    Route::get('/issues/{id?}', [IssueController::class, 'ofActivity'])->name('issues');
+    Route::post('/issues', [IssueController::class, 'check'])->name('checkIssue');
+
+    Route::get('/comment/{id?}', [CommentController::class, 'ofIssue'])->name('comments');
+    Route::post('/comment', [CommentController::class, 'check'])->name('checkComment');
+
+    Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
+    /* for project manager (role = 1) or higher level of clerence  */
+    Route::middleware(['role'])->group(function () {
+        Route::post('/activities', [ActivityController::class, 'check'])->name('checkActivity');
+        Route::post('/tasks', [TasksController::class, 'check'])->name('checkTask');
+    });
+
+    /* for super admin (role = 2) or higher level of clerence  */
+    Route::middleware(['user'])->group(function () {
+        Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+        Route::post('register', [RegisteredUserController::class, 'store']);
+
+        Route::post('/projects', [ProjectController::class, 'check'])->name('checkProject');
+        Route::post('/users', [UserController::class, 'check'])->name('checkUser');
+
+        Route::get('/updateActivities', [ActivityController::class ,'globalStatusUpdater']);
+    });
+});

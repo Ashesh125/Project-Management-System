@@ -74,3 +74,155 @@ function animateProgress(value) {
         round: 100
     });
 }
+
+
+function activityHandler(datas) {
+    datas.forEach(element => {
+        let no_of_issues_remaining = parseInt(element.no_of_issues) - parseInt(element
+            .no_of_issues_resolved);
+        let no_of_tasks_remaining = parseInt(element.no_of_tasks) - parseInt(element.no_of_tasks_completed);
+
+        let container =
+            "<div class='d-flex rounded flex-column my-2 p-4 bg-light w-100' id='" + element.id + "'>" +
+            "<h5> Activity : " + element.name + "</h5>" +
+            "<div> Supervisor : " + element.supervisor + "</div>" +
+            "<div> Users Assigned : " + element.no_of_users + "</div>" +
+            "<div class='d-flex justify-content-between'>" +
+            "<table class='table table-hover table-striped m-2'>" +
+            "<tr><td>No of Tasks</td><td>" + element.no_of_tasks + "</td></tr>" +
+            "<tr><td>Completed Tasks</td><td>" + element.no_of_tasks_completed + "</td></tr>" +
+            "<tr><td>Remaining Tasks</td><td>" + no_of_tasks_remaining + "</td></tr>" +
+            "<caption>Tasks<a class='btn btn-primary ms-5' href='/activitydetail/" + element
+            .id + "'>Detail</a></caption>" +
+            "<div class='border border-dark vertical-progress-parent rounded'><div class='vertical-progress-white bg-none rounded px-3' style='height:" + (100 -
+                parseInt(element.status)) +
+            "%;'></div><div class='vertical-progress rounded bg-primary px-3 text-light' style='height:" + element
+            .status +
+            "%;'>" + element.status + "%</div></div>" +
+
+            "</table>" +
+            "<div class='m-1 p-2' class='taskChart-holder'>" +
+            "<canvas class='taskChart' id='taskChart_" + element.id + "'></canvas>" +
+            "</div>" +
+            "<table class='table table-hover table-striped p-2 m-2'>" +
+            "<tr><td>No of Issues</td><td>" + element.no_of_issues + "</td></tr>" +
+            "<tr><td>Resolved Issues</td><td>" + element.no_of_issues_resolved + "</td></tr>" +
+            "<tr><td>Remaining Issues</td><td>" + no_of_issues_remaining + "</td></tr>" +
+            "<caption>Issues<a class='btn btn-primary ms-5' href='/issues/" + element
+            .id + "'>Detail</a></caption>" +
+            "</table>" +
+            "<div class='m-1 p-2' class='issueChart-holder'>" +
+            "<canvas class='issueChart' id='issueChart_" + element.id + "'></canvas>" +
+            "</div>" +
+            "</div>" +
+            "<div class='d-flex justify-content-between'>" +
+
+            "</div>" +
+            "</div>";
+        $('.activity_detail-holder').append(container);
+        circleGarph('issueChart_' + element.id, ['Solved', 'Remaining'], [element.no_of_issues_resolved,
+            no_of_issues_remaining
+        ], 'doughnut');
+        circleGarph('taskChart_' + element.id, ['Completed', 'Remaining'], [element.no_of_tasks_completed,
+            no_of_tasks_remaining
+        ], 'pie');
+    });
+
+
+
+    anime({
+        targets: '.vertical-progress-parent .vertical-progress',
+        height: function(el) {
+            return ['0%',el.innerHtml];
+        },
+        duration: 2000
+    });
+    anime({
+        targets: '.vertical-progress-parent .vertical-progress-white',
+        height: function(el) {
+            return ['100%',el.innerHtml];
+        },
+        duration: 2000
+    });
+
+}
+
+function callAjax(id) {
+    $.ajax({
+        type: "GET",
+        url: "../chartDatas/" + id,
+        success: function(response) {
+            var json = $.parseJSON(response);
+            dateHandler(json.main);
+            activityHandler(json.activity_details);
+            // issueHandler(json.issues);
+            // taskHandler(json.tasks);
+
+            // lineGraph('lineChart', ['jan', 'feb', 'march', 'april', 'may', 'june', 'july',
+            //     'aug'
+            // ], [
+            //     [1, 0, 2, 1, 3, 0, 1],
+            //     [15, 20, 12, 15, 10, 40],
+            //     [0, 5, 8, 0, 5, 1, 5]
+            // ])
+        },
+        dataType: "html"
+    });
+}
+
+
+
+function dateHandler(datas) {
+    $('#start-date').text(datas.start);
+    $('#end-date').text(datas.end);
+    $('#time-remaining').text(datas.remaining);
+}
+
+function circleGarph(target, labels, arr, type) {
+    let datas = {
+        labels: labels,
+        datasets: [{
+            label: 'Dataset 1',
+            data: arr,
+            backgroundColor: ['rgba(13,110,253,0.6)', 'rgba(243, 12, 37, 0.6)'],
+            borderColor: "#000000"
+        }]
+    }
+
+    let config = {
+        type: type,
+        data: datas,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display : true,
+                    text : target.indexOf('issue')? "Tasks" : "Issues"
+                }
+
+            }
+        },
+    };
+
+    switch (type) {
+        case "pie":
+            pieChart = new Chart(
+                document.getElementById(target).getContext('2d'),
+                config
+            );
+            break;
+
+        case 'doughnut':
+            doughnutChart = new Chart(
+                document.getElementById(target).getContext('2d'),
+                config
+            );
+
+            break;
+    }
+
+
+}

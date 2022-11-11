@@ -4,42 +4,44 @@
 @section('tasks-nav', 'active')
 
 @section('main-content')
-<ul class="nav nav-tabs bg-light">
+<ul class="nav nav-tabs">
     <li class="nav-item">
-      <a class="nav-link" aria-current="page" href="{{ route('mytasksK') }}">Kanban</a>
+        <a class="nav-link" aria-current="page" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">Kanban</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link active" href="{{ route('mytasksT') }}">Table</a>
+        <a class="nav-link active" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
     </li>
-  </ul>
+</ul>
     <div class="d-flex m-3 p-3 flex-column">
-        <div class="fw-bold fs-2 mt-3"><u>My Tasks</u></div>
+        <h2>{{ $activity->name }}</h2>
+        <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
+            <u>My Tasks</u>
+            <div>
+                <a class="btn btn-danger" href="{{ route('issues',$activity->id) }}" >Issues</a>
+            </div>
+        </div>
         <div>
-            <table id="data-table" class="table table-success table-striped align-middle" style="width:100%">
+            <table id="data-table" class="table table-light table-striped align-middle" style="width:100%">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Project Name</th>
                         <th>Name</th>
                         <th>Due Date</th>
                         <th>Status</th>
                         <th>Type</th>
                         <th style="width:50%;">Description</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if ($user->taskList)
-                        @foreach ($user->taskList as $task)
-                            {{-- {{ dd($task) }} <tr> --}}
+                    @if ($tasks)
+                        @foreach ($tasks as $task)
+                            <tr>
                                 <td> {{ $task->id }} </td>
-                                <td> {{ $task->project->name }} </td>
                                 <td> {{ $task->name }} </td>
                                 <td> {{ date('F j, Y', strtotime($task->due_date)) }} </td>
                                 <td> {{ $task->status }} </td>
                                 <td> {{ $task->type }} </td>
                                 <td> {{ $task->description }} </td>
-                                <td> </td>
                             </tr>
                         @endforeach
                     @else
@@ -60,9 +62,6 @@
                 "bLengthChange": false,
                 columns: [{
                         data: 'id'
-                    },
-                    {
-                        data: 'project_name'
                     },
                     {
                         data: 'name'
@@ -91,14 +90,6 @@
                     },
                     {
                         data: 'description'
-                    },
-                    {
-                        "targets": 8,
-                        "data": null,
-                        "render": function(data, type, row, meta) {
-                            return "<a class='btn btn-primary' class='showTaskBtn' href=' {{ route('projectdetail') }}/" +
-                                data['id'] + "'>Show Tasks</a>";
-                        }
                     }
 
                 ],
@@ -106,12 +97,6 @@
                         "targets": [0],
                         "visible": false,
                         "searchable": false
-                    },
-                    {
-                        "targets": 6,
-                        "data": null,
-                        "orderable": false,
-                        "defaultContent": "<button class='btn btn-primary'>Show Tasks</button>"
                     }
                 ],
                 order: [

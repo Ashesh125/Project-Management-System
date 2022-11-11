@@ -24,6 +24,9 @@
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/functions.js') }}"></script>
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
@@ -32,51 +35,69 @@
 </head>
 
 <body>
-    <div class="main-container d-flex flex-row justofy-content-between">
+    <div class="main-container d-flex flex-row justify-content-between">
         <div class="d-flex flex-column fixed-left fixed-bottom main-nav flex-shrink-0 p-3">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <a href="{{ route('dashboard') }}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
                 <img src="{{ asset('images/logo.png') }}" class="logo mx-4" />
                 <span class="fs-4">{{ auth()->user()->name }}</span>
             </a>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="/dashboard" class="nav-link link-dark @yield('home-nav')" aria-current="page">
+                    <a href="{{ route('dashboard') }}" class="nav-link link-dark @yield('home-nav')" aria-current="page">
                         <i class="fa-solid fa-house mx-2 px-2"></i>
                         Home
                     </a>
                 </li>
+                <hr>
+                <div>
+
+
+                    <li>
+                        <a href="{{ route('myActivities') }}/card" class="nav-link link-dark @yield('myprojects-nav')">
+                            <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
+                            My Projects
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('myActivities') }}/table" class="nav-link link-dark  @yield('activities-nav')">
+                            <i class="fa-solid fa-list mx-2 px-2"></i>
+                            My Activities
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('myIssues') }}" class="nav-link link-dark @yield('myissues-nav')">
+                            <i class="fa-solid fa-circle-exclamation mx-2 px-2"></i>
+                            My Issues
+                        </a>
+                    </li>
+                    <hr>
+                </div>
+                @if(auth()->user()->role != 0)
+                <div>
+                    <li>
+                        <a href="{{ route('projects') }}" class="nav-link link-dark @yield('project-nav')">
+                            <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
+                            Projects
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('myActivities') }}/table" class="nav-link link-dark @yield('issues-nav')">
+                            <i class="fa-solid fa-circle-exclamation mx-2 px-2"></i>
+                            Issues
+                        </a>
+                    </li>
+                    <hr>
+                </div>
+                @endif
+                @if(auth()->user()->role != 0)
                 <li>
-                    <a href="{{ route('mytasksK') }}" class="nav-link link-dark  @yield('tasks-nav')">
-                        <i class="fa-solid fa-list mx-2 px-2"></i>
-                        My Tasks
-                    </a>
-                </li>
-                <li>
-                    <a href="/projects" class="nav-link link-dark @yield('project-nav')">
-                        <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
-                        Projects
-                    </a>
-                </li>
-                <li>
-                    <a href="/myprojects" class="nav-link link-dark @yield('myprojects-nav')">
-                        <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
-                        My Projects
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link link-dark  @yield('users-nav')">
+                    <a href="{{ route('users') }}" class="nav-link link-dark  @yield('user-nav')">
                         <i class="fa-solid fa-users mx-2 px-2"></i>
                         Users
                     </a>
                 </li>
-                <li>
-                    <a href="/test" class="nav-link link-dark  @yield('test-nav')">
-                        <i class="fa-solid fa-user mx-2 px-2"></i>
-                        Test
-                    </a>
-                </li>
-
+                @endif
             </ul>
             <hr>
             <div class="dropdown">
@@ -87,7 +108,7 @@
                     <strong>Settings</strong>
                 </a>
                 <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="{{ route('profile') }}">Profile</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>

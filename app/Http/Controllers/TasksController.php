@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tasks;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 
 class TasksController extends Controller
@@ -59,7 +60,7 @@ class TasksController extends Controller
     {
         $task = new Tasks();
         $task->fill($request->post())->save();
-        return redirect()->route('projectdetail',$request->project_id)
+        return redirect()->back()
             ->with('success', 'Task created successfully.');
     }
 
@@ -71,8 +72,6 @@ class TasksController extends Controller
      */
     public function show(Tasks $tasks)
     {
-        
-        
     }
 
 
@@ -85,7 +84,7 @@ class TasksController extends Controller
     public function edit(Tasks $tasks)
     {
         $tasks->save();
-        return redirect()->route('projectdetail ',$tasks->project_id)
+        return redirect()->back()
             ->with('success', 'Data updated successfully');
     }
 
@@ -97,10 +96,11 @@ class TasksController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function updateType(Request $request){
+    public function updateType(Request $request)
+    {
         Tasks::where('id', $request->id)->update(array('type' => $request->type));
-        
-        return redirect()->route('mytasksK'); 
+
+        return ;
     }
 
 
@@ -108,15 +108,19 @@ class TasksController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'assigned_to' => 'required',
+            'user_id' => 'required',
             'type' => 'required',
             'due_date' => 'required',
-            'status' => 'required', 
-            'description' => 'required'
+            'status' => 'required',
+            'description' => 'required',
+            'activity_id' => 'required'
         ]);
         $task->fill($request->post())->save();
 
-        return redirect()->route('projectdetail',$request->project_id)
+        $activity = Activity::findOrfail($request->activity_id);
+        Activity::where('id', $activity->id)->update(array('status' => $activity->avg_task));
+
+        return redirect()->back()
             ->with('success', 'Task Updated');
     }
 
@@ -130,15 +134,23 @@ class TasksController extends Controller
     {
         $tasks->delete();
 
-        return redirect()->route('projectdetail',$tasks->project_id)
+        return redirect()->back()
             ->with('success', 'Task deleted successfully');
     }
 
-    public function test($id){
-        $project = Tasks::with('project')->where('assigned_to',$id)->where('project_id',$id)->get();
-        dd($project);
-        return view('pages.projects.myprojects', compact('project'));
+    public function usertasks(Request $request)
+    {
+        $activity = Activity::findOrFail($request->id);
+        $tasks = Tasks::where([['user_id', '=', auth()->user()->id], ['activity_id', '=', $activity->id]])->get();
+
+        switch ($request->type) {
+            case "table":
+                return view('pages.tasks.mytasks', compact('tasks','activity'));
+                break;
+
+            case "kanban":
+                return view('pages.tasks.mytaskskanban', compact('tasks','activity'));
+                break;
+        }
     }
-
-
 }

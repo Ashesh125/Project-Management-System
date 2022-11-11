@@ -1,14 +1,34 @@
+*{
+    color: #1b1b1b;
+}
+
+
 .main-nav{
     height: 100vh;
-    background-color: #ADC2A9;
+    background-color: #4FA095;
     width: 18vw;
 }
 
-body{
-    background: #FAF7F0;
+
+.nav-tabs{
+    background-color: #4FA095;
 }
 
-.nav-link .active{
+.nav-tabs .nav-item .active{
+    background-color: #BAD1C2 !important;
+    color: #fff;
+    border-bottom: 2px solid #BAD1C2 !important;
+}
+
+a.nav-link{
+    color: #000;
+}
+
+body{
+    background: #BAD1C2;
+}
+
+.nav-link a.active{
     background: #FEF5ED !important;
 }
 .logo{
@@ -17,7 +37,7 @@ body{
 }
 
 .main-content-holder{
-    background: #FAF7F0;
+    background: #BAD1C2;
     height: 100vh;
     margin-left: 18vw;
     width: 100%;
@@ -36,7 +56,7 @@ body{
 }
 
 .bg-gray{
-    background: #C0C0C0;
+    background-color: #C0C0C0;
 }
 
 .bg-dimgary{
@@ -47,6 +67,9 @@ body{
     border: #141414;
 }
 
+.no-outline:focus{
+    outline: none;
+}
 
 .task-holder{
     height: auto;
@@ -56,4 +79,84 @@ body{
 
 .ui-draggable-dragging{
     width: 180px;
+}
+
+.project-card{
+    opacity: 0.2;
+
+}
+
+.paginate_button .current{
+    background-color: white;
+}
+
+#data-table_filter label input{
+    background-color: #fff;
+}
+
+.info-card:hover,#data-table tr:hover,.task-card:hover{
+    cursor: pointer;
+}
+
+.alert{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 35%;
+}
+
+.messege-box{
+    position: relative;
+}
+
+.messege-box .messege-form{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+.comment{
+    border: 1px solid #fff;
+    background: lightgray;
+}
+
+.comment:hover{
+    border: 1px solid blue;
+}
+
+.fa-solid.fa-trash-can{
+    border: 1px solid #000;
+}
+
+.fa-solid.fa-trash-can:hover{
+    border: 1px solid red;
+    color: red;
+}
+
+
+.comment{
+    opacity: 0.1;
+}
+
+span.select2-container {
+    z-index:10050;
+}
+
+.select2-selection__rendered {
+    line-height: 31px !important;
+}
+.select2-container .select2-selection--single {
+    height: 38px !important;
+}
+.select2-selection__arrow {
+    height: 38px !important;
+}
+
+.taskChart,.issueChart{
+    width: 220px;
+    height: 220px;
+}
+
+.msg{
+    word-wrap: break-word;
 }

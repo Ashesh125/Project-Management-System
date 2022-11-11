@@ -1,33 +1,35 @@
 @extends('layouts.parent')
 
-@section('title', 'myprojects')
-@section('myprojects-nav', 'active')
+@section('title', 'My Activities')
+@section('activities-nav', 'active')
 
 @section('main-content')
 
     <div class="d-flex m-3 p-3 flex-column">
-        <div class="fw-bold fs-2"><u>My Projects</u></div>
+        <div class="fw-bold fs-2"><u>My Activities</u></div>
         <div>
             <table id="data-table" class="table table-light table-striped align-middle" style="width:100%">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
+                        <th>Project</th>
+                        <th>Activity</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th style="width:50%;">Description</th>
+                        <th>Description</th>
                         <th>Show</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (!empty($projects))
-                        @foreach ($projects as $project)
+                    @if (!empty($activities))
+                        @foreach ($activities as $activity)
                             <tr>
-                                <td> {{ $project->id }} </td>
-                                <td> {{ $project->name }} </td>
-                                <td> {{ date('F j Y', strtotime($project->start_date)) }} </td>
-                                <td> {{ date('F j Y', strtotime($project->end_date)) }} </td>
-                                <td> {{ $project->description }} </td>
+                                <td> {{ $activity->id }} </td>
+                                <td> {{ $activity->project->name }} </td>
+                                <td> {{ $activity->name }} </td>
+                                <td> {{ date('F j Y', strtotime($activity->start_date)) }} </td>
+                                <td> {{ date('F j Y', strtotime($activity->end_date)) }} </td>
+                                <td class="text-truncate" style="max-width: 220px;"> {{ $activity->description }} </td>
                                 <td> </td>
                             </tr>
                         @endforeach
@@ -52,6 +54,9 @@
                         data: 'id'
                     },
                     {
+                        data: 'project_name'
+                    },
+                    {
                         data: 'name'
                     },
                     {
@@ -64,10 +69,10 @@
                         data: 'description'
                     },
                     {
-                        "targets": 5,
+                        "targets": 6,
                         "data": null,
                         "render": function(data, type, row, meta) {
-                            return "<a class='btn btn-primary' class='showTaskBtn' href=' {{ route('projectdetail') }}/" +
+                            return "<a class='btn btn-primary' class='showTaskBtn' href=' {{ route('myTasks',['type' => 'kanban']) }}/" +
                                 data['id'] + "'>Show Tasks</a>";
                         }
                     }
@@ -77,12 +82,6 @@
                         "targets": [0],
                         "visible": false,
                         "searchable": false
-                    },
-                    {
-                        "targets": 5,
-                        "data": null,
-                        "orderable": false,
-                        "defaultContent": "<button class='btn btn-primary'>Show Tasks</button>"
                     }
                 ],
                 order: [
