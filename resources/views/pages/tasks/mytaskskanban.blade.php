@@ -6,7 +6,7 @@
 @section('main-content')
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">Kanban</a>
+            <a class="nav-link active" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">To Do</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" aria-current="page" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
@@ -36,7 +36,7 @@
                                                     {{ $task->name }}</div>
                                                 <div class="h5 mb-0 font-weight-bold text-gray-800 task-detail"
                                                     id="taskdetail-1">
-                                                    <i class="fa-solid fa-circle-info"></i>
+                                                    <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $task->description }}"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -61,7 +61,7 @@
                                                     {{ $task->name }}</div>
                                                 <div class="h5 mb-0 font-weight-bold text-gray-800 task-detail"
                                                     id="taskdetail-1">
-                                                    <i class="fa-solid fa-circle-info"></i>
+                                                    <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $task->description }}"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -85,7 +85,7 @@
                                                 <div class="text-xs font-weight-bold text-uppercase">
                                                     {{ $task->name }}</div>
                                                 <div class="h5 mb-0 font-weight-bold text-gray-800 task-detail"
-                                                    id="taskdetail-4"><i class="fa-solid fa-circle-info"></i></div>
+                                                    id="taskdetail-4"><i class="fa-solid fa-circle-info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $task->description }}"></i></div>
                                             </div>
                                         </div>
                                     </div>
@@ -119,8 +119,6 @@
                 drop: function(event, ui) {
                     let dragged = ui.draggable.attr('id');
                     let dropable = $(this).attr('id');
-                    // console.log("#" + dragged);
-                    // console.log("#" + dropable);
                     $("#" + dragged).appendTo("#" + dropable);
                     $("#" + dragged).css('position', '');
                     $("#" + dragged).find('ul').append(ui.draggable)

@@ -5,16 +5,14 @@
 
 @section('main-content')
     <div class="d-flex m-3 p-3 flex-column">
-        @if (!empty($comments[0]))
-            <h2>Issue : {{ $comments[0]->issue->project->name }}</h2>
-        @endif
+        <h2>Issue : {{ $issue->name }}</h2>
         <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
             <u>Comments</u>
         </div>
 
         <div>
             <div class="comment-area w-75">
-                @forelse ($comments as $comment)
+                @forelse ($issue->comments as $comment)
                     <div class="rounded p-2 m-2 comment">
                         <p class="p-1 msg" id="msg-{{ $comment->id }}">
                             {{ $comment->name }}
@@ -49,7 +47,7 @@
                     @csrf
                     <input type="hidden" value="0" name="id" id="id" />
                     <input type="hidden" value="{{ auth()->user()->id }}" name="user_id" />
-                    <input type="hidden" value="{{ $issue_id }}" name="issue_id" />
+                    <input type="hidden" value="{{ $issue->id }}" name="issue_id" />
                     <textarea class="form-control" id="name" name="name" placeholder="Leave a Comment" required></textarea>
                     <div class="d-flex flex-row-reverse mt-3">
                         <button class="btn btn-primary" type="submit">Send</button>

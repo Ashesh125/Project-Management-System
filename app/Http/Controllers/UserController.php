@@ -11,6 +11,8 @@ use App\Models\Tasks;
 use Illuminate\Console\View\Components\Task;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -124,14 +126,52 @@ class UserController extends Controller
             ->with('success', 'User Updated');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
+    public function updateProfile(Request $request){
+
+        if($request->hasFile('image')){
+            $request->validate([
+                'image' => 'mimes:jpeg,bmp,png' // Only allow .jpg, .bmp and .png file types.
+            ]);
+
+            $user =  User::findOrFail(auth()->user()->id);
+
+            if(Storage::exists('public/user/'.$user->image)){
+                Storage::delete('public/user/'.$user->image);
+            }
+
+            // Save the file locally in the storage/public/ folder under a new folder named /product
+            $request->image->store('user', 'public');
+            User::where('id', auth()->user()->id)->update(array('image' => $request->image->hashName()));
+        }
+
+        if($request->password){
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required',
+                'password' => 'required'
+            ]);
+            User::where('id', auth()->user()->id)->update(array('name' => $request->name, 'email' => $request->email, 'password' => Hash::make($request->password)));
+        }else{
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required'
+            ]);
+            User::where('id', auth()->user()->id)->update(array('name' => $request->name, 'email' => $request->email));
+        }
+
+
+        return redirect()->back()
+        ->with('success', 'Update Success');
+    }
+
+
     public function destroy(User $user)
     {
+        $user =  User::findOrFail(auth()->user()->id);
+        if(Storage::exists('public/user/'.$user->image)){
+            Storage::delete('public/user/'.$user->image);
+        }
         $user->delete();
 
         return redirect()->back()

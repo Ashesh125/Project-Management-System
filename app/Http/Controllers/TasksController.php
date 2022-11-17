@@ -35,9 +35,11 @@ class TasksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $activity = Activity::with('tasks.user')->findOrFail($id);
+
+        return view('pages.tasks.taskcalander', compact('activity'));
     }
 
     /**
@@ -72,6 +74,7 @@ class TasksController extends Controller
      */
     public function show(Tasks $tasks)
     {
+
     }
 
 
@@ -151,6 +154,6 @@ class TasksController extends Controller
             case "kanban":
                 return view('pages.tasks.mytaskskanban', compact('tasks','activity'));
                 break;
-        }
+            }
     }
 }

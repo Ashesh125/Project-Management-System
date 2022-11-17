@@ -24,7 +24,7 @@ function projectStatus(data) {
 
         case "assigned":
             icon +=
-                '<div><i class="fa-solid fa-play" data-bs-toggle="tooltip" title="Assigned"></i></div>';
+                '<div><i class="fa-solid fa-hourglass-start" data-bs-toggle="tooltip" title="Assigned"></i></div>';
             break;
 
         default:
@@ -84,7 +84,7 @@ function activityHandler(datas) {
 
         let container =
             "<div class='d-flex rounded flex-column my-2 p-4 bg-light w-100' id='" + element.id + "'>" +
-            "<h5> Activity : " + element.name + "</h5>" +
+            "<div class='d-flex justify-content-between'><span class='fs-4 fw-bold'> Activity : " + element.name + "</span><a class='btn btn-primary ms-5' href='/activitydetail/" + element.id + "'>Detail</a></div>" +
             "<div> Supervisor : " + element.supervisor + "</div>" +
             "<div> Users Assigned : " + element.no_of_users + "</div>" +
             "<div class='d-flex justify-content-between'>" +

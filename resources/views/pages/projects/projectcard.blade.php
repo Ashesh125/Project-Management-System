@@ -1,7 +1,7 @@
 @extends('layouts.parent')
 
 @section('title', 'Projects')
-@section('project-nav', 'active')
+@section('allactivities-nav', 'active')
 
 @section('main-content')
 <ul class="nav nav-tabs">
@@ -17,17 +17,15 @@
         <div>
             <div class="project-cards info-card d-flex flex-wrap">
                 @if ($projects)
-                    @php
-                        $project_names = $projects->keys();
-                    @endphp
                     @foreach ($projects as $index => $project)
                         <div class="m-3 project-card col-12">
                             <div class="bg-gray card shadow h-100">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="mx-2 d-flex flex-column justify-content-between">
-                                            <div class="text-xs font-weight-bold text-uppercase">
-                                                {{ $index }}
+                                            <div class="text-xs font-weight-bold text-uppercase d-flex justify-content-between">
+                                                <span>{{ $index }}</span>
+                                                <a class="btn btn-primary" href="{{ route('projectDetail') }}/{{ $project[0]->project->id }}">Detail</a>
                                             </div>
                                             <div class="project-cards info-card d-flex flex-wrap">
                                                 @if ($project)

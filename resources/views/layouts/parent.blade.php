@@ -19,7 +19,6 @@
         integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <script src="{{ asset('js/bootstrapValidation.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/functions.js') }}"></script>
@@ -27,7 +26,9 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+        integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 
@@ -36,17 +37,18 @@
 
 <body>
     <div class="main-container d-flex flex-row justify-content-between">
-        <div class="d-flex flex-column fixed-left fixed-bottom main-nav flex-shrink-0 p-3">
-            <a href="{{ route('dashboard') }}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <div class="d-flex flex-column fixed-left fixed-bottom h-100 fixed-top main-nav p-3 col-lg-2 col-md-2 col-sm-1">
+            <a href="{{ route('dashboard') }}"
+                class="d-flex align-items-center link-dark text-decoration-none">
                 <img src="{{ asset('images/logo.png') }}" class="logo mx-4" />
-                <span class="fs-4">{{ auth()->user()->name }}</span>
+                <div class="fs-4 text-truncate overflow-hidden">{{ auth()->user()->name }}</div>
             </a>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}" class="nav-link link-dark @yield('home-nav')" aria-current="page">
                         <i class="fa-solid fa-house mx-2 px-2"></i>
-                        Home
+                        <span class="d-sm-none d-md-inline">Home</span>
                     </a>
                 </li>
                 <hr>
@@ -56,55 +58,57 @@
                     <li>
                         <a href="{{ route('myActivities') }}/card" class="nav-link link-dark @yield('myprojects-nav')">
                             <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
-                            My Projects
+                            <span class="d-sm-none d-md-inline">My Projects</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('myActivities') }}/table" class="nav-link link-dark  @yield('activities-nav')">
                             <i class="fa-solid fa-list mx-2 px-2"></i>
-                            My Activities
+                            <span class="d-sm-none d-md-inline">My Activities</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('myIssues') }}" class="nav-link link-dark @yield('myissues-nav')">
                             <i class="fa-solid fa-circle-exclamation mx-2 px-2"></i>
-                            My Issues
+                            <span class="d-sm-none d-md-inline">My Issues</span>
                         </a>
                     </li>
                     <hr>
                 </div>
-                @if(auth()->user()->role != 0)
-                <div>
-                    <li>
-                        <a href="{{ route('projects') }}" class="nav-link link-dark @yield('project-nav')">
-                            <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
-                            Projects
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('myActivities') }}/table" class="nav-link link-dark @yield('issues-nav')">
-                            <i class="fa-solid fa-circle-exclamation mx-2 px-2"></i>
-                            Issues
-                        </a>
-                    </li>
-                    <hr>
-                </div>
+                @if (auth()->user()->role != 0)
+                    <div>
+                        <li>
+                            <a href="{{ route('projects') }}" class="nav-link link-dark @yield('project-nav')">
+                                <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
+                                <span class="d-sm-none d-md-inline">Projects</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('projectCard') }}" class="nav-link link-dark  @yield('allactivities-nav')">
+                                <i class="fa-solid fa-list mx-2 px-2"></i>
+                                <span class="d-sm-none d-md-inline">Activities</span>
+                            </a>
+                        </li>
+                        <hr>
+                    </div>
                 @endif
-                @if(auth()->user()->role != 0)
-                <li>
-                    <a href="{{ route('users') }}" class="nav-link link-dark  @yield('user-nav')">
-                        <i class="fa-solid fa-users mx-2 px-2"></i>
-                        Users
-                    </a>
-                </li>
+                @if (auth()->user()->role != 0)
+                    <li>
+                        <a href="{{ route('users') }}" class="nav-link link-dark  @yield('user-nav')">
+                            <i class="fa-solid fa-users mx-2 px-2"></i>
+                            <span class="d-sm-none d-md-inline">Users</span>
+                        </a>
+                    </li>
                 @endif
             </ul>
             <hr>
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle"
                     id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://github.com/mdo.png" alt="" width="32" height="32"
-                        class="rounded-circle mx-4 ">
+
+                    <img src="{{ auth()->user()->image ? url('storage/user/' . auth()->user()->image) : asset('images/no-user-image.png') }}"
+                        width="38" height="38" class="rounded-circle img-thumbnail mx-4" accept="image/*" />
+
                     <strong>Settings</strong>
                 </a>
                 <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
@@ -126,7 +130,8 @@
                 </ul>
             </div>
         </div>
-        <div class="main-content-holder vertical-scrollable">
+        <div class="col-lg-2 col-md-2"></div>
+        <div class="main-content-holder vertical-scrollable h-100 col-lg-10">
 
             @if ($message = Session::get('success'))
                 <div class="alert alert-success">
@@ -144,6 +149,8 @@
         <div>
         </div>
     </div>
+
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 </body>
 
 </html>

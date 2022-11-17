@@ -6,7 +6,7 @@
 @section('main-content')
 <ul class="nav nav-tabs">
     <li class="nav-item">
-        <a class="nav-link" aria-current="page" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">Kanban</a>
+        <a class="nav-link" aria-current="page" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">To Do</a>
     </li>
     <li class="nav-item">
         <a class="nav-link active" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>

@@ -25,7 +25,10 @@ class UserSeeder extends Seeder
         //     'password' => Hash::make(Str::random(10))
         // ]);
 
-        User::factory()->count(20)
-        ->create();
+        User::factory()->count(20)->sequence(
+            fn($sequence) => [
+                'image' =>  'file-' . rand(1,49) . ".jpg"
+            ]
+        )->create();
     }
 }

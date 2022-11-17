@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Issue;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -38,10 +39,9 @@ class CommentController extends Controller
 
     public function ofIssue($id)
     {
-        $comments = Comment::with('user')->where('issue_id',$id)->get();
-        $issue_id = $id;
+        $issue = Issue::with('comments.user')->findOrFail($id);
 
-        return view('pages.comments.list')->with(compact('comments','issue_id'));
+        return view('pages.comments.list')->with(compact('issue'));
     }
 
     public function create()
@@ -53,7 +53,7 @@ class CommentController extends Controller
     {
         $comment = new Comment();
         $comment->fill($request->post())->save();
-        
+
         // return redirect('/comments');
         return redirect()->back()
             ->with('success', 'Comment created successfully.');

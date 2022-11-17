@@ -87,6 +87,13 @@ class ActivityController extends Controller
     {
     }
 
+    public function activityData($id){
+       $activity = Activity::with('tasks.user')->findOrFail($id)->toArray();
+
+       return  response()->json($activity);
+    }
+
+
 
     public function update(Request $request, Activity $activity)
     {

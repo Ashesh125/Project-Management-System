@@ -93,7 +93,7 @@
             </div>
         </div>
         <div class="col-2 mt-4">
-            <select class="form-select bg-gray no-outline" id="project-select" aria-label="Default select example">
+            <select class="form-select no-outline" id="project-select" aria-label="Default select example">
                 @forelse ($projects as $project)
                     <option value="{{ $project->id }}">{{ $project->name }}</option>
                 @empty

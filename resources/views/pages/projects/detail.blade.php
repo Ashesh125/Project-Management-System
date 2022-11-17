@@ -145,6 +145,12 @@
                     <div class="progress-bar text-end" role="progressbar" style="font-size:12px;width:{{ $project->avg_activities }}%;"
                        aria-valuenow="{{ $project->avg_activities }}" aria-valuemin="0" aria-valuemax="100">{{ $project->avg_activities }}%</div>
                 </div>
+                <div>
+                    Project Lead :
+                    <span class="mx-2">
+                            <img src='{{ $project->lead->image ? url('storage/user/' .$project->lead->image) : asset('images/no-user-image.png') }}' width='50px' height='50px' class="rounded-circle img-thumbnail user-image" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $project->lead->name }}">
+                    </span>
+                </div>
                 <div class="my-2">
                     <div class="fw-bold fs-5">Description</div>
                     <div class="col-12">

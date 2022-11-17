@@ -41,6 +41,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projectdetail/{id?}', [ProjectController::class, 'show'])->name('projectDetail');
 
     Route::get('/mytasks/{type}/{id?}', [TasksController::class, 'usertasks'])->name('myTasks');
+    Route::get('/calanderview/{id?}', [TasksController::class, 'index'])->name('calander');
+
 
     Route::post('/tasks/updateType', [TasksController::class, 'updateType'])->name('taskTypeUpdate');
 
@@ -58,6 +60,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/comment', [CommentController::class, 'check'])->name('checkComment');
 
     Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
+    Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
+
+    Route::post('/updateProfile', [UserController::class, 'updateProfile'])->name('updateProfile');
+
+
     /* for project manager (role = 1) or higher level of clerence  */
     Route::middleware(['role'])->group(function () {
         Route::post('/activities', [ActivityController::class, 'check'])->name('checkActivity');

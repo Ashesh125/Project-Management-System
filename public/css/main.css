@@ -4,9 +4,7 @@
 
 
 .main-nav{
-    height: 100vh;
     background-color: #4FA095;
-    width: 18vw;
 }
 
 
@@ -38,9 +36,6 @@ body{
 
 .main-content-holder{
     background: #BAD1C2;
-    height: 100vh;
-    margin-left: 18vw;
-    width: 100%;
 }
 
 .modal-backdrop {
@@ -133,6 +128,10 @@ body{
     color: red;
 }
 
+.user-image{
+    border: 1px solid black;box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.3);
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+}
 
 .comment{
     opacity: 0.1;
@@ -160,3 +159,9 @@ span.select2-container {
 .msg{
     word-wrap: break-word;
 }
+
+.fc-button-primary{
+    background-color: blue;
+    color: #fff;
+}
+
