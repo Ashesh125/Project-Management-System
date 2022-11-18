@@ -15,6 +15,10 @@ class ActivitySeeder extends Seeder
      */
     public function run()
     {
-        Activity::factory()->count(30)->create();
+        Activity::factory()->count(30)->sequence(
+            fn($sequence) => [
+                'name' =>  'Activity '. $sequence->index,
+            ]
+        )->create();
     }
 }

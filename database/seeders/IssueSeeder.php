@@ -15,6 +15,10 @@ class IssueSeeder extends Seeder
      */
     public function run()
     {
-        Issue::factory()->count(30)->create();
+        Issue::factory()->count(30)->sequence(
+            fn($sequence) => [
+                'name' =>  'Issue '. $sequence->index,
+            ]
+        )->create();
     }
 }

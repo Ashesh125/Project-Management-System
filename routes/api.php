@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +20,16 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+require __DIR__ . '/auth.php';
+
+Route::get('/', function () {
+    return view('auth.login');
+});
+
+
+// Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
+    Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
+    Route::get('/userDatas/{id}',[UserController::class,'userData'])->name('userData');
+// });

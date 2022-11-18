@@ -52,9 +52,8 @@
                     </a>
                 </li>
                 <hr>
+                @if (auth()->user()->role != 2)
                 <div>
-
-
                     <li>
                         <a href="{{ route('myActivities') }}/card" class="nav-link link-dark @yield('myprojects-nav')">
                             <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
@@ -75,6 +74,8 @@
                     </li>
                     <hr>
                 </div>
+                @endif
+
                 @if (auth()->user()->role != 0)
                     <div>
                         <li>
@@ -149,7 +150,6 @@
         <div>
         </div>
     </div>
-
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 </body>
 

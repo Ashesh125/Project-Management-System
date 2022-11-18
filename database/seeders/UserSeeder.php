@@ -24,10 +24,11 @@ class UserSeeder extends Seeder
         //     'email' => Str::random(10).'@gmail.com',
         //     'password' => Hash::make(Str::random(10))
         // ]);
-
         User::factory()->count(20)->sequence(
             fn($sequence) => [
-                'image' =>  'file-' . rand(1,49) . ".jpg"
+
+                'image' =>  'file-' . rand(1,49) . ".jpg",
+                'role' => $sequence->index % 5 == 0 ? 1 : 0
             ]
         )->create();
     }

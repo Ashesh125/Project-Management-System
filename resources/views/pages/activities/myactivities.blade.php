@@ -72,8 +72,13 @@
                         "targets": 6,
                         "data": null,
                         "render": function(data, type, row, meta) {
+                            @if(auth()->user()->role == 0)
                             return "<a class='btn btn-primary' class='showTaskBtn' href=' {{ route('myTasks',['type' => 'kanban']) }}/" +
                                 data['id'] + "'>Show Tasks</a>";
+                            @else
+                            return "<a class='btn btn-primary' class='showTaskBtn' href=' {{ route('activityDetail') }}/" +
+                                data['id'] + "'>Show Tasks</a>";
+                            @endif
                         }
                     }
 

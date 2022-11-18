@@ -19,7 +19,6 @@ class IssueFactory extends Factory
     public function definition()
     {
         return [
-            'name' => Str::random(20),
             'status' => rand(0,1),
             'activity_id' => Activity::all()->random()->id,
             'user_id' => User::where('role', '!=', 2)->get()->random()->id

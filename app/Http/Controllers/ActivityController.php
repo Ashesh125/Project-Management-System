@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -31,8 +32,7 @@ class ActivityController extends Controller
     public function tasks(int $id)
     {
         $activity = Activity::with('tasks.user')->findOrFail($id);
-        $userController = new UserController();
-        $users = $userController->getUsers();
+        $users = User::where('role','>',0)->get();
         // dd($users);
         return view('pages.tasks.list', compact('activity','users'));
     }
@@ -76,8 +76,7 @@ class ActivityController extends Controller
 
 
         $activity = Activity::with('tasks.user')->findOrFail($id);
-        $userController = new UserController();
-        $users = $userController->getUsers();
+        $users = User::where('role',0)->get();
 
         return view('pages.tasks.list', compact('activity','users'));
     }

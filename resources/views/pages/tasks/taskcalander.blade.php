@@ -7,6 +7,19 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css">
 
+    <table class="m-4 p-3 border border-dark table w-25">
+        <tr>
+            <td colspan="2">Index</td>
+        </tr>
+        <tr>
+            <td><span class="d-inline-block border rounded border-dark" style="width:60px;height:20px;background:red;"></span></td>
+            <td> Task End Date and Not Completed</td>
+        </tr>
+        <tr>
+            <td><span class="d-inline-block border rounded border-dark" style="width:60px;height:20px;background:green;"></span></td>
+            <td> Task End Date and Completed</td>
+        </tr>
+    </table>
     <div class="d-flex m-3 p-3 flex-column">
         <div id='calendar' class="bg-light rounded p-4"></div>
     </div>
@@ -19,7 +32,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "../activityDatas/2",
+                url: "../api/activityDatas/2",
                 success: function(response) {
                     var json = $.parseJSON(response);
 

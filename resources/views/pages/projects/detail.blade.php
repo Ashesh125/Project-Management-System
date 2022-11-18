@@ -148,7 +148,10 @@
                 <div>
                     Project Lead :
                     <span class="mx-2">
-                            <img src='{{ $project->lead->image ? url('storage/user/' .$project->lead->image) : asset('images/no-user-image.png') }}' width='50px' height='50px' class="rounded-circle img-thumbnail user-image" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $project->lead->name }}">
+                        <img src='{{ $project->lead->image ? url('storage/user/' . $project->lead->image) : asset('images/no-user-image.png') }}'
+                            width='50px' height='50px' id='profile-circle-{{ $project->lead->id }}'
+                            class="rounded-circle img-thumbnail profile-circle" data-bs-toggle="tooltip"
+                            data-bs-placement="top" title="{{ $project->lead->name }}">
                     </span>
                 </div>
                 <div class="my-2">
@@ -211,9 +214,12 @@
             </table>
         </div>
     </div>
+
     <div class="m-2 mx-4 p-2 rounded activity_detail-holder bg-gray d-flex flex-column">
 
     </div>
+
+    @include('components.profile-offcanvas')
     <script>
         $(document).ready(function() {
 
@@ -352,6 +358,28 @@
 
             $(".progress-bar").on('load', animateProgress({{ $project->avg_task }}));
 
+            $('.profile-circle').on('click', function() {
+                var bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvas'));
+                bsOffcanvas.show();
+
+                let id = $(this).attr('id').split("-")[2];
+
+                $.ajax({
+                    type: "GET",
+                    url: "../api/userDatas/"+id,
+                    success: function(response) {
+                        var json = $.parseJSON(response);
+                        $("#profile-name").val(json.name);
+                        $("#profile-email").val(json.email);
+                        let image = json.image ? '{{ url('storage/user/') }}/'+json.image : asset('images/no-user-image.png');
+                        $("#profile-image").attr('src', image);
+                        $("#profile-role").val(json.role == 2 ? 'Super Admin' : json.role == 1 ? 'Admin' : 'User' );
+                    },
+                    dataType: "html"
+                });
+
+                $('#profile-name').val('asd');
+            });
         });
     </script>
 @endsection

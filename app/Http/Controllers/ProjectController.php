@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Activity;
-use App\Http\Controllers\UserController;
+use App\Models\User;
 
 use Illuminate\Http\Request;
 
@@ -35,8 +35,7 @@ class ProjectController extends Controller
     public function tasks(int $id)
     {
         $project = Project::with('tasks.user')->findOrFail($id);
-        $userController = new UserController();
-        $users = $userController->getUsers();
+        $users = User::where('role','>',0)->get();
         // dd($users);
         return view('pages.tasks.list', compact('project','users'));
     }
@@ -44,9 +43,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::with('lead')->get();
-
-        $userController = new UserController();
-        $users = $userController->getUsers();
+        $users = User::where('role','>',0)->get();
 
         return view('pages.projects.list')->with(compact('projects','users'));
     }
@@ -69,8 +66,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::with('lead')->with('activities.supervisor')->findOrFail($id);
-        $userController = new UserController();
-        $users = $userController->getUsers();
+        $users = User::where('role','>',0)->get();
 
         return view('pages.projects.detail')->with(compact('project','users'));
     }

@@ -48,7 +48,7 @@ class DashboardController extends Controller
         }
 
         $projects = Project::all();
-        // dd($temp);
+
         return view('pages.dashboard.index')->with(compact('arr','projects'));
     }
 

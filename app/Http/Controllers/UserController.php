@@ -127,17 +127,18 @@ class UserController extends Controller
     }
 
 
-    public function updateProfile(Request $request){
+    public function updateProfile(Request $request)
+    {
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $request->validate([
                 'image' => 'mimes:jpeg,bmp,png' // Only allow .jpg, .bmp and .png file types.
             ]);
 
             $user =  User::findOrFail(auth()->user()->id);
 
-            if(Storage::exists('public/user/'.$user->image)){
-                Storage::delete('public/user/'.$user->image);
+            if (Storage::exists('public/user/' . $user->image)) {
+                Storage::delete('public/user/' . $user->image);
             }
 
             // Save the file locally in the storage/public/ folder under a new folder named /product
@@ -145,14 +146,14 @@ class UserController extends Controller
             User::where('id', auth()->user()->id)->update(array('image' => $request->image->hashName()));
         }
 
-        if($request->password){
+        if ($request->password) {
             $request->validate([
                 'name' => 'required',
                 'email' => 'required',
                 'password' => 'required'
             ]);
             User::where('id', auth()->user()->id)->update(array('name' => $request->name, 'email' => $request->email, 'password' => Hash::make($request->password)));
-        }else{
+        } else {
             $request->validate([
                 'name' => 'required',
                 'email' => 'required'
@@ -162,15 +163,15 @@ class UserController extends Controller
 
 
         return redirect()->back()
-        ->with('success', 'Update Success');
+            ->with('success', 'Update Success');
     }
 
 
     public function destroy(User $user)
     {
         $user =  User::findOrFail(auth()->user()->id);
-        if(Storage::exists('public/user/'.$user->image)){
-            Storage::delete('public/user/'.$user->image);
+        if (Storage::exists('public/user/' . $user->image)) {
+            Storage::delete('public/user/' . $user->image);
         }
         $user->delete();
 
@@ -182,24 +183,24 @@ class UserController extends Controller
     {
         switch ($request->type) {
             case 'table':
-                $user = User::with('activity.project')->findOrFail(auth()->user()->id);
-                $activities = $user->activity->unique();
+                if (auth()->user()->role == 0) {
+                    $user = User::with('activity.project')->findOrFail(auth()->user()->id);
+                    $activities = $user->activity->unique();
+                } else {
+                    $activities = Activity::where('user_id', auth()->user()->id)->get();
+                }
 
                 return view('pages.activities.myactivities', compact('activities'));
                 break;
 
             case 'card':
-                $projects = Activity::with('project')->whereHas('tasks', function($query) {
-                    return $query->where('tasks.user_id', auth()->user()->id);
-                })->get()->groupBy('project.name');
-                // dd($projects);
-                // $tasks = Tasks::query()->with('activity')->where('user_id', auth()->id())->get()->groupBy('activity.id');
-                // dd($tasks);
-                // $projects = Project::with(['activities', 'activities.tasks'])
-                // ->whereHas('activities.tasks', function ($query){
-                //     $query->where('user_id', auth()->user()->id);
-                // })->get();
-                // dd($projects);
+                if (auth()->user()->role == 0) {
+                    $projects = Activity::with('project')->whereHas('tasks', function ($query) {
+                        return $query->where('tasks.user_id', auth()->user()->id);
+                    })->get()->groupBy('project.name');
+                } else {
+                    $projects = Activity::with('project')->with('tasks')->where('user_id', auth()->user()->id)->get()->groupBy('project.name');
+                }
 
                 return view('pages.activities.myactivitylist', compact('projects'));
                 break;
@@ -209,11 +210,18 @@ class UserController extends Controller
 
     public function myIssues()
     {
-        $user = User::with('issues')->findOrFail(auth()->user()->id);
+        if(auth()->user()->id == 0){
+            $user = User::with('activity.issues.user')->findOrFail(auth()->user()->id);
+            $activities = $user->activity->unique();
 
-        $issues = $user->issues->unique();
+            return view('pages.issues.myissues', compact('activities'));
+        }else{
+            $activities = Activity::with('issues.user')->where('user_id',auth()->user()->id)->get();
+            // $activities = $user->activity->unique();
 
-        return view('pages.issues.myissues', compact('issues'));
+            return view('pages.issues.myissues', compact('activities'));
+
+        }
     }
 
 
@@ -222,5 +230,13 @@ class UserController extends Controller
         $user = User::with('task')->findOrFail(auth()->user()->id);
 
         return view('pages.tasks.mytaskskanban', compact('user'));
+    }
+
+
+    public function userData(Request $request)
+    {
+        $user = User::findOrFail($request->id);
+
+        return  response()->json($user);
     }
 }

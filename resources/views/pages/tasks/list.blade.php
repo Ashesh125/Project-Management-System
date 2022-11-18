@@ -211,7 +211,8 @@
                 Supervisor :
                 <span class="mx-2">
                     <img src='{{ $activity->supervisor ? url('storage/user/' . $activity->supervisor->image) : asset('images/no-user-image.png') }}'
-                        width='50px' height='50px' class="rounded-circle img-thumbnail" data-bs-toggle="tooltip"
+                        width='50px' height='50px' id='profile-circle-{{ $activity->supervisor->id }}'
+                        class="rounded-circle img-thumbnail profile-circle" data-bs-toggle="tooltip"
                         data-bs-placement="top" title="{{ $activity->supervisor->name }}">
                 </span>
             </div>
@@ -219,15 +220,16 @@
                 Assigned :
                 <span class="ms-3">
                     @php
-                        $user = array();
+                        $user = [];
                     @endphp
                     @foreach ($activity->tasks as $task)
-                        @if(!in_array($task->user->id, $user))
+                        @if (!in_array($task->user->id, $user))
                             @php
                                 $user[] = $task->user->id;
                             @endphp
                             <img src='{{ $task->user ? url('storage/user/' . $task->user->image) : asset('images/no-user-image.png') }}'
-                                width='50px' height='50px' class="mx-1 rounded-circle img-thumbnail profile-circle" data-bs-toggle="tooltip"
+                                width='50px' height='50px' id='profile-circle-{{ $task->user->id }}'
+                                class="mx-1 rounded-circle img-thumbnail profile-circle" data-bs-toggle="tooltip"
                                 data-bs-placement="top" title="{{ $task->user->name }}" data-bs-toggle="offcanvas">
                         @endif
                     @endforeach
@@ -293,18 +295,33 @@
         </div>
     </div>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-        <div class="offcanvas-header">
-          <h5 id="offcanvasRightLabel">Offcanvas right</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-          ...
-        </div>
-      </div>
+    @include('components.profile-offcanvas')
+
     <script>
         $(document).ready(function() {
 
+            $('.profile-circle').on('click', function() {
+                var bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvas'));
+                bsOffcanvas.show();
+
+                let id = $(this).attr('id').split("-")[2];
+
+                $.ajax({
+                    type: "GET",
+                    url: "../api/userDatas/"+id,
+                    success: function(response) {
+                        var json = $.parseJSON(response);
+                        $("#profile-name").val(json.name);
+                        $("#profile-email").val(json.email);
+                        let image = json.image ? '{{ url('storage/user/') }}/'+json.image : asset('images/no-user-image.png');
+                        $("#profile-image").attr('src', image);
+                        $("#profile-role").val(json.role == 2 ? 'Super Admin' : json.role == 1 ? 'Admin' : 'User' );
+                    },
+                    dataType: "html"
+                });
+
+                $('#profile-name').val('asd');
+            });
 
             $("#user_id").select2({
                 dropdownParent: '#userlist-holder'

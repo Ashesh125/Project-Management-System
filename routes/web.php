@@ -48,7 +48,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/myactivity/{type?}', [UserController::class, 'myActivities'])->name('myActivities');
     Route::get('/myissues', [UserController::class, 'myIssues'])->name('myIssues');
-    Route::get('/myprojects ', [UserController::class, 'myProjects'])->name('myProjects');
 
     Route::get('/profile', [UserController::class, 'edit'])->name('profile');
     Route::get('/users', [UserController::class, 'index'])->name('users');
@@ -59,8 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/comment/{id?}', [CommentController::class, 'ofIssue'])->name('comments');
     Route::post('/comment', [CommentController::class, 'check'])->name('checkComment');
 
-    Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
-    Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
+    // Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
+    // Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
+    // Route::get('/userDatas/{id}/activity/{$activity_id}',[UserController::class,'userData'])->name('userData');
 
     Route::post('/updateProfile', [UserController::class, 'updateProfile'])->name('updateProfile');
 

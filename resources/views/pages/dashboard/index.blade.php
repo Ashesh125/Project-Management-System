@@ -191,7 +191,6 @@
 
             callAjax(1);
 
-
             $('#project-select').on('change', function(e) {
                 let id = this.value;
 

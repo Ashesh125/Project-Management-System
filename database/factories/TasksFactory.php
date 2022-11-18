@@ -26,11 +26,10 @@ class TasksFactory extends Factory
         $type = $faker->randomElement(['assigned' ,'ongoing', 'completed']);
 
         return [
-            'name' => fake()->name(),
             'due_date' => $end_date,
             'status' => $type == 'completed'? rand(0,1): 0,
             'description' => Str::random(50),
-            'user_id' => User::where('role', '!=', 2)->get()->random()->id,
+            'user_id' => User::where('role', '=', 0)->get()->random()->id,
             'activity_id' => Activity::all()->random()->id,
             'type' => $type
         ];

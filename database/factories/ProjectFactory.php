@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
+use App\Models\User;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Project>
  */
@@ -31,7 +32,7 @@ class ProjectFactory extends Factory
             'start_date' => $start_date,
             'end_date' => $end_date,
             'description' => Str::random(50),
-            'user_id' => 1
+            'user_id' => User::where('role', '=', 2)->get()->random()->id
         ];
     }
 }

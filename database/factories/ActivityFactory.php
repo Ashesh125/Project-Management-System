@@ -26,12 +26,11 @@ class ActivityFactory extends Factory
         $end_date = (clone $start_date)->addDays(random_int(20,60));
 
         return [
-            'name' => fake()->name(),
             'start_date' => $start_date,
             'end_date' => $end_date,
             'description' => Str::random(50),
             'project_id' => Project::all()->random()->id,
-            'user_id' => User::where('role', '!=', 0)->get()->random()->id
+            'user_id' => User::where('role', '=', 1)->get()->random()->id
         ];
     }
 }

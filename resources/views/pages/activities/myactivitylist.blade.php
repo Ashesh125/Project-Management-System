@@ -18,8 +18,9 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="mx-2 d-flex flex-column justify-content-between">
-                                            <div class="text-xs font-weight-bold text-uppercase">
-                                                {{ $index }}
+                                            <div class="text-xs font-weight-bold text-uppercase d-flex justify-content-between">
+                                                <span>{{ $index }}</span>
+                                                <a class="btn btn-primary" href="{{ route('projectDetail') }}/{{ $project[0]->project->id }}">Detail</a>
                                             </div>
                                             <div class="project-cards info-card d-flex flex-wrap">
                                                 @if ($project)
@@ -34,19 +35,40 @@
                                                                             <div
                                                                                 class="text-xs font-weight-bold text-primary">
                                                                                 {{ $activity->name }}</div>
-                                                                            <div class="d-flex justify-content-between">
-                                                                                <div>Assigned</div>
-                                                                                <span>{{ $activity->tasks->where('user_id',auth()->user()->id)->count() }}</span>
-                                                                            </div>
-                                                                            <div class="d-flex justify-content-between">
-                                                                                <div>Ongoing</div>
-                                                                                <span>{{ $activity->tasks->where('type','ongoing')->where('user_id',auth()->user()->id)->count() }}</span>
-                                                                            </div>
-                                                                            <div class="d-flex justify-content-between">
-                                                                                <div class="text-success">Completed</div>
-                                                                                <span
-                                                                                    class="text-success">{{ $activity->tasks->where('type', '=', 'completed')->where('user_id',auth()->user()->id)->count() }}</span>
-                                                                            </div>
+
+                                                                            @if (auth()->user()->role == 0)
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <div>Assigned</div>
+                                                                                    <span>{{ $activity->tasks->where('user_id', auth()->user()->id)->count() }}</span>
+                                                                                </div>
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <div>Ongoing</div>
+                                                                                    <span>{{ $activity->tasks->where('type', 'ongoing')->where('user_id', auth()->user()->id)->count() }}</span>
+                                                                                </div>
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <div class="text-success">Completed
+                                                                                    </div>
+                                                                                    <span
+                                                                                        class="text-success">{{ $activity->tasks->where('type', '=', 'completed')->where('user_id', auth()->user()->id)->count() }}</span>
+                                                                                </div>
+                                                                            @else
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <div>Assigned</div>
+                                                                                    <span>{{ $activity->tasks->count() }}</span>
+                                                                                </div>
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <div class="text-success">Completed
+                                                                                    </div>
+                                                                                    <span
+                                                                                        class="text-success">{{ $activity->tasks->where('status', 1)->count() }}</span>
+                                                                                </div>
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <div class="text-danger">Remaining</div>
+                                                                                    <span
+                                                                                        class="text-danger">{{ $activity->tasks->where('status', 0)->count() }}</span>
+                                                                                </div>
+                                                                            @endif
+
                                                                             {{-- <div class="d-flex justify-content-between">
                                                                         Tasks
                                                                         <span class="mb-0 font-weight-bold text-gray-800" id="remaining-tasks">
@@ -86,7 +108,11 @@
 
             $('.activity-card').on('click', function() {
                 let id = $(this).attr('id');
-                window.location.href = "/mytasks/kanban/" + id;
+                @if (auth()->user()->role == 0)
+                    window.location.href = "/mytasks/kanban/" + id;
+                @else
+                    window.location.href = "/activitydetail/" + id;
+                @endif
             })
 
             anime({

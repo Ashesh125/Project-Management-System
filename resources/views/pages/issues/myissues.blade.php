@@ -13,20 +13,28 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Activity</th>
                         <th>Name</th>
+                        <th>Creator</th>
+                        <th>Created At</th>
                         <th>Status</th>
                         <th>Show</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if ($issues)
-                        @foreach ($issues as $issue)
-                            <tr>
-                                <td> {{ $issue->id }} </td>
-                                <td> {{ $issue->name }} </td>
-                                <td> {{ $issue->status }} </td>
-                                <td class="d-flex justify-content-end"> </td>
-                            </tr>
+                    @if ($activities)
+                        @foreach ($activities as $activity)
+                            @foreach ($activity->issues as $issue)
+                                <tr>
+                                    <td> {{ $issue->id }} </td>
+                                    <td> {{ $activity->name }}</td>
+                                    <td> {{ $issue->name }} </td>
+                                    <td> {{ $issue->user->name }} </td>
+                                    <td> {{ $issue->created_at }} </td>
+                                    <td> {{ $issue->status }} </td>
+                                    <td class="d-flex justify-content-end"> </td>
+                                </tr>
+                            @endforeach
                         @endforeach
                     @else
                         <tr class="text-center">
@@ -47,9 +55,16 @@
                 "bLengthChange": false,
                 columns: [{
                         data: 'id'
+                    },{
+                        data: 'activity_name'
                     },
                     {
                         data: 'name'
+                    },{
+                        data: 'creator'
+                    },
+                    {
+                        data: 'date'
                     },
                     {
                         data: 'status',
@@ -67,7 +82,7 @@
                         }
                     },
                     {
-                        "targets": 3,
+                        "targets": 6,
                         "data": null,
                         "render": function(data, type, row, meta) {
                             return "<a class='btn btn-primary' class='showCommentkBtn' href='{{ route('comments') }}/" +
