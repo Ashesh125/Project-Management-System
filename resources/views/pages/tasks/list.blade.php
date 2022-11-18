@@ -215,6 +215,24 @@
                         data-bs-placement="top" title="{{ $activity->supervisor->name }}">
                 </span>
             </div>
+            <div class="my-3">
+                Assigned :
+                <span class="ms-3">
+                    @php
+                        $user = array();
+                    @endphp
+                    @foreach ($activity->tasks as $task)
+                        @if(!in_array($task->user->id, $user))
+                            @php
+                                $user[] = $task->user->id;
+                            @endphp
+                            <img src='{{ $task->user ? url('storage/user/' . $task->user->image) : asset('images/no-user-image.png') }}'
+                                width='50px' height='50px' class="mx-1 rounded-circle img-thumbnail profile-circle" data-bs-toggle="tooltip"
+                                data-bs-placement="top" title="{{ $task->user->name }}" data-bs-toggle="offcanvas">
+                        @endif
+                    @endforeach
+                </span>
+            </div>
             <div class="my-2">
                 <div class="fw-bold fs-5">Description</div>
                 <div class="col-12">
@@ -275,6 +293,15 @@
         </div>
     </div>
 
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+          <h5 id="offcanvasRightLabel">Offcanvas right</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          ...
+        </div>
+      </div>
     <script>
         $(document).ready(function() {
 

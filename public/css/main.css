@@ -165,3 +165,7 @@ span.select2-container {
     color: #fff;
 }
 
+.profile-circle:hover{
+    cursor: pointer;
+    border: 1px solid black;
+}

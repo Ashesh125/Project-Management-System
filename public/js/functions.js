@@ -92,7 +92,7 @@ function activityHandler(datas) {
             "<tr><td>No of Tasks</td><td>" + element.no_of_tasks + "</td></tr>" +
             "<tr><td>Completed Tasks</td><td>" + element.no_of_tasks_completed + "</td></tr>" +
             "<tr><td>Remaining Tasks</td><td>" + no_of_tasks_remaining + "</td></tr>" +
-            "<caption>Tasks<a class='btn btn-primary ms-5' href='/activitydetail/" + element
+            "<caption>Tasks<a class='btn btn-primary float-end' href='/activitydetail/" + element
             .id + "'>Detail</a></caption>" +
             "<div class='border border-dark vertical-progress-parent rounded'><div class='vertical-progress-white bg-none rounded px-3' style='height:" + (100 -
                 parseInt(element.status)) +
@@ -108,7 +108,7 @@ function activityHandler(datas) {
             "<tr><td>No of Issues</td><td>" + element.no_of_issues + "</td></tr>" +
             "<tr><td>Resolved Issues</td><td>" + element.no_of_issues_resolved + "</td></tr>" +
             "<tr><td>Remaining Issues</td><td>" + no_of_issues_remaining + "</td></tr>" +
-            "<caption>Issues<a class='btn btn-primary ms-5' href='/issues/" + element
+            "<caption>Issues<a class='btn btn-primary float-end' href='/issues/" + element
             .id + "'>Detail</a></caption>" +
             "</table>" +
             "<div class='m-1 p-2' class='issueChart-holder'>" +

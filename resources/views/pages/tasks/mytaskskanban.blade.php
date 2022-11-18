@@ -6,10 +6,11 @@
 @section('main-content')
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">To Do</a>
+            <a class="nav-link active" href="{{ route('myTasks', ['type' => 'kanban', 'id' => $activity->id]) }}">Board</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
+            <a class="nav-link" aria-current="page"
+                href="{{ route('myTasks', ['type' => 'table', 'id' => $activity->id]) }}">Table</a>
         </li>
     </ul>
     <div class="d-flex m-3 p-3 flex-column">
@@ -17,13 +18,13 @@
         <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
             <u>My Tasks</u>
             <div>
-                <a class="btn btn-danger" href="{{ route('issues',$activity->id) }}" >Issues</a>
+                <a class="btn btn-danger" href="{{ route('issues', $activity->id) }}">Issues</a>
             </div>
         </div>
         <div>
             <div class="kanban-main d-flex col-12 px-5 justify-content-between">
                 <div class="col-4 me-2 task-holder d-flex flex-column bg-gray rounded" id="assigned-task-holder">
-                    <div class="kanban-title bg-dimgary p-3 rounded-top text-light w-100">Assigned</div>
+                    <div class="kanban-title bg-dimgary p-3 rounded-top text-light w-100">To Do</div>
                     @foreach ($tasks as $task)
                         @if ($task->type == 'assigned')
                             <div class="m-2 mx-4 dashboard-card task-card" id="task-{{ $task->id }}">
@@ -32,13 +33,14 @@
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="mr-2 d-flex justify-content-between">
-                                                <div class="text-xs font-weight-bold text-uppercase">
+                                                <div class="text-xs fw-bold text-uppercase">
                                                     {{ $task->name }}</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800 task-detail"
-                                                    id="taskdetail-1">
-                                                    <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $task->description }}"></i>
+                                                <div class="h5 mb-0 fw-bold text-gray-800 task-detail" id="taskdetail-1">
+                                                    <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" title="{{ $task->description }}"></i>
                                                 </div>
                                             </div>
+                                            <div>Due Date : {{ date('F j, Y', strtotime($task->due_date)) }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -57,13 +59,14 @@
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="mr-2 d-flex justify-content-between">
-                                                <div class="text-xs font-weight-bold text-uppercase">
+                                                <div class="text-xs fw-bold text-uppercase">
                                                     {{ $task->name }}</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800 task-detail"
-                                                    id="taskdetail-1">
-                                                    <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $task->description }}"></i>
-                                                </div>
+                                                <div class="h5 mb-0 text-gray-800 task-detail"
+                                                    id="taskdetail-4"><i class="fa-solid fa-circle-info"
+                                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        title="{{ $task->description }}"></i></div>
                                             </div>
+                                            <div>Due Date : {{ date('F j, Y', strtotime($task->due_date)) }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -82,11 +85,14 @@
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="mr-2 d-flex justify-content-between">
-                                                <div class="text-xs font-weight-bold text-uppercase">
+                                                <div class="text-xs fw-bold text-uppercase">
                                                     {{ $task->name }}</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800 task-detail"
-                                                    id="taskdetail-4"><i class="fa-solid fa-circle-info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $task->description }}"></i></div>
+                                                <div class="h5 mb-0 text-gray-800 task-detail"
+                                                    id="taskdetail-4"><i class="fa-solid fa-circle-info"
+                                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        title="{{ $task->description }}"></i></div>
                                             </div>
+                                            <div>Due Date : {{ date('F j, Y', strtotime($task->due_date)) }}</div>
                                         </div>
                                     </div>
                                 </div>
