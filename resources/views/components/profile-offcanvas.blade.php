@@ -21,5 +21,8 @@
                 <label for="profile-email" class="form-label">Email</label>
                 <input type="email" id="profile-email" class="form-control" disabled>
             </div>
+            <div class="mb-3">
+                <a href="" id="profile-mail">Send a mail</a>
+            </div>
         </div>
     </div>

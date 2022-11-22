@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
+    <link rel="icon" href="{!! asset('images/logo.png') !!}"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -53,6 +54,19 @@
                     <a href="{{ route('dashboard') }}" class="nav-link link-dark @yield('home-nav')" aria-current="page">
                         <i class="fa-solid fa-house mx-2 px-2"></i>
                         <span class="d-sm-none d-md-inline">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('notifications') }}" class="nav-link link-dark @yield('notification-nav')" aria-current="page">
+                        <i class="fa-solid fa-bell mx-2 px-2"></i>
+                        <span class="position-relative">
+                            <span class="d-sm-none d-md-inline">Notifications</span>
+                            @if(auth()->user()->unreadNotifications->count() > 0)
+                                <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger ms-3">
+                                    +{{ auth()->user()->unreadNotifications->count() }}
+                                </span>
+                            @endif
+                        </span>
                     </a>
                 </li>
                 <hr>

@@ -181,4 +181,11 @@ span.select2-container {
 
 .fc-event-title{
     color: white;
+.font-sm-gray{
+    font-size:12px;
+    color:gray;
+}
+
+.font-sm{
+    font-size:12px;
 }

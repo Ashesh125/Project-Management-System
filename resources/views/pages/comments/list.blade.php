@@ -27,8 +27,8 @@
                                 </div>
                                 @endif
                             </div>
-                            <div class="text-end">
-                                {{ $comment->user->name }} ( {{ $comment->created_at }} )
+                            <div class="text-end font-sm-gray text-dark">
+                                {{ $comment->user->name }} ( {{ date('h:i:s F j, Y ', strtotime($comment->created_at)) }} )
                             </div>
                         </div>
                     </div>

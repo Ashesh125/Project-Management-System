@@ -14,7 +14,7 @@ function projectStatus(data) {
 
         case "completed":
             icon +=
-                '<div><i class="fa-solid fa-check-double text-success" data-bs-toggle="tooltip" title="Finished"></i></div>';
+                '<div><i class="fa-solid fa-check-double text-success" data-bs-toggle="tooltip" title="Completed"></i></div>';
             break;
 
         case "cancelled":
@@ -55,7 +55,7 @@ function insertTaskCard(table) {
         .column(3)
         .data()
         .filter(function (value, index) {
-            count.completed += parseInt(value);
+            count.completed += parseInt(value) == 1 ? 1 : 0;
         });
 
     $("#total-tasks").text(count.total);

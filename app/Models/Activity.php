@@ -31,7 +31,7 @@ class Activity extends Model
     {
         $task = $this->tasks;
 
-        return round($task->avg('status') * 100);
+        return round($task->where('status','!=',2)->avg('status') * 100);
     }
 
     public function users(){

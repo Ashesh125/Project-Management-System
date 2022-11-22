@@ -67,8 +67,8 @@ class ActivityController extends Controller
         $activity = new Activity();
         $activity->fill($request->post())->save();
 
-        // return redirect('/activities');
-        return view('pages.activities.')->with(compact('activities'));
+        return redirect()->back()
+            ->with('success', 'Activity Created');
     }
 
     public function show($id)

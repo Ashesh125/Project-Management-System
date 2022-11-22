@@ -27,7 +27,7 @@ class TasksFactory extends Factory
 
         return [
             'due_date' => $end_date,
-            'status' => $type == 'completed'? rand(0,1): 0,
+            'status' => $type == 'completed'? rand(0,2): 0,
             'description' => Str::random(50),
             'user_id' => User::where('role', '=', 0)->get()->random()->id,
             'activity_id' => Activity::all()->random()->id,
