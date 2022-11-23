@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\Issue;
 use Illuminate\Http\Request;
+use App\Http\Controllers\NotificationController;
 
 class IssueController extends Controller
 {
@@ -64,7 +65,10 @@ class IssueController extends Controller
         $issue = new Issue();
         $issue->fill($request->post())->save();
 
-        // return redirect('/issues');
+        $notificationController = new NotificationController();
+        $notificationController->issueCreated(Activity::findOrFail($request->activity_id));
+
+
         return redirect()->back()
             ->with('success', 'Issue created successfully.');
     }
@@ -107,7 +111,13 @@ class IssueController extends Controller
             'user_id' => 'required'
         ]);
 
+        if($request->status == 1){
+            $notificationController = new NotificationController();
+            $notificationController->issueResolved(Activity::findOrFail($request->activity_id),Issue::findOrFail($request->id));
+        }
+
         $issue->fill($request->post())->save();
+
 
         return redirect()->back()
             ->with('success', 'Issue Updated');

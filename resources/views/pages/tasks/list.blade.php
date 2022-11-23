@@ -116,6 +116,7 @@
             <u class="fs-3 fw-bold">{{ $activity->name }}</u>
             <div>
                 <a class="btn btn-danger" href="{{ route('issues', $activity->id) }}">Issues</a>
+                <a class="btn btn-primary" href="{{ route('projectDetail', $activity->project->id) }}">Back</a>
             </div>
         </div>
         <div class="d-flex flex-column">

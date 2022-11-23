@@ -25,8 +25,17 @@
                             @switch($notification->type)
                                 @case('App\Notifications\TaskGivenNotification')
                                     <div class="d-inline-block">
-                                        You were Assigned a New Task : {{ $notification->data['task']['name'] }}
+                                        You were Assigned a New Task : <strong>{{ $notification->data['task']['name'] }}</strong>
                                     </div>
+
+                                    <span class="float-end">
+                                        <a type="btn btn-primary"
+                                            href="{{ route('markAsRead', ['id' => $notification->id]) }}">
+                                            Mark As Read </a>
+                                    </span>
+                                    <div><a type="btn btn-primary"
+                                            href="{{ route('taskToActivity', ['id' => $notification->data['task']['id']]) }}"> Check
+                                            it out </a></div>
                                 @break
 
                                 @case('App\Notifications\TaskReviewedNotification')
@@ -34,21 +43,52 @@
                                         A task has been Reviewed ( {!! $notification->data['task']['status'] == 0
                                             ? '<i class="fa-solid fa-thumbs-up text-success"></i>'
                                             : '<i class="fa-solid fa-exclamation text-danger"></i>' !!} ) :
-                                        {{ $notification->data['task']['name'] }}
+                                        <strong>{{ $notification->data['task']['name'] }}</strong>
                                     </div>
+
+                                    <span class="float-end">
+                                        <a type="btn btn-primary"
+                                            href="{{ route('markAsRead', ['id' => $notification->id]) }}">
+                                            Mark As Read </a>
+                                    </span>
+                                    <div><a type="btn btn-primary"
+                                            href="{{ route('taskToActivity', ['id' => $notification->data['task']['id']]) }}"> Check
+                                            it out </a></div>
                                 @break
+
+                                @case('App\Notifications\IssueCreatedNotification')
+                                    <div class="d-inline-block">
+                                        A Issue has been generated in <strong>{{ $notification->data['activity']['name'] }}</strong>
+                                    </div>
+
+                                    <span class="float-end">
+                                        <a type="btn btn-primary"
+                                            href="{{ route('markAsRead', ['id' => $notification->id]) }}">
+                                            Mark As Read </a>
+                                    </span>
+
+                                    <div><a type="btn btn-primary"
+                                        href="{{ route('issues', ['id' => $notification->data['activity']['id']]) }}"> Check
+                                        it out </a></div>
+                                @break
+
+                                @case('App\Notifications\IssueResolvedNotification')
+                                <div class="d-inline-block">
+                                    A Issue has been Resolved : <strong>{{ $notification->data['issue']['name'] }}</strong>
+                                </div>
+                                <span class="float-end">
+                                    <a type="btn btn-primary"
+                                        href="{{ route('markAsRead', ['id' => $notification->id]) }}">
+                                        Mark As Read </a>
+                                </span>
+                                <div><a type="btn btn-primary"
+                                        href="{{ route('comments', ['id' => $notification->data['issue']['id']]) }}"> Check
+                                        it out </a></div>
+                            @break
 
                                 @default
                             @endswitch
 
-                            <span class="float-end">
-                                <a type="btn btn-primary"
-                                    href="{{ route('markAsRead', ['type' => 'taskGiven', 'id' => $notification->id]) }}">
-                                    Mark As Read </a>
-                            </span>
-                            <div><a type="btn btn-primary"
-                                    href="{{ route('taskToActivity', ['id' => $notification->data['task']['id']]) }}"> Check
-                                    it out </a></div>
                         </div>
                         @if (!$loop->last)
                             <hr class="m-0 p-0">
@@ -78,65 +118,113 @@
                             @forelse ($oldNotifications as $index => $notification)
                                 <div class="accordion-body">
                                     @switch($notification->type)
-                                        @case('App\Notifications\TaskGivenNotification')
-                                            <div>
-                                                You were Assigned a New Task : {{ $notification->data['task']['name'] }}
-                                            </div>
-                                        @break
+                                @case('App\Notifications\TaskGivenNotification')
+                                    <div class="d-inline-block">
+                                        You were Assigned a New Task : <strong>{{ $notification->data['task']['name'] }}</strong>
+                                    </div>
 
-                                        @case('App\Notifications\TaskReviewedNotification')
-                                            <div>
-                                                A task has been Reviewed ( {!! $notification->data['task']['status'] == 0
-                                                    ? '<i class="fa-solid fa-thumbs-up text-success"></i>'
-                                                    : '<i class="fa-solid fa-exclamation text-danger"></i>' !!} ) :
-                                                {{ $notification->data['task']['name'] }}
-                                            </div>
-                                        @break
+                                    <span class="float-end">
+                                        <a type="btn btn-primary"
+                                            href="{{ route('markAsRead', ['id' => $notification->id]) }}">
+                                            Mark As Read </a>
+                                    </span>
+                                    <div><a type="btn btn-primary"
+                                            href="{{ route('taskToActivity', ['id' => $notification->data['task']['id']]) }}"> Check
+                                            it out </a></div>
+                                @break
 
-                                        @default
-                                    @endswitch
+                                @case('App\Notifications\TaskReviewedNotification')
+                                    <div class="d-inline-block">
+                                        A task has been Reviewed ( {!! $notification->data['task']['status'] == 0
+                                            ? '<i class="fa-solid fa-thumbs-up text-success"></i>'
+                                            : '<i class="fa-solid fa-exclamation text-danger"></i>' !!} ) :
+                                        <strong>{{ $notification->data['task']['name'] }}</strong>
+                                    </div>
+
+                                    <span class="float-end">
+                                        <a type="btn btn-primary"
+                                            href="{{ route('markAsRead', ['id' => $notification->id]) }}">
+                                            Mark As Read </a>
+                                    </span>
+                                    <div><a type="btn btn-primary"
+                                            href="{{ route('taskToActivity', ['id' => $notification->data['task']['id']]) }}"> Check
+                                            it out </a></div>
+                                @break
+
+                                @case('App\Notifications\IssueCreatedNotification')
+                                    <div class="d-inline-block">
+                                        A Issue has been generated in <strong>{{ $notification->data['activity']['name'] }}</strong>
+                                    </div>
+
+                                    <span class="float-end">
+                                        <a type="btn btn-primary"
+                                            href="{{ route('markAsRead', ['id' => $notification->id]) }}">
+                                            Mark As Read </a>
+                                    </span>
+
+                                    <div><a type="btn btn-primary"
+                                        href="{{ route('issues', ['id' => $notification->data['activity']['id']]) }}"> Check
+                                        it out </a></div>
+                                @break
+
+                                @case('App\Notifications\IssueResolvedNotification')
+                                <div class="d-inline-block">
+                                    A Issue has been Resolved : <strong>{{ $notification->data['issue']['name'] }}</strong>
+                                </div>
+                                <span class="float-end">
+                                    <a type="btn btn-primary"
+                                        href="{{ route('markAsRead', ['id' => $notification->id]) }}">
+                                        Mark As Read </a>
+                                </span>
+                                <div><a type="btn btn-primary"
+                                        href="{{ route('comments', ['id' => $notification->data['issue']['id']]) }}"> Check
+                                        it out </a></div>
+                            @break
+
+                                @default
+                            @endswitch
 
                                     <span class="font-sm-gray">Seen :
-                                        {{ date('h:i:s F j, Y ', strtotime($notification->read_at)) }}</span>
+                                        {{ date('h:i:strong F j, Y ', strtotime($notification->read_at)) }}</span>
                                 </div>
 
-                        @if (!$loop->last)
-                            <hr class="m-0 p-0">
-                        @endif
-                        @empty
+                                @if (!$loop->last)
+                                    <hr class="m-0 p-0">
+                                @endif
+                                @empty
 
-                            <div class="accordion-body">
-                                <div>
-                                    No Notifications
-                                </div>
+                                    <div class="accordion-body">
+                                        <div>
+                                            No Notifications
+                                        </div>
+                                    </div>
+                                @endforelse
+
                             </div>
-                            @endforelse
-
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <script>
-                $(document).ready(function() {
-                    $('.delete-msg').on('click', function() {
-                        let tempArr = $(this).attr('id').split("-");
-                        let id = tempArr[2];
+                <script>
+                    $(document).ready(function() {
+                        $('.delete-msg').on('click', function() {
+                            let tempArr = $(this).attr('id').split("-");
+                            let id = tempArr[2];
 
-                        if (confirm('Delete Message !')) {
-                            $('#id').val(id);
-                            // $('#name').val($('#msg-'+id).text());
-                            $('#name').val("");
-                            $('#form').submit();
-                        }
+                            if (confirm('Delete Message !')) {
+                                $('#id').val(id);
+                                // $('#name').val($('#msg-'+id).text());
+                                $('#name').val("");
+                                $('#form').submit();
+                            }
+                        });
+
+                        anime({
+                            targets: '.comment-area .comment',
+                            opacity: 1,
+                            duration: 1500,
+                            delay: anime.stagger(100)
+                        });
                     });
-
-                    anime({
-                        targets: '.comment-area .comment',
-                        opacity: 1,
-                        duration: 1500,
-                        delay: anime.stagger(100)
-                    });
-                });
-            </script>
-        @endsection
+                </script>
+            @endsection
