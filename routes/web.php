@@ -68,7 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     Route::post('/updateProfile', [UserController::class, 'updateProfile'])->name('updateProfile');
-
+    Route::get('/activitycalander/{id}',[ActivityController::class,'baseDetail'])->name('activityCalander');
 
     /* for project manager (role = 1) or higher level of clerence  */
     Route::middleware(['role'])->group(function () {

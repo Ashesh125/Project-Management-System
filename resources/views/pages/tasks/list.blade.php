@@ -252,7 +252,7 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" id="new"
                     data-bs-target="#new-task-modal">Add
                     Task</button>
-                <a class="btn btn-primary mx-2" href="{{ route('calander') }}/{{ $activity->id }}" id="calander-btn">
+                <a class="btn btn-primary mx-2" href="{{ route('activityCalander',['id' => $activity->id]) }}" id="calander-btn">
                     Goto Calander</a>
             </div>
         @endif

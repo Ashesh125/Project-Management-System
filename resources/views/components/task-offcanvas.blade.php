@@ -37,6 +37,7 @@
             </div>
             <div class="mb-3">
                 <a id="goto-task" href="">Goto Task<a>
+                <a id="goto-task-2" href="">Goto Task<a>
             </div>
         </div>
     </div>

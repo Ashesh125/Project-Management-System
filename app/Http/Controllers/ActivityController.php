@@ -73,8 +73,6 @@ class ActivityController extends Controller
 
     public function show($id)
     {
-
-
         $activity = Activity::with('tasks.user')->findOrFail($id);
         $users = User::where('role',0)->get();
 
@@ -92,6 +90,11 @@ class ActivityController extends Controller
        return  response()->json($activity);
     }
 
+    public function baseDetail($id){
+        $activity = Activity::findOrFail($id);
+
+        return view('pages.activities.calander', compact('activity'));
+    }
 
 
     public function update(Request $request, Activity $activity)

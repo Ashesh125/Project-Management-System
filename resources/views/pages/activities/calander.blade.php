@@ -4,17 +4,6 @@
 @section('tasks-nav', 'active')
 
 @section('main-content')
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">Board</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" href="{{ route('myTasks',['type' => 'calander', 'id' => $activity->id]) }}">Calander</a>
-        </li>
-    </ul>
     <div class="ms-4 fw-bold fs-2 my-3 d-flex justify-content-between">
         <u class="fs-3 fw-bold">{{ $activity->name }}</u>
     </div>
@@ -43,8 +32,8 @@
         $(document).ready(function() {
             var draggableEl = document.getElementById('mydraggable');
 
-            callAjaxCalander({{ $activity->id }});
-            $('#goto-task-2').hide();
+            calanderAllTasks({{ $activity->id }});
+            $('#goto-task').hide();
         });
     </script>
 @endsection

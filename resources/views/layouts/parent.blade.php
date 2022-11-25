@@ -34,7 +34,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css">
-
+    <script>
+        const host = "{{ URL::to('/') }}";
+    </script>
 </head>
 
 <body>
