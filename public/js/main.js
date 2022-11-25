@@ -13,6 +13,19 @@ $(document).ready(function() {
     });
 
 
+    anime({
+        targets: '.row .dashboard-card',
+        translateY: 20,
+        opacity: 1,
+        delay: anime.stagger(100)
+    });
+
+    anime({
+        targets: '.stats .info-card',
+        translateY: 10,
+        delay: anime.stagger(100)
+    });
+
 });
 
 

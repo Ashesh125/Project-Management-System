@@ -226,3 +226,83 @@ function circleGarph(target, labels, arr, type) {
 
 
 }
+
+function callAjaxCalander(id){
+    $.ajax({
+        type: "GET",
+        url: "../../userTaskDatas/"+id,
+        success: function(response) {
+            var json = $.parseJSON(response);
+            let tasks = [];
+
+            json.forEach(element => {
+                tasks.push({
+                    title: element.name,
+                    start: element.due_date,
+                    color: element.type == "completed" ? 'green' : "blue"
+                });
+            });
+            makeCalander(tasks);
+        },
+        dataType: "html"
+    });
+   }
+
+    function makeCalander(tasks) {
+        var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+            selectable: true,
+            editable: false,
+            events: tasks,
+            textColor : 'white',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,listYear'
+            },
+            eventClick: function (info) {
+                var bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvas'));
+                bsOffcanvas.show();
+
+                $.ajax({
+                    type: "GET",
+                    url: "../../taskDatas/"+info.event.id,
+                    success: function(response) {
+                        var json = $.parseJSON(response);
+                        $("#task-name").val(json.name);
+                        $("#task-activity").val(json.activity.name);
+                        $("#task-user").val(json.user.name);
+                        $("#task-due-date").val(json.due_date);
+                        $("#task-description").val(json.description);
+                        $("#task-type").val(json.type);
+                        $("#task-status").val(json.status == 1 ? "Verified" : json.status == 2 ? "Invalid" : "Unverified");
+                        $('#goto-task').attr('href','../mytasks/kanban/'+json.activity.id);
+                    },
+                    dataType: "html"
+                });
+            }
+        });
+
+        calendar.render();
+    }
+
+    function  callAjaxCalanderUser(id){
+        $.ajax({
+            type: "GET",
+            url: "../../userTaskDatasAll/"+id,
+            success: function(response) {
+                var json = $.parseJSON(response);
+                let tasks = [];
+
+                json.forEach(element => {
+                    tasks.push({
+                        id: element.id,
+                        title: element.name,
+                        start: element.due_date,
+                        color: element.type == "completed" ? 'green' : "blue"
+                    });
+                });
+                makeCalander(tasks);
+            },
+            dataType: "html"
+        });
+    }

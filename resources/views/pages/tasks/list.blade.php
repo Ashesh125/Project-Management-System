@@ -319,8 +319,6 @@
                     },
                     dataType: "html"
                 });
-
-                $('#profile-name').val('asd');
             });
 
             $("#user_id").select2({

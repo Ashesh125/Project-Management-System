@@ -144,7 +144,7 @@ class TasksController extends Controller
     public function usertasks(Request $request)
     {
         $activity = Activity::findOrFail($request->id);
-        $tasks = Tasks::where([['user_id', '=', auth()->user()->id], ['activity_id', '=', $activity->id]])->get();
+        $tasks = Tasks::where([['user_id', '=', auth()->user()->id], ['activity_id', '=', $request->id]])->get();
 
         switch ($request->type) {
             case "table":
@@ -154,6 +154,29 @@ class TasksController extends Controller
             case "kanban":
                 return view('pages.tasks.mytaskskanban', compact('tasks','activity'));
                 break;
-            }
+
+            case "calander":
+                return view('pages.tasks.taskcalander', compact('activity'));
+                break;
+        }
+    }
+
+    public function userTasksJson(Request $request){
+        $tasks = Tasks::where([['user_id', '=', auth()->user()->id], ['activity_id', '=', $request->id]])->get();
+
+        return  response()->json($tasks);
+    }
+
+    public function taskData($id){
+        $task = Tasks::with(['activity','user'])->findOrFail($id);
+
+        return  response()->json($task);
+    }
+
+
+    public function userTasksAllJson(Request $request){
+        $tasks = Tasks::with('activity')->where([['user_id', '=', auth()->user()->id]])->get();
+
+        return  response()->json($tasks);
     }
 }

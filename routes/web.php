@@ -60,7 +60,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
     Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
+    Route::get('/userTaskDatas/{id}',[TasksController::class,'userTasksJson'])->name('taskData');
+    Route::get('/userTaskDatasAll/{id}',[TasksController::class,'userTasksAllJson'])->name('taskDataAll');
     Route::get('/userDatas/{id}',[UserController::class,'userData'])->name('userData');
+    Route::get('/taskDatas/{id}',[TasksController::class,'taskData'])->name('taskData');
     Route::get('/calanderDatas/{id}',[ActivityController::class,'activityDataOfUser'])->name('activityDataOfUser');
 
 

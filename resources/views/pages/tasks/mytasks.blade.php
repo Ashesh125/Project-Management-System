@@ -11,6 +11,9 @@
     <li class="nav-item">
         <a class="nav-link active" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('myTasks',['type' => 'calander', 'id' => $activity->id]) }}">Calander</a>
+    </li>
 </ul>
     <div class="d-flex m-3 p-3 flex-column">
         <h2>{{ $activity->name }}</h2>
