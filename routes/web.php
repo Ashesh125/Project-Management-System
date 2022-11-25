@@ -58,9 +58,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/comment/{id?}', [CommentController::class, 'ofIssue'])->name('comments');
     Route::post('/comment', [CommentController::class, 'check'])->name('checkComment');
 
-    // Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
-    // Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
-    // Route::get('/userDatas/{id}/activity/{$activity_id}',[UserController::class,'userData'])->name('userData');
+    Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
+    Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
+    Route::get('/userDatas/{id}',[UserController::class,'userData'])->name('userData');
+    Route::get('/calanderDatas/{id}',[ActivityController::class,'activityDataOfUser'])->name('activityDataOfUser');
+
 
     Route::post('/updateProfile', [UserController::class, 'updateProfile'])->name('updateProfile');
 

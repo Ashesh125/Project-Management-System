@@ -366,12 +366,12 @@
 
                 $.ajax({
                     type: "GET",
-                    url: "../api/userDatas/"+id,
+                    url: "../userDatas/"+id,
                     success: function(response) {
                         var json = $.parseJSON(response);
                         $("#profile-name").val(json.name);
                         $("#profile-email").val(json.email);
-                        let image = json.image ? '{{ url('storage/user/') }}/'+json.image : asset('images/no-user-image.png');
+                        let image = json.image ? '{{ url('storage/user/') }}/'+json.image : "{{ asset('images/no-user-image.png') }}";
                         $("#profile-image").attr('src', image);
                         $("#profile-role").val(json.role == 2 ? 'Super Admin' : json.role == 1 ? 'Admin' : 'User' );
                     },

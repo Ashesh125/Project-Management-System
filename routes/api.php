@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,13 +24,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 require __DIR__ . '/auth.php';
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
 
 
 // Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
-    Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
-    Route::get('/userDatas/{id}',[UserController::class,'userData'])->name('userData');
+//     Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
+//     Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
+//     Route::get('/userDatas/{id}',[UserController::class,'userData'])->name('userData');
+//     Route::get('/calanderDatas/{id}',[ActivityController::class,'activityDataOfUser'])->name('activityDataOfUser');
 // });

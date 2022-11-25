@@ -150,7 +150,7 @@ function activityHandler(datas) {
 function callAjax(id) {
     $.ajax({
         type: "GET",
-        url: "../api/chartDatas/" + id,
+        url: "../chartDatas/" + id,
         success: function(response) {
             var json = $.parseJSON(response);
             dateHandler(json.main);
