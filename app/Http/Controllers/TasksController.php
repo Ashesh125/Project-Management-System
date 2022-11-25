@@ -191,4 +191,14 @@ class TasksController extends Controller
 
         return  response()->json($tasks);
     }
+
+    public function userTasksJson(Request $request)
+    {
+        $activity = Activity::findOrFail($request->id);
+        $json = Tasks::where([['user_id', '=', auth()->user()->id], ['activity_id', '=', $activity->id]])->get();
+
+        return  response()->json($json);
+
+    }
+
 }

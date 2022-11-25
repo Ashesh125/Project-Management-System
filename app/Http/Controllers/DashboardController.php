@@ -8,7 +8,7 @@ use App\Models\Tasks;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Issue;
-use App\Models\Comment;
+use App\Models\Activity;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -17,11 +17,12 @@ class DashboardController extends Controller
     public function index()
     {
         $arr = array();
+        $projects = Project::all();
 
         switch(auth()->user()->role){
             case "0":
                 $arr = array(
-                    'all_projects' => $this->projectCount('incomplete'),
+                    'all_projects' => $projects->count(),
                     'all_users' => $this->userCount(),
                     'all_myTasks' => $this->myTaskCount(),
                     'all_issues' => $this->issueCount(),
@@ -30,7 +31,7 @@ class DashboardController extends Controller
 
             case "1":
                 $arr = array(
-                    'all_projects' => $this->projectCount('incomplete'),
+                    'all_projects' => $projects->count(),
                     'all_users' => $this->userCount(),
                     'all_myTasks' => $this->myTaskCount(),
                     'all_issues' => $this->issueCount(),
@@ -39,7 +40,7 @@ class DashboardController extends Controller
 
             case "2":
                 $arr = array(
-                    'all_projects' => $this->projectCount('incomplete'),
+                    'all_projects' => $projects->count(),
                     'all_users' => $this->userCount(),
                     'all_myTasks' => $this->myTaskCount(),
                     'all_issues' => $this->issueCount(),
@@ -47,22 +48,15 @@ class DashboardController extends Controller
                 break;
         }
 
-        $projects = Project::all();
+        $activities = Activity::whereHas('tasks', function ($query) {
+            return $query->where('tasks.user_id', auth()->user()->id);
+        })->get();
 
-        return view('pages.dashboard.index')->with(compact('arr','projects'));
-    }
+        if(auth()->user()->role != 0){
+            return view('pages.dashboard.index')->with(compact('arr','projects'));
+        }else{
 
-
-    public function projectCount($type)
-    {
-        switch ($type) {
-            case "completed":
-                return Project::all()->where('status', '=', 100)->count();
-                break;
-
-            case "incomplete":
-                return Project::all()->where('status', '<', 100)->count();
-                break;
+            return view('pages.dashboard.index')->with(compact('arr','activities'));
         }
     }
 
@@ -93,7 +87,7 @@ class DashboardController extends Controller
 
     public function chartData(Request $request){
         $project = $this->projectDetails($request->id);
-        // dd($project);
+
         $json = array();
 
         $temp = array(

@@ -43,8 +43,48 @@
         $(document).ready(function() {
             var draggableEl = document.getElementById('mydraggable');
 
+<<<<<<< HEAD
             callAjaxCalander({{ $activity->id }});
             $('#goto-task-2').hide();
+=======
+            var calendarEl = document.getElementById('calendar');
+
+            $.ajax({
+                type: "GET",
+                url: "../api/activityDatas/2",
+                success: function(response) {
+                    var json = $.parseJSON(response);
+
+                    let tasks = [];
+
+                    json.tasks.forEach(element => {
+                        tasks.push({
+                            title: element.name,
+                            start: element.due_date,
+                            color: element.status == 1 ? 'green' : 'red'
+                        });
+                    });
+                    makeCalander(tasks);
+                },
+                dataType: "html"
+            });
+
+            function makeCalander(tasks) {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    editable: true,
+                    selectable: true,
+                    dayMaxEvents: true, // allow "more" link when too many events
+                    events: tasks,
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,listYear'
+                    },
+                });
+
+                calendar.render();
+            }
+>>>>>>> d3651fe (Dashboard Changes for roles)
         });
     </script>
 @endsection

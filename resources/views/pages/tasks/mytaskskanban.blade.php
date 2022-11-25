@@ -6,11 +6,13 @@
 @section('main-content')
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" href="{{ route('myTasks', ['type' => 'kanban', 'id' => $activity->id]) }}">Board</a>
+            <a class="nav-link active" aria-current="page" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">Board</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" aria-current="page"
-                href="{{ route('myTasks', ['type' => 'table', 'id' => $activity->id]) }}">Table</a>
+            <a class="nav-link" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="../../calanderview/{{ $activity->id }}">Calander</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{{ route('myTasks',['type' => 'calander', 'id' => $activity->id]) }}">Calander</a>

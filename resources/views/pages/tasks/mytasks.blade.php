@@ -12,7 +12,11 @@
         <a class="nav-link active" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
     </li>
     <li class="nav-item">
+<<<<<<< HEAD
         <a class="nav-link" href="{{ route('myTasks',['type' => 'calander', 'id' => $activity->id]) }}">Calander</a>
+=======
+        <a class="nav-link" href="../../calanderview/{{ $activity->id }}">Calander</a>
+>>>>>>> d3651fe (Dashboard Changes for roles)
     </li>
 </ul>
     <div class="d-flex m-3 p-3 flex-column">

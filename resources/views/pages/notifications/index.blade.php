@@ -185,7 +185,7 @@
                             @endswitch
 
                                     <span class="font-sm-gray">Seen :
-                                        {{ date('h:i:strong F j, Y ', strtotime($notification->read_at)) }}</span>
+                                        {{ date('h:i:s F j, Y ', strtotime($notification->read_at)) }}</span>
                                 </div>
 
                                 @if (!$loop->last)
