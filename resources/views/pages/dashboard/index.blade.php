@@ -4,7 +4,6 @@
 @section('home-nav', 'active')
 
 @section('main-content')
-
     <div class="d-flex m-3 p-3 flex-column">
         <div class="d-flex justify-content-between mb-4">
             <div class="fw-bold fs-2"><u>Dashboard</u></div>
@@ -87,6 +86,7 @@
             </div>
         </div>
 
+
         @if (auth()->user()->role != 0)
             @if (!$projects)
                 <style>
@@ -159,11 +159,12 @@
                 <div class="m-2 mx-4 activity_detail-holder bg-gray d-flex flex-column rounded">
 
                 </div>
+                <div class="bg-gray rounded w-75 me-3">
+                    <div class="h-100 m-1 p-2">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
             </div>
-
-
-
-
     </div>
 
 
@@ -191,17 +192,28 @@
 
 
     </script>
-    @else
-        <div class="d-flex m-3 p-3 flex-column">
-            <div id='calendar' class="bg-light rounded p-4"></div>
-        </div>
-        @include('components.task-offcanvas');
-        <script>
-            $(document).ready(function() {
-                var draggableEl = document.getElementById('mydraggable');
+@else
+    {{-- <div class="col-2 mt-4">
+        <select class="form-select no-outline" id="activity-select" aria-label="Default select example">
+            @forelse ($activities as $activity)
+                <option value="{{ $activity->id }}">{{ $activity->name }}</option>
+            @empty
+                <option value="0" disabled>NO ACTIVITIES</option>
+            @endforelse
+        </select>
+    </div> --}}
+    <div class="d-flex m-3 p-3 flex-column">
+        <div id='calendar' class="bg-light rounded p-4"></div>
+    </div>
+    @include('components.task-offcanvas')
+    <script>
+        var calander;
+        $(document).ready(function() {
+            var draggableEl = document.getElementById('mydraggable');
 
-                callAjaxCalanderUser({{ auth()->user()->id }});
-            });
-        </script>
+            callAjaxCalanderUser(1);
+            $('#goto-task-2').hide();
+        });
+    </script>
     @endif
 @endsection

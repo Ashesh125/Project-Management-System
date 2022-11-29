@@ -58,6 +58,7 @@
         <div class="d-flex justify-contents-between my-3">
             <button class="btn btn-primary" data-bs-toggle="modal" id="new"
                 data-bs-target="#new-issue-modal">New</button>
+                <a class="btn btn-primary mx-3" href="{{ route('activityDetail', $activity->id) }}">Back</a>
         </div>
         <div>
             <table id="data-table" class="table table-hover table-light table-striped align-middle" style="width:100%">

@@ -3,8 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tasks;
+use App\Models\User;
 use App\Models\Activity;
+use App\Notifications\TaskGiven as NotificationsTaskGiven;
+use App\Notifications\TaskGivenNotification;
+use App\Notifications\TaskReviewedNotification;
+use App\Notifications\TaskCompletedNotification;
+use App\Notifications\ActivityCompletedNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
+use Task\Notifications\TaskGiven;
+use Illuminate\Support\Arr;
 
 class TasksController extends Controller
 {
@@ -60,18 +69,17 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge(['status' => "0"]);
         $task = new Tasks();
         $task->fill($request->post())->save();
+
+        Notification::send(User::findOrFail($request->user_id), new TaskGivenNotification($task));
         return redirect()->back()
-            ->with('success', 'Task created successfully.');
+            ->with('success', 'Task Created');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Tasks  $tasks
-     * @return \Illuminate\Http\Response
-     */
+
+
     public function show(Tasks $tasks)
     {
 
@@ -88,7 +96,7 @@ class TasksController extends Controller
     {
         $tasks->save();
         return redirect()->back()
-            ->with('success', 'Data updated successfully');
+            ->with('success', 'Data Updated');
     }
 
     /**
@@ -103,6 +111,11 @@ class TasksController extends Controller
     {
         Tasks::where('id', $request->id)->update(array('type' => $request->type));
 
+        if($request->type == 'completed'){
+            $task = Tasks::with('activity.supervisor')->findOrFail($request->id);
+            Notification::send($task->activity->supervisor, new TaskCompletedNotification($task));
+        }
+
         return ;
     }
 
@@ -114,14 +127,28 @@ class TasksController extends Controller
             'user_id' => 'required',
             'type' => 'required',
             'due_date' => 'required',
-            'status' => 'required',
             'description' => 'required',
             'activity_id' => 'required'
         ]);
+
+        if($request->status != null){
+            Notification::send(User::findOrFail($request->user_id), new TaskReviewedNotification($task));
+        }else{
+            $request->merge(['status' => "0"]);
+        }
         $task->fill($request->post())->save();
 
+
         $activity = Activity::findOrfail($request->activity_id);
-        Activity::where('id', $activity->id)->update(array('status' => $activity->avg_task));
+
+        $activity_completion = $activity->avg_task;
+        Activity::where('id', $activity->id)->update(array('status' => $activity_completion));
+
+        if($activity_completion = 100){
+            $activity = Activity::with(['project.lead','supervisor'])->findOrFail($request->activity_id);
+            Notification::send($activity->supervisor, new ActivityCompletedNotification($activity));
+            Notification::send($activity->project->lead, new ActivityCompletedNotification($activity));
+        }
 
         return redirect()->back()
             ->with('success', 'Task Updated');
@@ -161,12 +188,6 @@ class TasksController extends Controller
         }
     }
 
-    public function userTasksJson(Request $request){
-        $tasks = Tasks::where([['user_id', '=', auth()->user()->id], ['activity_id', '=', $request->id]])->get();
-
-        return  response()->json($tasks);
-    }
-
     public function taskData($id){
         $task = Tasks::with(['activity','user'])->findOrFail($id);
 
@@ -179,4 +200,14 @@ class TasksController extends Controller
 
         return  response()->json($tasks);
     }
+
+    public function userTasksJson(Request $request)
+    {
+        $activity = Activity::findOrFail($request->id);
+        $json = Tasks::where([['user_id', '=', auth()->user()->id], ['activity_id', '=', $activity->id]])->get();
+
+        return  response()->json($json);
+
+    }
+
 }

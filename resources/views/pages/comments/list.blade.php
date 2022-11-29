@@ -8,10 +8,11 @@
         <h2>Issue : {{ $issue->name }}</h2>
         <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
             <u>Comments</u>
+            <a class="btn btn-primary mx-3" href="{{ route('issues', $issue->activity->id) }}">Back</a>
         </div>
 
         <div>
-            <div class="comment-area w-75">
+            <div class="comment-area col-12">
                 @forelse ($issue->comments as $comment)
                     <div class="rounded p-2 m-2 comment">
                         <p class="p-1 msg" id="msg-{{ $comment->id }}">
@@ -27,13 +28,13 @@
                                 </div>
                                 @endif
                             </div>
-                            <div class="text-end">
-                                {{ $comment->user->name }} ( {{ $comment->created_at }} )
+                            <div class="text-end font-sm-gray text-dark">
+                                {{ $comment->user->name }} ( {{ date('h:i:s F j, Y ', strtotime($comment->created_at)) }} )
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="rounded p-2 m-2 comment">
+                    <div class="rounded p-2 m-2 comment col-12">
                         <p class="p-1">
                             No Comments
                         </p>
@@ -41,7 +42,7 @@
                     </div>
                 @endforelse
             </div>
-            <div class="bg-gray p-3 messege-box rounded m-2 w-75">
+            <div class="bg-gray p-3 messege-box rounded m-2 col-12">
                 <form id="form" class="row g-3 needs-validation message-form" action="{{ route('checkComment') }}"
                     method="POST" novalidate>
                     @csrf

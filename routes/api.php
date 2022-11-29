@@ -27,11 +27,3 @@ require __DIR__ . '/auth.php';
 // Route::get('/', function () {
 //     return view('auth.login');
 // });
-
-
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
-//     Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
-//     Route::get('/userDatas/{id}',[UserController::class,'userData'])->name('userData');
-//     Route::get('/calanderDatas/{id}',[ActivityController::class,'activityDataOfUser'])->name('activityDataOfUser');
-// });

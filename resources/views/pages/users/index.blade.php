@@ -4,6 +4,7 @@
 @section('user-nav', 'active')
 
 @section('main-content')
+    @if(auth()->user()->role == 2)
     <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false"
         aria-labelledby="staticBackdropLabel" aria-hidden="true" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -68,13 +69,15 @@
             </div>
         </div>
     </div>
-
+    @endif
     <div class="d-flex m-3 p-3 flex-column">
         <div class="fw-bold fs-2"><u>Users</u></div>
+        @if(auth()->user()->role == 2)
         <div class="d-flex justify-contents-between my-3">
             <button class="btn btn-primary" data-bs-toggle="modal" id="new"
                 data-bs-target="#new-project-modal">New</button>
         </div>
+        @endif
         <div>
             <table id="data-table" class="table table-light table-striped align-middle" style="width:100%">
                 <thead>
@@ -131,7 +134,7 @@
                                     case "1":
                                         return "Manager";
                                         break;
-                                        
+
                                     case "2":
                                         return 'Super Admin';
                                         break;
@@ -154,7 +157,7 @@
                     [0, 'desc']
                 ],
             });
-
+            @if(auth()->user()->role == 2)
 
 
             $("#new").on("click", function() {
@@ -180,7 +183,7 @@
                 $("#deleteBtn").show();
                 $('#modal').modal('show');
             });
-            
+            @endif
         });
     </script>
 @endsection

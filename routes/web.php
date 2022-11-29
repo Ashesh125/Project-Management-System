@@ -8,7 +8,7 @@ use App\Http\Controllers\IssueController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ActivityController;
-
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +65,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/userDatas/{id}',[UserController::class,'userData'])->name('userData');
     Route::get('/taskDatas/{id}',[TasksController::class,'taskData'])->name('taskData');
     Route::get('/calanderDatas/{id}',[ActivityController::class,'activityDataOfUser'])->name('activityDataOfUser');
+
+    Route::get('/markAsRead', [NotificationController::class, 'markAsRead'])->name('markAsRead');
+    Route::get('/markAllAsRead', [NotificationController::class, 'markAllAsRead'])->name('markAllAsRead');
+
+    Route::get('/notification',[NotificationController::class, 'index'])->name('notifications');
+    Route::get('/tasktoactivity',[NotificationController::class, 'taskToActivity'])->name('taskToActivity');
+    // Route::get('/chartDatas/{id}',[DashboardController::class,'chartData'])->name('chartData');
+    // Route::get('/activityDatas/{id}',[ActivityController::class,'activityData'])->name('activityData');
+    // Route::get('/userDatas/{id}/activity/{$activity_id}',[UserController::class,'userData'])->name('userData');
 
 
     Route::post('/updateProfile', [UserController::class, 'updateProfile'])->name('updateProfile');

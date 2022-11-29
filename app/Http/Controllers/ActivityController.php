@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\User;
+use App\Models\Tasks;
+use App\Notifications\ActivityCreatedNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -67,8 +70,10 @@ class ActivityController extends Controller
         $activity = new Activity();
         $activity->fill($request->post())->save();
 
-        // return redirect('/activities');
-        return view('pages.activities.')->with(compact('activities'));
+        Notification::send(User::findOrFail($request->user_id), new ActivityCreatedNotification($activity));
+
+        return redirect()->back()
+            ->with('success', 'Activity Created');
     }
 
     public function show($id)
@@ -95,6 +100,13 @@ class ActivityController extends Controller
 
         return view('pages.activities.calander', compact('activity'));
     }
+
+    public function activityDataOfUser($id){
+        $activity = Tasks::where(['user_id' => auth()->user()->id, 'activity_id' => $id])->get()->toArray();
+
+        return  response()->json($activity);
+     }
+
 
 
     public function update(Request $request, Activity $activity)

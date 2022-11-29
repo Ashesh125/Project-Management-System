@@ -51,9 +51,12 @@
                             <div class="col-md-6">
                                 <label for="type" class="form-label col-12">Status</label>
                                 <select class="form-select" id="type" name="type" required>
-                                    <option selected value="assigned">Assigned</option>
-                                    <option selected value="ongoing">Ongoing</option>
-                                    <option selected value="completed">Completed</option>
+                                    <option selected value="assigned"><i class="fa-solid fa-hourglass-start"></i> Assigned
+                                    </option>
+                                    <option selected value="ongoing"><i class="fa-solid fa-bars-progress"></i>Ongoing
+                                    </option>
+                                    <option selected value="completed"><i class="fa-solid fa-check-double">Completed
+                                    </option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -62,6 +65,30 @@
                                     max="{{ $activity->end_date }}" min="{{ $activity->start_date }}" required>
                                 <div class="valid-feedback">
                                     Looks good!
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="status" class="form-label">Status</label>
+                                <div class="d-flex">
+                                    <div class="form-check mx-2"><input class="form-check-input" type="radio"
+                                            value='2' name="status" id="status2">
+                                        <label class="form-check-label" for="status2">
+                                            Not Completed
+                                        </label>
+                                    </div>
+                                    <div class="form-check mx-2"><input class="form-check-input" type="radio"
+                                            value='1' name="status" id="status1">
+                                        <label class="form-check-label" for="status1">
+                                            Completed
+                                        </label>
+                                    </div>
+                                    <div class="form-check mx-2">
+                                        <input class="form-check-input" type="radio" name="status" id="status0"
+                                            value='' checked>
+                                        <label class="form-check-label" for="status0">
+                                            Unverified
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -76,9 +103,6 @@
                             </div>
                             <div class="d-flex justify-content-center col-12 ">
                                 <button class="btn btn-primary mx-3" id="submitBtn" type="submit">Submit</button>
-                                <button class="btn btn-success mx-3 complete" id="completeBtn1"
-                                    type="button">Complete</button>
-                                <button class="btn btn-danger mx-3 undo" id="undoBtn" type="button">Undo</button>
                                 <button class="btn btn-danger mx-3" id="deleteBtn" type="button">Cancel</button>
                             </div>
                         </form>
@@ -92,6 +116,7 @@
             <u class="fs-3 fw-bold">{{ $activity->name }}</u>
             <div>
                 <a class="btn btn-danger" href="{{ route('issues', $activity->id) }}">Issues</a>
+                <a class="btn btn-primary" href="{{ route('projectDetail', $activity->project->id) }}">Back</a>
             </div>
         </div>
         <div class="d-flex flex-column">
@@ -204,7 +229,7 @@
             <div class="mt-3">Progress :</div>
             <div class="progress col-8 w-100  d-flex my-3">
                 <div class="progress-bar text-end" role="progressbar"
-                    style="font-size:12px;width:{{ $activity->status }}%;" aria-valuenow="{{ $activity->status }}"
+                    style="font-size:12px;width:0%;" aria-valuenow="{{ $activity->status }}"
                     aria-valuemin="0" aria-valuemax="100">{{ $activity->status }}%</div>
             </div>
             <div>
@@ -314,8 +339,10 @@
                         $("#profile-name").val(json.name);
                         $("#profile-email").val(json.email);
                         let image = json.image ? '{{ url('storage/user/') }}/'+json.image : "{{ asset('images/no-user-image.png') }}";
+                        $("#profile-mail").attr('href', "mailto:" + json.email);
                         $("#profile-image").attr('src', image);
-                        $("#profile-role").val(json.role == 2 ? 'Super Admin' : json.role == 1 ? 'Admin' : 'User' );
+                        $("#profile-role").val(json.role == 2 ? 'Super Admin' : json.role == 1 ?
+                            'Admin' : 'User');
                     },
                     dataType: "html"
                 });
@@ -347,10 +374,10 @@
                             if (type === "sort" || type === 'type') {
                                 return data;
                             } else {
-                                if (data == 0) {
-                                    return '<div><i class="fa-regular fa-circle-xmark text-danger"></i></div>';
-                                } else {
+                                if (data == 1) {
                                     return '<div><i class="fa-regular fa-circle-check text-success"></i></div>';
+                                } else {
+                                    return '<div><i class="fa-regular fa-circle-xmark text-danger"></i></div>';
                                 }
                             }
                         }
@@ -417,43 +444,11 @@
                     $('#user_id').trigger('change');
 
 
-                    if (data['status'] == 1) {
-                        $("#undoBtn").show();
-                        $("#completeBtn1").hide();
-                    } else {
-                        $("#completeBtn1").show();
-                        $("#undoBtn").hide();
-                    }
-
+                    $("#status" + data['status']).prop('checked', true);
                     $("#deleteBtn").show();
                     $('#new-task-modal').modal('show');
                 });
-
-                $(".complete").on('click', function() {
-                    if (confirm("Confirm Completion")) {
-                        let status = $("#status").val();
-                        $("#status").val(status == 0 ? 1 : 0);
-                        $("#form").submit();
-                    }
-                });
-
-
-                $(".undo").on('click', function() {
-                    if (confirm("Confirm Undo")) {
-                        let status = $("#status").val();
-                        $("#status").val(status == 0 ? 1 : 0);
-                        $("#form").submit();
-                    }
-                });
             @endif
-
-            anime({
-                targets: '.stats .info-card',
-                translateY: 20,
-                delay: anime.stagger(100)
-            });
-
-            $(".progress-bar").on('load', animateProgress({{ $activity->avg_task }}));
 
         });
     </script>
