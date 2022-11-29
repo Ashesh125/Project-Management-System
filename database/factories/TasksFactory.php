@@ -31,7 +31,8 @@ class TasksFactory extends Factory
             'description' => Str::random(50),
             'user_id' => User::where('role', '=', 0)->get()->random()->id,
             'activity_id' => Activity::all()->random()->id,
-            'type' => $type
+            'type' => $type,
+            'priority' =>rand(0,2)
         ];
     }
 }

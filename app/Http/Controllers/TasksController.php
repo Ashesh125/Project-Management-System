@@ -126,6 +126,7 @@ class TasksController extends Controller
             'name' => 'required',
             'user_id' => 'required',
             'type' => 'required',
+            'priority' => 'required',
             'due_date' => 'required',
             'description' => 'required',
             'activity_id' => 'required'

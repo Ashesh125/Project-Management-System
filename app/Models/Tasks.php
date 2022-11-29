@@ -20,6 +20,7 @@ class Tasks extends Model
         'status',
         'description',
         'type',
+        'priority',
         'activity_id',
         'user_id'
     ];
