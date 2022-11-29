@@ -4,10 +4,6 @@
 @section('home-nav', 'active')
 
 @section('main-content')
-<<<<<<< HEAD
-
-=======
->>>>>>> d3651fe (Dashboard Changes for roles)
     <div class="d-flex m-3 p-3 flex-column">
         <div class="d-flex justify-content-between mb-4">
             <div class="fw-bold fs-2"><u>Dashboard</u></div>
@@ -89,86 +85,6 @@
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
-
-        @if (auth()->user()->role != 0)
-            @if (!$projects)
-                <style>
-                    .bg-gray {
-                        display: none;
-                    }
-                </style>
-            @endif
-            <div class="col-2 mt-4">
-                <select class="form-select no-outline" id="project-select" aria-label="Default select example">
-                    @forelse ($projects as $project)
-                        <option value="{{ $project->id }}">{{ $project->name }}</option>
-                    @empty
-                        <option value="0" disabled>NO PROJECTS</option>
-                    @endforelse
-                </select>
-            </div>
-            <div class="bg-gray d-flex flex-column">
-                <div class="bg-gray d-flex rounded w-100 mt-2 justify-content-between p-2 px-4">
-                    <div class="total-tasks info-card w-25">
-                        <div class="my-2 dashboard-card">
-                            <div
-                                class="card border-start border-bottom-0 border-top-0 border-end-0 border-5 border-success  shadow h-100">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="mr-2 d-flex justify-content-between">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase">
-                                                Start Date</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="start-date"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="total-tasks info-card w-25">
-                        <div class="my-2 dashboard-card">
-                            <div
-                                class="card border-start border-bottom-0 border-top-0 border-end-0 border-5 border-primary  shadow h-100">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="mr-2 d-flex justify-content-between">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase">
-                                                End Date</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="end-date"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="total-tasks info-card w-25">
-                        <div class="my-2 dashboard-card">
-                            <div
-                                class="card border-start border-bottom-0 border-top-0 border-end-0 border-5 border-danger shadow h-100">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="mr-2 d-flex justify-content-between">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase">
-                                                Days Remaining</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="time-remaining"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="m-2 mx-4 activity_detail-holder bg-gray d-flex flex-column rounded">
-
-                </div>
-            </div>
-
-
-
-
-=======
 
 
         @if (auth()->user()->role != 0)
@@ -249,7 +165,6 @@
                     </div>
                 </div>
             </div>
->>>>>>> d3651fe (Dashboard Changes for roles)
     </div>
 
 
@@ -277,24 +192,8 @@
 
 
     </script>
-<<<<<<< HEAD
-    @else
-        <div class="d-flex m-3 p-3 flex-column">
-            <div id='calendar' class="bg-light rounded p-4"></div>
-        </div>
-        @include('components.task-offcanvas');
-        <script>
-            $(document).ready(function() {
-                var draggableEl = document.getElementById('mydraggable');
-
-                callAjaxCalanderUser({{ auth()->user()->id }});
-            });
-        </script>
-=======
 @else
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css">
-    <div class="col-2 mt-4">
+    {{-- <div class="col-2 mt-4">
         <select class="form-select no-outline" id="activity-select" aria-label="Default select example">
             @forelse ($activities as $activity)
                 <option value="{{ $activity->id }}">{{ $activity->name }}</option>
@@ -302,66 +201,19 @@
                 <option value="0" disabled>NO ACTIVITIES</option>
             @endforelse
         </select>
-    </div>
+    </div> --}}
     <div class="d-flex m-3 p-3 flex-column">
         <div id='calendar' class="bg-light rounded p-4"></div>
     </div>
+    @include('components.task-offcanvas')
     <script>
         var calander;
         $(document).ready(function() {
             var draggableEl = document.getElementById('mydraggable');
-            var calendarEl = document.getElementById('mycalendar');
 
-            var calendarEl = document.getElementById('calendar');
-
-            callActivityAjax(1);
-
-            $('#activity-select').on('change', function(e) {
-                let id = this.value;
-
-                callActivityAjax(id);
-            });
-
-
-            function callActivityAjax(id) {
-                $.ajax({
-                    type: "GET",
-                    url: "../api/activityDatas/" + id,
-                    success: function(response) {
-                        var json = $.parseJSON(response);
-                        let tasks = [];
-
-                        json.tasks.forEach(element => {
-                            tasks.push({
-                                title: element.name,
-                                start: element.due_date,
-                                color: element.status == 1 ? 'green' : 'red'
-                            });
-                        });
-                        makeCalander(tasks);
-                    },
-                    dataType: "html"
-                });
-            }
-
-            function makeCalander(tasks) {
-                var calendar = new FullCalendar.Calendar(calendarEl, {
-                    editable: true,
-                    selectable: true,
-                    dayMaxEvents: true, // allow "more" link when too many events
-                    events: tasks,
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,listYear'
-                    },
-                });
-
-                calendar.render();
-            }
-
+            callAjaxCalanderUser(1);
+            $('#goto-task-2').hide();
         });
     </script>
->>>>>>> d3651fe (Dashboard Changes for roles)
     @endif
 @endsection

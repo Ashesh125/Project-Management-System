@@ -12,9 +12,6 @@
             <a class="nav-link" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="../../calanderview/{{ $activity->id }}">Calander</a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" href="{{ route('myTasks',['type' => 'calander', 'id' => $activity->id]) }}">Calander</a>
         </li>
     </ul>

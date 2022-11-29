@@ -26,6 +26,14 @@ $(document).ready(function() {
         delay: anime.stagger(100)
     });
 
+    anime({
+        targets: '.comment-area .comment',
+        opacity: 1,
+        duration: 1500,
+        delay: anime.stagger(100)
+    });
+
+    $(".progress-bar").on('load',  animateProgress($('.progress-bar').attr('aria-valuenow')));
 });
 
 

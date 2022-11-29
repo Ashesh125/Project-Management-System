@@ -18,8 +18,10 @@ class NotificationController extends Controller
 
     public function index()
     {
-        $newNotifications = auth()->user()->unreadNotifications;
-        $oldNotifications = auth()->user()->readNotifications;
+        $user = User::findOrFail(auth()->user()->id);
+
+        $newNotifications = $user->notifications()->whereNull('read_at')->paginate(10);
+        $oldNotifications = $user->notifications()->whereNotNull('read_at')->paginate(10);
 
         return view('pages.notifications.index', compact('newNotifications','oldNotifications'));
     }

@@ -10,11 +10,11 @@ use Illuminate\Notifications\Notification;
 class TaskCompletedNotification extends Notification
 {
     use Queueable;
-    public $user;
+    public $task;
 
-    public function __construct($user)
+    public function __construct($task)
     {
-        $this->user = $user;
+        $this->task = $task;
     }
 
     public function via($notifiable)
@@ -34,7 +34,7 @@ class TaskCompletedNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'user' => $this->user
+            'task' => $this->task
         ];
     }
 }

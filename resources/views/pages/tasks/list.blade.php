@@ -229,7 +229,7 @@
             <div class="mt-3">Progress :</div>
             <div class="progress col-8 w-100  d-flex my-3">
                 <div class="progress-bar text-end" role="progressbar"
-                    style="font-size:12px;width:{{ $activity->status }}%;" aria-valuenow="{{ $activity->status }}"
+                    style="font-size:12px;width:0%;" aria-valuenow="{{ $activity->status }}"
                     aria-valuemin="0" aria-valuemax="100">{{ $activity->status }}%</div>
             </div>
             <div>
@@ -449,14 +449,6 @@
                     $('#new-task-modal').modal('show');
                 });
             @endif
-
-            anime({
-                targets: '.stats .info-card',
-                translateY: 20,
-                delay: anime.stagger(100)
-            });
-
-            $(".progress-bar").on('load', animateProgress({{ $activity->avg_task }}));
 
         });
     </script>

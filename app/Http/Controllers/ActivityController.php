@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\User;
 use App\Models\Tasks;
+use App\Notifications\ActivityCreatedNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -68,6 +70,8 @@ class ActivityController extends Controller
         $activity = new Activity();
         $activity->fill($request->post())->save();
 
+        Notification::send(User::findOrFail($request->user_id), new ActivityCreatedNotification($activity));
+
         return redirect()->back()
             ->with('success', 'Activity Created');
     }
@@ -91,20 +95,18 @@ class ActivityController extends Controller
        return  response()->json($activity);
     }
 
-<<<<<<< HEAD
     public function baseDetail($id){
         $activity = Activity::findOrFail($id);
 
         return view('pages.activities.calander', compact('activity'));
     }
-=======
+
     public function activityDataOfUser($id){
         $activity = Tasks::where(['user_id' => auth()->user()->id, 'activity_id' => $id])->get()->toArray();
 
         return  response()->json($activity);
      }
 
->>>>>>> d3651fe (Dashboard Changes for roles)
 
 
     public function update(Request $request, Activity $activity)

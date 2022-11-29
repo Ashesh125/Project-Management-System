@@ -142,7 +142,7 @@
                 </div>
                 <div class="mt-3">Progress :</div>
                 <div class="progress col-8 w-100  d-flex my-3">
-                    <div class="progress-bar text-end" role="progressbar" style="font-size:12px;width:{{ $project->avg_activities }}%;"
+                    <div class="progress-bar text-end" role="progressbar" style="font-size:12px;width:0%;"
                        aria-valuenow="{{ $project->avg_activities }}" aria-valuemin="0" aria-valuemax="100">{{ $project->avg_activities }}%</div>
                 </div>
                 <div>
@@ -331,32 +331,7 @@
                     $("#deleteBtn").show();
                     $('#modal').modal('show');
                 });
-
-                $(".complete").on('click', function() {
-                    if (confirm("Confirm Completion")) {
-                        let status = $("#status").val();
-                        $("#status").val(status == 0 ? 1 : 0);
-                        $("#form").submit();
-                    }
-                });
-
-
-                $(".undo").on('click', function() {
-                    if (confirm("Confirm Undo")) {
-                        let status = $("#status").val();
-                        $("#status").val(status == 0 ? 1 : 0);
-                        $("#form").submit();
-                    }
-                });
             @endif
-
-            anime({
-                targets: '.stats .info-card',
-                translateY: 20,
-                delay: anime.stagger(100)
-            });
-
-            $(".progress-bar").on('load', animateProgress({{ $project->avg_task }}));
 
             $('.profile-circle').on('click', function() {
                 var bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvas'));
@@ -378,8 +353,6 @@
                     },
                     dataType: "html"
                 });
-
-                $('#profile-name').val('asd');
             });
         });
     </script>

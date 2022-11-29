@@ -8,6 +8,8 @@ use App\Models\Activity;
 use App\Notifications\TaskGiven as NotificationsTaskGiven;
 use App\Notifications\TaskGivenNotification;
 use App\Notifications\TaskReviewedNotification;
+use App\Notifications\TaskCompletedNotification;
+use App\Notifications\ActivityCompletedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Task\Notifications\TaskGiven;
@@ -109,6 +111,11 @@ class TasksController extends Controller
     {
         Tasks::where('id', $request->id)->update(array('type' => $request->type));
 
+        if($request->type == 'completed'){
+            $task = Tasks::with('activity.supervisor')->findOrFail($request->id);
+            Notification::send($task->activity->supervisor, new TaskCompletedNotification($task));
+        }
+
         return ;
     }
 
@@ -133,7 +140,15 @@ class TasksController extends Controller
 
 
         $activity = Activity::findOrfail($request->activity_id);
-        Activity::where('id', $activity->id)->update(array('status' => $activity->avg_task));
+
+        $activity_completion = $activity->avg_task;
+        Activity::where('id', $activity->id)->update(array('status' => $activity_completion));
+
+        if($activity_completion = 100){
+            $activity = Activity::with(['project.lead','supervisor'])->findOrFail($request->activity_id);
+            Notification::send($activity->supervisor, new ActivityCompletedNotification($activity));
+            Notification::send($activity->project->lead, new ActivityCompletedNotification($activity));
+        }
 
         return redirect()->back()
             ->with('success', 'Task Updated');
@@ -171,12 +186,6 @@ class TasksController extends Controller
                 return view('pages.tasks.taskcalander', compact('activity'));
                 break;
         }
-    }
-
-    public function userTasksJson(Request $request){
-        $tasks = Tasks::where([['user_id', '=', auth()->user()->id], ['activity_id', '=', $request->id]])->get();
-
-        return  response()->json($tasks);
     }
 
     public function taskData($id){

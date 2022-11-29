@@ -12,7 +12,7 @@
         </div>
 
         <div>
-            <div class="comment-area w-75">
+            <div class="comment-area col-12">
                 @forelse ($issue->comments as $comment)
                     <div class="rounded p-2 m-2 comment">
                         <p class="p-1 msg" id="msg-{{ $comment->id }}">
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="rounded p-2 m-2 comment">
+                    <div class="rounded p-2 m-2 comment col-12">
                         <p class="p-1">
                             No Comments
                         </p>
@@ -42,7 +42,7 @@
                     </div>
                 @endforelse
             </div>
-            <div class="bg-gray p-3 messege-box rounded m-2 w-75">
+            <div class="bg-gray p-3 messege-box rounded m-2 col-12">
                 <form id="form" class="row g-3 needs-validation message-form" action="{{ route('checkComment') }}"
                     method="POST" novalidate>
                     @csrf
