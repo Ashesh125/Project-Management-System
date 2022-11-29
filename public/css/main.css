@@ -190,3 +190,7 @@ span.select2-container {
 .font-sm{
     font-size:12px;
 }
+
+.text-gray{
+    color: gray;
+}

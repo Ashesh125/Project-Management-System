@@ -91,6 +91,30 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-12">
+                                <label for="priority" class="form-label">Priority</label>
+                                <div class="d-flex">
+                                    <div class="form-check mx-2"><input class="form-check-input" type="radio"
+                                            value='2' name="priority" id="priority2">
+                                        <label class="form-check-label" for="priority2">
+                                            Urgent
+                                        </label>
+                                    </div>
+                                    <div class="form-check mx-2"><input class="form-check-input" type="radio"
+                                            value='1' name="priority" id="priority1" checked>
+                                        <label class="form-check-label" for="priority1">
+                                            Normal
+                                        </label>
+                                    </div>
+                                    <div class="form-check mx-2">
+                                        <input class="form-check-input" type="radio" name="priority" id="priority0"
+                                            value='' >
+                                        <label class="form-check-label" for="priority0">
+                                            Low
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-12">
                                 <div class="form-floating">
                                     <textarea class="form-control" placeholder="Leave a description" id="description" name="description"
@@ -291,6 +315,7 @@
                         <th>Due Date</th>
                         <th>Status</th>
                         <th>Type</th>
+                        <th>Priority</th>
                         <th style="width:50%;">Description</th>
                         <th>Assigned</th>
                         <th>User Id</th>
@@ -305,6 +330,7 @@
                                 <td> {{ date('F j, Y', strtotime($task->due_date)) }} </td>
                                 <td> {{ $task->status }} </td>
                                 <td> {{ $task->type }} </td>
+                                <td> {{ $task->priority }} </td>
                                 <td> {{ $task->description }} </td>
                                 <td> {!! empty($task->user->name) ? "<span class='text-danger'>Deleted User</span>" : $task->user->name !!} </td>
                                 <td> {{ empty($task->user->id) ? 0 : $task->user->id }} </td>
@@ -386,6 +412,16 @@
                         "render": function(data, type, row, meta) {
                             return projectStatus(data);
                         }
+                    },{
+                        data: 'priority',
+                        "render": function(data, type, row, meta) {
+
+                            if (type === "sort" || type === 'type') {
+                                return data;
+                            } else {
+                                return data == 2 ? '<span class="badge rounded-pill bg-danger">Urgent</span>' : data == 1 ? '<span class="badge rounded-pill bg-primary">Normal</span>' : '<span class="badge rounded-pill bg-gray">Low</span>' ;
+                            }
+                        }
                     },
                     {
                         data: 'description'
@@ -399,7 +435,7 @@
 
                 ],
                 "columnDefs": [{
-                    "targets": [0, 7],
+                    "targets": [0, 8],
                     "visible": false,
                     "searchable": false
                 }],
@@ -420,7 +456,8 @@
                     $('#user_id').val(0);
                     $('#user_id').trigger('change');
                     $('#end_date').val("");
-                    $("#status").val(0);
+                    $("#status0").prop('checked',true);
+                    $("#priority1").prop('checked',true);
                     $('#type').val('assigned');
                     $('#description').val("");
                     $("#deleteBtn").hide();
@@ -436,7 +473,8 @@
                     $('#id').val(data['id']);
                     $('#name').val(data['name']);
                     $('#due_date').val(formatDate(data['end_date']));
-                    $("#status").val(data['status']);
+                    $("#status"+data['status']).attr('checked',true);
+                    $("#priority"+data['priority']).attr('checked',true);
                     $('#description').val(data['description']);
                     $('#type').val(data['type']);
 

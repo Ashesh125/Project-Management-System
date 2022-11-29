@@ -272,7 +272,11 @@ function callAjaxCalander(id) {
                     id: element.id,
                     title: element.name,
                     start: element.due_date,
-                    color: element.type == "completed" ? "green" : "blue",
+                    color: element.type == "completed" ? "lightgreen" : "lightgray",
+                    extendedProps: {
+                        priority: element.priority,
+                        assigned_to: element.description
+                    },
                 });
             });
             makeCalander(tasks);
@@ -294,7 +298,11 @@ function calanderAllTasks(id) {
                     id: element.id,
                     title: element.name,
                     start: element.due_date,
-                    color: element.type == "completed" ? "green" : "blue",
+                    color: element.type == "completed" ? "lightgreen" : "lightgray",
+                    extendedProps: {
+                        priority: element.priority,
+                        assigned_to: "Assigned : "+element.user.name
+                    },
                 });
             });
             makeCalander(tasks);
@@ -310,11 +318,33 @@ function makeCalander(tasks) {
             selectable: true,
             editable: false,
             events: tasks,
-            textColor: "white",
             headerToolbar: {
                 left: "prev,next today",
                 center: "title",
                 right: "dayGridMonth,listYear",
+            },
+            eventContent: function (arg, createElement) {
+                let main = document.createElement('div');
+                main.innerHTML = arg.event.title;
+                // $(main).addClass('text-light');
+                let block1 = document.createElement('div');
+                block1.innerHTML = arg.event.extendedProps.assigned_to;
+                $(block1).addClass('font-sm text-truncate');
+                let block2 = document.createElement('span');
+                $(block2).addClass('badge rounded-pill');
+
+                if(arg.event.extendedProps.priority == 2){
+                    $(block2).addClass('bg-danger');
+                    $(block2).text('Urgent');
+                }else if(arg.event.extendedProps.priority == 1){
+                    $(block2).addClass('bg-primary');
+                    $(block2).text('Normal');
+                }else{
+                    $(block2).addClass('bg-gray');
+                    $(block2).text('Low');
+                }
+
+                return { domNodes: [ main, block1,block2 ] };
             },
             eventClick: function (info) {
                 var bsOffcanvas = new bootstrap.Offcanvas(
@@ -338,8 +368,8 @@ function makeCalander(tasks) {
                             json.status == 1
                                 ? "Verified"
                                 : json.status == 2
-                                    ? "Invalid"
-                                    : "Unverified"
+                                ? "Invalid"
+                                : "Unverified"
                         );
                         $("#goto-task").attr(
                             "href",
@@ -372,7 +402,11 @@ function callAjaxCalanderUser(id) {
                     id: element.id,
                     title: element.name,
                     start: element.due_date,
-                    color: element.type == "completed" ? "green" : "blue",
+                    color: element.type == "completed" ? "lightgreen" : "lightgray",
+                    extendedProps: {
+                        priority: element.priority,
+                        assigned_to: "In : "+element.activity.name
+                    },
                 });
             });
             makeCalander(tasks);

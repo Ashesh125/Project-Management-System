@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean("status")->default(0);
             $table->string("description");
             $table->enum('type', ['assigned', 'ongoing','completed']);
+            $table->integer('priority')->default(0);
             $table->unsignedBigInteger("activity_id");
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('activity_id')->references('id')->on('activities')->cascadeOnDelete();
