@@ -259,9 +259,9 @@
             <div>
                 Supervisor :
                 <span class="mx-2">
-                    <img src='{{ $activity->supervisor ? url('storage/user/' . $activity->supervisor->image) : asset('images/no-user-image.png') }}'
+                    <img src='{{ $activity->supervisor->image ? url('storage/user/' . $activity->supervisor->image) : asset('images/no-user-image.png') }}'
                         width='50px' height='50px' id='profile-circle-{{ $activity->supervisor->id }}'
-                        class="rounded-circle img-thumbnail profile-circle" data-bs-toggle="tooltip"
+                        class="rounded-circle img-thumbnail profile-circle border {{ $activity->supervisor->deleted_at ? 'border-danger' : 'border-dark' }}" data-bs-toggle="tooltip"
                         data-bs-placement="top" title="{{ $activity->supervisor->name }}">
                 </span>
             </div>
@@ -276,9 +276,9 @@
                             @php
                                 $user[] = $task->user->id;
                             @endphp
-                            <img src='{{ $task->user ? url('storage/user/' . $task->user->image) : asset('images/no-user-image.png') }}'
+                            <img src='{{ $task->user->image  ? url('storage/user/' . $task->user->image) : asset('images/no-user-image.png') }}'
                                 width='50px' height='50px' id='profile-circle-{{ $task->user->id }}'
-                                class="mx-1 rounded-circle img-thumbnail profile-circle" data-bs-toggle="tooltip"
+                                class="mx-1 rounded-circle img-thumbnail profile-circle border {{ $task->user->deleted_at ? 'border-danger' : 'border-dark' }}" data-bs-toggle="tooltip"
                                 data-bs-placement="top" title="{{ $task->user->name }}" data-bs-toggle="offcanvas">
                         @endif
                     @endforeach
@@ -319,6 +319,7 @@
                         <th style="width:50%;">Description</th>
                         <th>Assigned</th>
                         <th>User Id</th>
+                        <th>Is Deleted</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -334,6 +335,7 @@
                                 <td> {{ $task->description }} </td>
                                 <td> {!! empty($task->user->name) ? "<span class='text-danger'>Deleted User</span>" : $task->user->name !!} </td>
                                 <td> {{ empty($task->user->id) ? 0 : $task->user->id }} </td>
+                                <td> {{ $task->user->deleted_at }} </td>
                             </tr>
                         @endforeach
                     @else
@@ -351,28 +353,7 @@
     <script>
         $(document).ready(function() {
 
-            $('.profile-circle').on('click', function() {
-                var bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvas'));
-                bsOffcanvas.show();
 
-                let id = $(this).attr('id').split("-")[2];
-
-                $.ajax({
-                    type: "GET",
-                    url: "../userDatas/"+id,
-                    success: function(response) {
-                        var json = $.parseJSON(response);
-                        $("#profile-name").val(json.name);
-                        $("#profile-email").val(json.email);
-                        let image = json.image ? '{{ url('storage/user/') }}/'+json.image : "{{ asset('images/no-user-image.png') }}";
-                        $("#profile-mail").attr('href', "mailto:" + json.email);
-                        $("#profile-image").attr('src', image);
-                        $("#profile-role").val(json.role == 2 ? 'Super Admin' : json.role == 1 ?
-                            'Admin' : 'User');
-                    },
-                    dataType: "html"
-                });
-            });
 
             $("#user_id").select2({
                 dropdownParent: '#userlist-holder'
@@ -427,15 +408,24 @@
                         data: 'description'
                     },
                     {
-                        data: 'user'
+                        data: 'user',
+                        "render": function(data, type, row, meta) {
+                            if (type === "sort" || type === 'type') {
+                                return data;
+                            } else {
+                                return row.deleted_at == "" ? data : data+ ' ( <i class="fa-solid fa-user-slash text-danger"></i> )' ;
+                            }
+                        }
                     },
                     {
                         data: 'user_id'
+                    },{
+                        data: 'deleted_at'
                     }
 
                 ],
                 "columnDefs": [{
-                    "targets": [0, 8],
+                    "targets": [0, 8,9],
                     "visible": false,
                     "searchable": false
                 }],

@@ -13,7 +13,7 @@ class ActivityController extends Controller
 {
     public function check(Request $request)
     {
-        switch (parent::checkOperaion($request['id'], $request['name'])) {
+        switch (parent::checkOperation($request)) {
             case "store":
                 return $this->store($request);
                 break;
@@ -30,14 +30,6 @@ class ActivityController extends Controller
                 return redirect()->route('activities')
                     ->with('error', 'Something Went Wrong.');
         }
-    }
-
-    public function tasks(int $id)
-    {
-        $activity = Activity::with('tasks.user')->findOrFail($id);
-        $users = User::where('role','>',0)->get();
-        // dd($users);
-        return view('pages.tasks.list', compact('activity','users'));
     }
 
     public function index()
@@ -79,7 +71,7 @@ class ActivityController extends Controller
     public function show($id)
     {
         $activity = Activity::with('tasks.user')->findOrFail($id);
-        $users = User::where('role',0)->get();
+        $users = User::where('role','=',0)->get();
 
         return view('pages.tasks.list', compact('activity','users'));
     }
