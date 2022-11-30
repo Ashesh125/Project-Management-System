@@ -150,7 +150,7 @@
                     <span class="mx-2">
                         <img src='{{ $project->lead->image ? url('storage/user/' . $project->lead->image) : asset('images/no-user-image.png') }}'
                             width='50px' height='50px' id='profile-circle-{{ $project->lead->id }}'
-                            class="rounded-circle img-thumbnail profile-circle" data-bs-toggle="tooltip"
+                            class="rounded-circle img-thumbnail profile-circle border {{ $project->lead->deleted_at ? 'border-danger' : 'border-dark' }}" data-bs-toggle="tooltip"
                             data-bs-placement="top" title="{{ $project->lead->name }}">
                     </span>
                 </div>
@@ -187,11 +187,13 @@
                         <th>Supervisor</th>
                         <th style="width:30%;">Description</th>
                         <th>User id</th>
+                        <th>Is deleted</th>
                         <th>Show</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (!empty($project->activities))
+
                         @foreach ($project->activities as $activity)
                             <tr>
                                 <td> {{ $activity->id }} </td>
@@ -202,6 +204,7 @@
                                 <td> {!! empty($activity->supervisor->name) ? "<span class='text-danger'>Deleted User</span>" : $activity->supervisor->name !!} </td>
                                 <td> {{ $activity->description }} </td>
                                 <td> {{ empty($activity->user_id) ? 0 : $activity->user_id }}</td>
+                                <td> {{ $activity->supervisor->deleted_at }}</td>
                                 <td> </td>
                             </tr>
                         @endforeach
@@ -261,7 +264,14 @@
                         }
                     },
                     {
-                        data: 'supervisor'
+                        data: 'supervisor',
+                        "render": function(data, type, row, meta) {
+                            if (type === "sort" || type === 'type') {
+                                return data;
+                            } else {
+                                return row.deleted_at == "" ? data : data+ ' ( <i class="fa-solid fa-user-slash text-danger"></i> )' ;
+                            }
+                        }
                     },
                     {
                         data: 'description'
@@ -270,7 +280,10 @@
                         data: 'user_id'
                     },
                     {
-                        "targets": 8,
+                        data: 'deleted_at'
+                    },
+                    {
+                        "targets": 9,
                         "data": null,
                         "render": function(data, type, row, meta) {
                             return "<a class='btn btn-primary' class='showTaskBtn' href=' {{ route('activityDetail') }}/" +
@@ -280,7 +293,7 @@
 
                 ],
                 "columnDefs": [{
-                    "targets": [0,7],
+                    "targets": [0,7,8],
                     "visible": false,
                     "searchable": false
                 }],
@@ -333,27 +346,6 @@
                 });
             @endif
 
-            $('.profile-circle').on('click', function() {
-                var bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvas'));
-                bsOffcanvas.show();
-
-                let id = $(this).attr('id').split("-")[2];
-
-                $.ajax({
-                    type: "GET",
-                    url: "../userDatas/"+id,
-                    success: function(response) {
-                        var json = $.parseJSON(response);
-                        $("#profile-name").val(json.name);
-                        $("#profile-email").val(json.email);
-                        let image = json.image ? '{{ url('storage/user/') }}/'+json.image : "{{ asset('images/no-user-image.png') }}";
-                        $("#profile-mail").attr('href',"mailto:"+json.email);
-                        $("#profile-image").attr('src', image);
-                        $("#profile-role").val(json.role == 2 ? 'Super Admin' : json.role == 1 ? 'Admin' : 'User' );
-                    },
-                    dataType: "html"
-                });
-            });
         });
     </script>
 @endsection

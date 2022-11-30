@@ -23,7 +23,7 @@ class Project extends Model
     ];
 
     public function users(){
-        return $this->hasManyThrough(User::class,Tasks::class,'user_id','id','id','project_id');
+        return $this->hasManyThrough(User::class,Tasks::class,'user_id','id','id','project_id')->withTrashed();
     }
 
     public function issue(){
@@ -31,7 +31,7 @@ class Project extends Model
     }
 
     public function lead(){
-        return $this->hasOne(User::class,'id','user_id');
+        return $this->hasOne(User::class,'id','user_id')->withTrashed();
     }
 
     public function activities(){

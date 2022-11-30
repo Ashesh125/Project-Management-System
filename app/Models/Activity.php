@@ -34,9 +34,6 @@ class Activity extends Model
         return round($task->where('status','!=',2)->avg('status') * 100);
     }
 
-    public function users(){
-        return $this->hasManyThrough(User::class,Tasks::class,'user_id','id','id','activity_id');
-    }
 
     public function issues(){
         return $this->hasMany(Issue::class,'activity_id','id');
@@ -48,6 +45,6 @@ class Activity extends Model
 
 
     public function supervisor(){
-        return $this->hasOne(User::class,'id','user_id');
+        return $this->hasOne(User::class,'id','user_id')->withTrashed();
     }
 }

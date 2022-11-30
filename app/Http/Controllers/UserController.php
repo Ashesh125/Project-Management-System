@@ -18,7 +18,7 @@ class UserController extends Controller
 {
     public function check(Request $request)
     {
-        switch (parent::checkOperaion($request['id'], $request['name'])) {
+        switch (parent::checkOperation($request)) {
             case "store":
                 return $this->store($request);
                 break;
@@ -28,7 +28,14 @@ class UserController extends Controller
                 break;
 
             case "update":
-                return $this->update($request, user::find($request['id']));
+                return $this->update($request, User::find($request['id']));
+                break;
+
+            case "restore":
+                User::withTrashed()->findOrFail($request->id)->restore();
+
+                return redirect()->route('users')
+                ->with('success', 'User Restored.');
                 break;
 
             default:
@@ -38,7 +45,7 @@ class UserController extends Controller
     }
     public function index()
     {
-        $users = User::all();
+        $users = User::withTrashed()->get();
 
         return view('pages.users.index')->with(compact('users'));
     }
@@ -169,10 +176,10 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        $user =  User::findOrFail(auth()->user()->id);
-        if (Storage::exists('public/user/' . $user->image)) {
-            Storage::delete('public/user/' . $user->image);
-        }
+        // if (Storage::exists('public/user/' . $user->image)) {
+        //     Storage::delete('public/user/' . $user->image);
+        // }
+
         $user->delete();
 
         return redirect()->back()
@@ -235,7 +242,7 @@ class UserController extends Controller
 
     public function userData(Request $request)
     {
-        $user = User::findOrFail($request->id);
+        $user = User::withTrashed()->findOrFail($request->id);
 
         return  response()->json($user);
     }

@@ -22,6 +22,9 @@
                 <input type="email" id="profile-email" class="form-control" disabled>
             </div>
             <div class="mb-3">
+                <input type="text" id="profile-msg" class="form-control" disabled>
+            </div>
+            <div class="mb-3">
                 <a href="" id="profile-mail">Send a mail</a>
             </div>
         </div>

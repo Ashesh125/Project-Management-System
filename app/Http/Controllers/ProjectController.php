@@ -13,7 +13,7 @@ class ProjectController extends Controller
 
     public function check(Request $request)
     {
-        switch (parent::checkOperaion($request['id'], $request['name'])) {
+        switch (parent::checkOperation($request)) {
             case "store":
                 return $this->store($request);
                 break;
