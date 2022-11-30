@@ -27,6 +27,5 @@ class Controller extends BaseController
         }else{
             return "error";
         }
-
     }
 }
