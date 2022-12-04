@@ -4,23 +4,24 @@
 @section('tasks-nav', 'active')
 
 @section('main-content')
-<ul class="nav nav-tabs">
-    <li class="nav-item">
-        <a class="nav-link" aria-current="page" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">Board</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link active" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('myTasks',['type' => 'calander', 'id' => $activity->id]) }}">Calander</a>
-    </li>
-</ul>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page"
+                href="{{ route('myTasks', ['type' => 'kanban', 'id' => $activity->id]) }}">Board</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{{ route('myTasks', ['type' => 'table', 'id' => $activity->id]) }}">Table</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('myTasks', ['type' => 'calander', 'id' => $activity->id]) }}">Calander</a>
+        </li>
+    </ul>
     <div class="d-flex m-3 p-3 flex-column">
         <h2>{{ $activity->name }}</h2>
         <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
             <u>My Tasks</u>
             <div>
-                <a class="btn btn-danger" href="{{ route('issues',$activity->id) }}" >Issues</a>
+                <a class="btn btn-danger" href="{{ route('issues', $activity->id) }}">Issues</a>
             </div>
         </div>
         <div>
@@ -56,6 +57,7 @@
             </table>
         </div>
     </div>
+    @include('components.task-offcanvas')
     <script>
         $(document).ready(function() {
             var table = $('#data-table').DataTable({
@@ -85,9 +87,9 @@
                                 }
                             }
                         }
-                    },{
+                    }, {
                         data: 'type',
-                        "render": function(data,type,row,meta){
+                        "render": function(data, type, row, meta) {
                             return projectStatus(data);
                         }
                     },
@@ -97,15 +99,26 @@
 
                 ],
                 "columnDefs": [{
-                        "targets": [0],
-                        "visible": false,
-                        "searchable": false
-                    }
-                ],
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
                 order: [
                     [0, 'desc']
                 ],
             });
+
+
+
+            $('#data-table tbody').on('dblclick', 'tr', function() {
+                var bsOffcanvas = new bootstrap.Offcanvas(
+                    document.getElementById("offcanvas")
+                );
+                bsOffcanvas.show();
+                var data = table.row(this).data();
+                callTaskAjax(data['id']);
+            });
+
         });
     </script>
 @endsection

@@ -391,7 +391,11 @@
                     }, {
                         data: 'type',
                         "render": function(data, type, row, meta) {
-                            return projectStatus(data);
+                            if (type === "sort" || type === 'type') {
+                                return data;
+                            } else {
+                                return projectStatus(data);
+                            }
                         }
                     },{
                         data: 'priority',

@@ -86,16 +86,13 @@ function activityHandler(datas) {
         let container =
             "<div class='d-flex rounded flex-column my-2 p-4 bg-light w-100' id='" +
             element.id +
-            "'>" +
-            "<div class='d-flex justify-content-between'><span class='fs-4 fw-bold'> Activity : " +
+            "'><div class='d-flex justify-content-between'><span class='fs-4 fw-bold'> Activity : " +
             element.name +
             "</span><a class='btn btn-primary ms-5' href='/activitydetail/" +
             element.id +
-            "'>Detail</a></div>" +
-            "<div> Supervisor : " +
+            "'>Detail</a></div><div> Supervisor : " +
             element.supervisor +
-            "</div>" +
-            "<div> Users Assigned : " +
+            "</div><div> Users Assigned : " +
             element.no_of_users +
             "</div>" +
             "<div class='d-flex justify-content-between'>" +
@@ -272,10 +269,13 @@ function callAjaxCalander(id) {
                     id: element.id,
                     title: element.name,
                     start: element.due_date,
-                    color: element.type == "completed" ? "lightgreen" : "lightgray",
+                    color:
+                        element.type == "completed"
+                            ? "lightgreen"
+                            : "lightgray",
                     extendedProps: {
                         priority: element.priority,
-                        assigned_to: element.description
+                        assigned_to: element.description,
                     },
                 });
             });
@@ -298,10 +298,13 @@ function calanderAllTasks(id) {
                     id: element.id,
                     title: element.name,
                     start: element.due_date,
-                    color: element.type == "completed" ? "lightgreen" : "lightgray",
+                    color:
+                        element.type == "completed"
+                            ? "lightgreen"
+                            : "lightgray",
                     extendedProps: {
                         priority: element.priority,
-                        assigned_to: "Assigned : "+element.user.name
+                        assigned_to: "Assigned : " + element.user.name,
                     },
                 });
             });
@@ -324,27 +327,27 @@ function makeCalander(tasks) {
                 right: "dayGridMonth,listYear",
             },
             eventContent: function (arg, createElement) {
-                let main = document.createElement('div');
+                let main = document.createElement("div");
                 main.innerHTML = arg.event.title;
                 // $(main).addClass('text-light');
-                let block1 = document.createElement('div');
+                let block1 = document.createElement("div");
                 block1.innerHTML = arg.event.extendedProps.assigned_to;
-                $(block1).addClass('font-sm text-truncate');
-                let block2 = document.createElement('span');
-                $(block2).addClass('badge rounded-pill');
+                $(block1).addClass("font-sm text-truncate");
+                let block2 = document.createElement("span");
+                $(block2).addClass("badge rounded-pill");
 
-                if(arg.event.extendedProps.priority == 2){
-                    $(block2).addClass('bg-danger');
-                    $(block2).text('Urgent');
-                }else if(arg.event.extendedProps.priority == 1){
-                    $(block2).addClass('bg-primary');
-                    $(block2).text('Normal');
-                }else{
-                    $(block2).addClass('bg-gray');
-                    $(block2).text('Low');
+                if (arg.event.extendedProps.priority == 2) {
+                    $(block2).addClass("bg-danger");
+                    $(block2).text("Urgent");
+                } else if (arg.event.extendedProps.priority == 1) {
+                    $(block2).addClass("bg-primary");
+                    $(block2).text("Normal");
+                } else {
+                    $(block2).addClass("bg-gray");
+                    $(block2).text("Low");
                 }
 
-                return { domNodes: [ main, block1,block2 ] };
+                return { domNodes: [main, block1, block2] };
             },
             eventClick: function (info) {
                 var bsOffcanvas = new bootstrap.Offcanvas(
@@ -352,42 +355,49 @@ function makeCalander(tasks) {
                 );
                 bsOffcanvas.show();
 
-                $.ajax({
-                    type: "GET",
-                    url: host + "/taskDatas/" + info.event.id,
-                    success: function (response) {
-                        var json = $.parseJSON(response);
-                        console.log(json);
-                        $("#task-name").val(json.name);
-                        $("#task-activity").val(json.activity.name);
-                        $("#task-user").val(json.user.name);
-                        $("#task-due-date").val(json.due_date);
-                        $("#task-description").val(json.description);
-                        $("#task-type").val(json.type);
-                        $("#task-status").val(
-                            json.status == 1
-                                ? "Verified"
-                                : json.status == 2
-                                ? "Invalid"
-                                : "Unverified"
-                        );
-                        $("#goto-task").attr(
-                            "href",
-                            host + "/mytasks/kanban/" + json.activity.id
-                        );
-                        $("#goto-task-2").attr(
-                            "href",
-                            host + "/activitydetail/" + json.activity.id
-                        );
-                    },
-                    dataType: "html",
-                });
+                callTaskAjax(info.event.id);
+
             },
         }
     );
 
     calendar.render();
 }
+
+function callTaskAjax(id){
+    $.ajax({
+        type: "GET",
+        url: host + "/taskDatas/" + id,
+        success: function (response) {
+            var json = $.parseJSON(response);
+            $("#task-id").val(json.id);
+            $("#task-name").val(json.name);
+            $("#task-activity").val(json.activity.name);
+            $("#task-user").val(json.user.name);
+            $("#task-due-date").val(json.due_date);
+            $("#task-description").val(json.description);
+            $("#task-type").val(json.type);
+            $("#task-status").val(
+                json.status == 1
+                    ? "Verified"
+                    : json.status == 2
+                    ? "Invalid"
+                    : "Unverified"
+            );
+            $("#goto-task").attr(
+                "href",
+                host + "/mytasks/kanban/" + json.activity.id
+            );
+
+            $("#goto-task-2").attr(
+                "href",
+                host + "/activitydetail/" + json.activity.id
+            );
+        },
+        dataType: "html",
+    });
+}
+
 
 function callAjaxCalanderUser(id) {
     $.ajax({
@@ -402,15 +412,32 @@ function callAjaxCalanderUser(id) {
                     id: element.id,
                     title: element.name,
                     start: element.due_date,
-                    color: element.type == "completed" ? "lightgreen" : "lightgray",
+                    color:
+                        element.type == "completed"
+                            ? "lightgreen"
+                            : "lightgray",
                     extendedProps: {
                         priority: element.priority,
-                        assigned_to: "In : "+element.activity.name
+                        assigned_to: "In : " + element.activity.name,
                     },
                 });
             });
             makeCalander(tasks);
         },
         dataType: "html",
+    });
+}
+
+function updateTaskType(id, type) {
+    $.ajax({
+        method: "POST",
+        url: host + "/tasks/updateType",
+        data: {
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            id: id,
+            type: type,
+        },
+    }).done(function (data) {
+        // console.log("done");
     });
 }

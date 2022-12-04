@@ -6,19 +6,24 @@
 @section('main-content')
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{ route('myTasks',['type' => 'kanban', 'id' => $activity->id]) }}">Board</a>
+            <a class="nav-link active" aria-current="page"
+                href="{{ route('myTasks', ['type' => 'kanban', 'id' => $activity->id]) }}">Board</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('myTasks',['type' => 'table', 'id' => $activity->id]) }}">Table</a>
+            <a class="nav-link" href="{{ route('myTasks', ['type' => 'table', 'id' => $activity->id]) }}">Table</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('myTasks',['type' => 'calander', 'id' => $activity->id]) }}">Calander</a>
+            <a class="nav-link" href="{{ route('myTasks', ['type' => 'calander', 'id' => $activity->id]) }}">Calander</a>
         </li>
     </ul>
     <div class="d-flex m-3 p-3 flex-column">
         <h2>{{ $activity->name }}</h2>
-        <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
-            <u>My Tasks</u>
+        <div class="fs-2 my-3 d-flex justify-content-between">
+            <div>
+                <u class="fw-bold ">My Tasks</u>
+                <span class="float-end fs-6 align-text-bottom h-100 pt-3 ms-3 timer-info"> Changes will be Saved in <span
+                        class="count-down">5</span></span>
+            </div>
             <div>
                 <a class="btn btn-danger" href="{{ route('issues', $activity->id) }}">Issues</a>
             </div>
@@ -63,10 +68,9 @@
                                             <div class="mr-2 d-flex justify-content-between">
                                                 <div class="text-xs fw-bold text-uppercase">
                                                     {{ $task->name }}</div>
-                                                <div class="h5 mb-0 text-gray-800 task-detail"
-                                                    id="taskdetail-4"><i class="fa-solid fa-circle-info"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                                        title="{{ $task->description }}"></i></div>
+                                                <div class="h5 mb-0 text-gray-800 task-detail" id="taskdetail-4"><i
+                                                        class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" title="{{ $task->description }}"></i></div>
                                             </div>
                                             <div>Due Date : {{ date('F j, Y', strtotime($task->due_date)) }}</div>
                                         </div>
@@ -89,10 +93,9 @@
                                             <div class="mr-2 d-flex justify-content-between">
                                                 <div class="text-xs fw-bold text-uppercase">
                                                     {{ $task->name }}</div>
-                                                <div class="h5 mb-0 text-gray-800 task-detail"
-                                                    id="taskdetail-4"><i class="fa-solid fa-circle-info"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                                        title="{{ $task->description }}"></i></div>
+                                                <div class="h5 mb-0 text-gray-800 task-detail" id="taskdetail-4"><i
+                                                        class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" title="{{ $task->description }}"></i></div>
                                             </div>
                                             <div>Due Date : {{ date('F j, Y', strtotime($task->due_date)) }}</div>
                                         </div>
@@ -105,48 +108,62 @@
             </div>
         </div>
     </div>
+    @include('components.task-offcanvas')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"
         integrity="sha512-57oZ/vW8ANMjR/KQ6Be9v/+/h6bq9/l3f0Oc7vn6qMqyhvPd1cvKBRWWpzu0QoneImqr2SkmO4MSqU+RpHom3Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(function() {
+            var i = 4;
+            var myInterval,updatePostTimeout;
+
             $(".task-card").draggable({
                 helper: 'clone'
             });
 
+            $('.timer-info').hide();
+            $('.task-card').on('click', function(event) {
+                var bsOffcanvas = new bootstrap.Offcanvas(
+                    document.getElementById("offcanvas")
+                );
+                bsOffcanvas.show();
+
+                callTaskAjax($(this).attr('id').split("-")[1]);
+            });
 
             $(".task-card").on("drag", function(event, ui) {
                 let id = $(event.target).attr("id");
             });
 
 
-
+            $('#goto-task-2').hide();
 
             $(".task-holder").droppable({
                 hoverClass: "drop-hover",
                 drop: function(event, ui) {
+                    clearInterval(myInterval);
+                    clearTimeout(updatePostTimeout);
+                    i = 4;
+                    $('.timer-info').show();
                     let dragged = ui.draggable.attr('id');
                     let dropable = $(this).attr('id');
                     $("#" + dragged).appendTo("#" + dropable);
                     $("#" + dragged).css('position', '');
-                    $("#" + dragged).find('ul').append(ui.draggable)
+                    $("#" + dragged).find('ul').append(ui.draggable);
 
-                    $.ajax({
-                        method: "POST",
-                        // headers: {
-                        //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        // },
-                        url: "{{ route('taskTypeUpdate') }}",
-                        data: {
-                            '_token': $('meta[name="csrf-token"]').attr('content'),
-                            'id': dragged.match(/\d+/)[0],
-                            'type': dropable.split("-")[0]
-                        },
-                    }).done(function(data) {
-                        console.log("done");
-                    });
+
+
+                    myInterval = setInterval(function() {
+                        i != -1 ? $('.count-down').text(i--) : $('.timer-info').hide();
+                    }, 1000);
+
+                    updatePostTimeout = setTimeout(() => { clearInterval(myInterval); updateTaskType(dragged.match(/\d+/)[0], dropable.split("-")[0]);  $('.timer-info').hide();}, 5000);
+
+
+                    // stopFunction();
                 }
             });
+
 
             anime({
                 targets: '.task-holder .task-card',

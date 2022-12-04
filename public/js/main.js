@@ -72,6 +72,15 @@ $(document).ready(function() {
             dataType: "html"
         });
     });
+
+    $('#task-type').on("change", function() {
+        updateTaskType($('#task-id').val(), $('#task-type').val());
+
+        window.location.reload();
+    });
+
+
 });
+
 
 

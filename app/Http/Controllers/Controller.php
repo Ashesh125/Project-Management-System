@@ -12,7 +12,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-
     static function checkOperation(Request $request){
         $emptyId = $request->id == 0 || $request->id == "0" || empty($request->id);
 
@@ -27,7 +26,5 @@ class Controller extends BaseController
         }else{
             return "error";
         }
-
     }
-    //aaa
 }

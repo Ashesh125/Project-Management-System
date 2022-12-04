@@ -211,7 +211,7 @@
         $(document).ready(function() {
             var draggableEl = document.getElementById('mydraggable');
 
-            callAjaxCalanderUser(1);
+            callAjaxCalanderUser({{ auth()->user()->id }});
             $('#goto-task-2').hide();
         });
     </script>
