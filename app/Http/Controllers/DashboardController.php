@@ -10,6 +10,7 @@ use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Activity;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class DashboardController extends Controller
 {
@@ -17,7 +18,14 @@ class DashboardController extends Controller
     public function index()
     {
         $arr = array();
-        $projects = Project::all();
+        if(auth()->user()->role == 2){
+            $projects = Project::all();
+        }else{
+            $projects = Project::whereHas('activities', function ($query) {
+                return $query->where('user_id', auth()->user()->id);
+            })->get();
+            // dd($projects);
+        }
 
         switch(auth()->user()->role){
             case "0":

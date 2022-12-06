@@ -108,7 +108,7 @@
                                     </div>
                                     <div class="form-check mx-2">
                                         <input class="form-check-input" type="radio" name="priority" id="priority0"
-                                            value='' >
+                                            value='0'>
                                         <label class="form-check-label" for="priority0">
                                             Low
                                         </label>
@@ -156,7 +156,7 @@
                                             <div class="text-xs font-weight-bold text-primary text-uppercase">
                                                 Start Date</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800" id="start-date">
-                                                {{ $activity->start_date }}</div>
+                                                {{ date('F j, Y', strtotime($activity->start_date)) }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@
                                             <div class="text-xs font-weight-bold text-primary text-uppercase">
                                                 End Date</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800" id="end-date">
-                                                {{ $activity->end_date }}</div>
+                                                {{ date('F j, Y', strtotime($activity->end_date)) }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -252,17 +252,17 @@
             </div>
             <div class="mt-3">Progress :</div>
             <div class="progress col-8 w-100  d-flex my-3">
-                <div class="progress-bar text-end" role="progressbar"
-                    style="font-size:12px;width:0%;" aria-valuenow="{{ $activity->status }}"
-                    aria-valuemin="0" aria-valuemax="100">{{ $activity->status }}%</div>
+                <div class="progress-bar text-end" role="progressbar" style="font-size:12px;width:0%;"
+                    aria-valuenow="{{ $activity->status }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ $activity->status }}%</div>
             </div>
             <div>
                 Supervisor :
                 <span class="mx-2">
                     <img src='{{ $activity->supervisor->image ? url('storage/user/' . $activity->supervisor->image) : asset('images/no-user-image.png') }}'
                         width='50px' height='50px' id='profile-circle-{{ $activity->supervisor->id }}'
-                        class="rounded-circle img-thumbnail profile-circle border {{ $activity->supervisor->deleted_at ? 'border-danger' : 'border-dark' }}" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="{{ $activity->supervisor->name }}">
+                        class="rounded-circle img-thumbnail profile-circle border {{ $activity->supervisor->deleted_at ? 'border-danger' : 'border-dark' }}"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $activity->supervisor->name }}">
                 </span>
             </div>
             <div class="my-3">
@@ -276,10 +276,11 @@
                             @php
                                 $user[] = $task->user->id;
                             @endphp
-                            <img src='{{ $task->user->image  ? url('storage/user/' . $task->user->image) : asset('images/no-user-image.png') }}'
+                            <img src='{{ $task->user->image ? url('storage/user/' . $task->user->image) : asset('images/no-user-image.png') }}'
                                 width='50px' height='50px' id='profile-circle-{{ $task->user->id }}'
-                                class="mx-1 rounded-circle img-thumbnail profile-circle border {{ $task->user->deleted_at ? 'border-danger' : 'border-dark' }}" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="{{ $task->user->name }}" data-bs-toggle="offcanvas">
+                                class="mx-1 rounded-circle img-thumbnail profile-circle border {{ $task->user->deleted_at ? 'border-danger' : 'border-dark' }}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $task->user->name }}"
+                                data-bs-toggle="offcanvas">
                         @endif
                     @endforeach
                 </span>
@@ -301,7 +302,8 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" id="new"
                     data-bs-target="#new-task-modal">Add
                     Task</button>
-                <a class="btn btn-primary mx-2" href="{{ route('activityCalander',['id' => $activity->id]) }}" id="calander-btn">
+                <a class="btn btn-primary mx-2" href="{{ route('activityCalander', ['id' => $activity->id]) }}"
+                    id="calander-btn">
                     Goto Calander</a>
             </div>
         @endif
@@ -362,8 +364,6 @@
 
             var table = $('#data-table').DataTable({
                 "pageLength": 10,
-                "info": false,
-                "bInfo": false,
                 "bLengthChange": false,
                 columns: [{
                         data: 'id'
@@ -397,14 +397,18 @@
                                 return projectStatus(data);
                             }
                         }
-                    },{
+                    }, {
                         data: 'priority',
                         "render": function(data, type, row, meta) {
 
                             if (type === "sort" || type === 'type') {
                                 return data;
                             } else {
-                                return data == 2 ? '<span class="badge rounded-pill bg-danger">Urgent</span>' : data == 1 ? '<span class="badge rounded-pill bg-primary">Normal</span>' : '<span class="badge rounded-pill bg-gray">Low</span>' ;
+                                return data == 2 ?
+                                    '<span class="badge rounded-pill bg-danger">Urgent</span>' :
+                                    data == 1 ?
+                                    '<span class="badge rounded-pill bg-primary">Normal</span>' :
+                                    '<span class="badge rounded-pill bg-gray">Low</span>';
                             }
                         }
                     },
@@ -417,19 +421,20 @@
                             if (type === "sort" || type === 'type') {
                                 return data;
                             } else {
-                                return row.deleted_at == "" ? data : data+ ' ( <i class="fa-solid fa-user-slash text-danger"></i> )' ;
+                                return row.deleted_at == "" ? data : data +
+                                    ' ( <i class="fa-solid fa-user-slash text-danger"></i> )';
                             }
                         }
                     },
                     {
                         data: 'user_id'
-                    },{
+                    }, {
                         data: 'deleted_at'
                     }
 
                 ],
                 "columnDefs": [{
-                    "targets": [0, 8,9],
+                    "targets": [0, 8, 9],
                     "visible": false,
                     "searchable": false
                 }],
@@ -450,8 +455,8 @@
                     $('#user_id').val(0);
                     $('#user_id').trigger('change');
                     $('#end_date').val("");
-                    $("#status0").prop('checked',true);
-                    $("#priority1").prop('checked',true);
+                    $("#status0").prop('checked', true);
+                    $("#priority1").prop('checked', true);
                     $('#type').val('assigned');
                     $('#description').val("");
                     $("#deleteBtn").hide();
@@ -467,8 +472,8 @@
                     $('#id').val(data['id']);
                     $('#name').val(data['name']);
                     $('#due_date').val(formatDate(data['end_date']));
-                    $("#status"+data['status']).attr('checked',true);
-                    $("#priority"+data['priority']).attr('checked',true);
+                    $("#status" + data['status']).attr('checked', true);
+                    $("#priority" + data['priority']).attr('checked', true);
                     $('#description').val(data['description']);
                     $('#type').val(data['type']);
 

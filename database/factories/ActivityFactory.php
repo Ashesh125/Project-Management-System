@@ -23,7 +23,7 @@ class ActivityFactory extends Factory
     {
         $faker = Faker::create();
         $start_date = Carbon::instance($faker->dateTimeBetween('-1 months','+1 months'));
-        $end_date = (clone $start_date)->addDays(random_int(20,60));
+        $end_date = (clone $start_date)->addDays(random_int(18,58));
 
         return [
             'start_date' => $start_date,

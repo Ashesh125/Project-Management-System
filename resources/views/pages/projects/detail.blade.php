@@ -235,8 +235,7 @@
             callAjax({{ $project->id }});
             var table = $('#data-table').DataTable({
                 "pageLength": 10,
-                "info": false,
-                "bInfo": false,
+
                 "bLengthChange": false,
                 columns: [{
                         data: 'id'

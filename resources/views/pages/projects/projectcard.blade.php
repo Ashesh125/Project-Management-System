@@ -25,12 +25,12 @@
                                         <div class="mx-2 d-flex flex-column justify-content-between">
                                             <div class="text-xs font-weight-bold text-uppercase d-flex justify-content-between">
                                                 <span>{{ $index }}</span>
-                                                <a class="btn btn-primary" href="{{ route('projectDetail') }}/{{ $project[0]->project->id }}">Detail</a>
+                                                <a class="btn btn-primary" href="{{ route('projectDetail',['id' => $project[0]->project->id]) }}">Detail</a>
                                             </div>
-                                            <div class="project-cards info-card d-flex flex-wrap">
+                                            <div class="project-cards info-card d-flex flex-wrap  justify-content-start px-2">
                                                 @if ($project)
                                                     @foreach ($project as $activity)
-                                                        <div class="mx-4 my-3 activity-card col-3" id="{{ $activity->id }}">
+                                                        <div class="mx-5 my-3 activity-card col-3" id="{{ $activity->id }}">
                                                             <div
                                                                 class="border-start border-bottom-0 border-top-0 border-end-0 border-5 border-primary card shadow h-100">
                                                                 <div class="card-body">
@@ -87,21 +87,4 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function() {
-
-            $('.activity-card').on('click', function() {
-                let id = $(this).attr('id');
-                window.location.href = "{{ route('activityDetail') }}/" + id;
-            })
-
-            anime({
-                targets: '.project-cards .project-card',
-                opacity: 1,
-                translateY: 20,
-                duration: 1500,
-                delay: anime.stagger(100)
-            });
-        });
-    </script>
 @endsection

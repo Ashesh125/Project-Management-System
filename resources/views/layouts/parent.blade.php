@@ -94,7 +94,7 @@
                 </div>
                 @endif
 
-                @if (auth()->user()->role != 0)
+                @if (auth()->user()->role == 2)
                     <div>
                         <li>
                             <a href="{{ route('projects') }}" class="nav-link link-dark @yield('project-nav')">
@@ -111,7 +111,7 @@
                         <hr>
                     </div>
                 @endif
-                @if (auth()->user()->role != 0)
+                @if (auth()->user()->role == 2)
                     <li>
                         <a href="{{ route('users') }}" class="nav-link link-dark  @yield('user-nav')">
                             <i class="fa-solid fa-users mx-2 px-2"></i>

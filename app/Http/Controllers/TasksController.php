@@ -74,6 +74,8 @@ class TasksController extends Controller
         $task->fill($request->post())->save();
 
         Notification::send(User::findOrFail($request->user_id), new TaskGivenNotification($task));
+        $this->updateActivityCompletion($request->activity_id);
+
         return redirect()->back()
             ->with('success', 'Task Created');
     }
@@ -140,21 +142,20 @@ class TasksController extends Controller
         $task->fill($request->post())->save();
 
 
-        $activity = Activity::findOrfail($request->activity_id);
+        $this->updateActivityCompletion($request->activity_id);
 
-        $activity_completion = $activity->avg_task;
-        Activity::where('id', $activity->id)->update(array('status' => $activity_completion));
-
-        if($activity_completion = 100){
-            $activity = Activity::with(['project.lead','supervisor'])->findOrFail($request->activity_id);
-            Notification::send($activity->supervisor, new ActivityCompletedNotification($activity));
-            Notification::send($activity->project->lead, new ActivityCompletedNotification($activity));
-        }
 
         return redirect()->back()
             ->with('success', 'Task Updated');
     }
 
+
+    protected function updateActivityCompletion($id){
+        $activity = Activity::findOrfail($id);
+
+        $activity_completion = $activity->avg_task;
+        Activity::where('id', $activity->id)->update(array('status' => $activity_completion));
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -164,7 +165,7 @@ class TasksController extends Controller
     public function destroy(Tasks $tasks)
     {
         $tasks->delete();
-
+        $this->updateActivityCompletion($tasks->activity_id);
         return redirect()->back()
             ->with('success', 'Task deleted successfully');
     }

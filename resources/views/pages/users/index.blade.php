@@ -85,6 +85,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Image</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Status</th>
@@ -96,8 +97,12 @@
                         @foreach ($users as $user)
                             <tr>
                                 <td> {{ $user->id }} </td>
+                                <td> <img src='{{ $user->image  ? url('storage/user/' . $user->image) : asset('images/no-user-image.png') }}'
+                                    width='50px' height='50px' id='profile-circle-{{ $user->id }}'
+                                    class="mx-1 rounded-circle img-thumbnail profile-circle border {{ $user->deleted_at ? 'border-danger' : 'border-dark' }}" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="{{ $user->name }}" data-bs-toggle="offcanvas"> </td>
                                 <td> {{ $user->name }} </td>
-                                <td> {{ $user->email }} </td>
+                                <td> <a href="mailto:{{ $user->email }}">{{ $user->email }}</a> </td>
                                 <td> {{ $user->deleted_at }} </td>
                                 <td> {{ $user->role }} </td>
                             </tr>
@@ -116,11 +121,11 @@
         $(document).ready(function() {
             var table = $('#data-table').DataTable({
                 "pageLength": 10,
-                "info": false,
-                "bInfo": false,
                 "bLengthChange": false,
                 columns: [{
                         data: 'id'
+                    },{
+                        data:'image'
                     },
                     {
                         data: 'name'
