@@ -22,7 +22,9 @@
             <div>
                 <u class="fw-bold ">My Tasks</u>
                 <span class="float-end fs-6 align-text-bottom h-100 pt-3 ms-3 timer-info"> Changes will be Saved in <span
-                        class="count-down">5</span></span>
+                        class="count-down">5</span>
+                    <span><a href="#" onclick="window.location.reload();">Cancel</a></span>
+                </span>
             </div>
             <div>
                 <a class="btn btn-danger" href="{{ route('issues', $activity->id) }}">Issues</a>
@@ -143,6 +145,9 @@
                 drop: function(event, ui) {
                     clearInterval(myInterval);
                     clearTimeout(updatePostTimeout);
+
+
+
                     i = 4;
                     $('.timer-info').show();
                     let dragged = ui.draggable.attr('id');
