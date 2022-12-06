@@ -54,6 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/issues/{id?}', [IssueController::class, 'ofActivity'])->name('issues');
     Route::post('/issues', [IssueController::class, 'check'])->name('checkIssue');
+    Route::get('/issuesCard/{type}', [IssueController::class, 'index'])->name('issuesCard');
+
 
     Route::get('/comment/{id?}', [CommentController::class, 'ofIssue'])->name('comments');
     Route::post('/comment', [CommentController::class, 'check'])->name('checkComment');

@@ -1,9 +1,17 @@
 @extends('layouts.parent')
 
 @section('title', 'Issues')
-@section('issue-nav', 'active')
+@section('allissues-nav', 'active')
 
 @section('main-content')
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link"href="{{ route('issuesCard', ['type' => 'card']) }}">Card</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ route('issuesCard', ['type' => 'table']) }}">Table</a>
+        </li>
+    </ul>
     <!-- Modal -->
     <div class="modal fade" id="new-issue-modal" data-bs-backdrop="static" data-bs-keyboard="false"
         aria-labelledby="staticBackdropLabel" aria-hidden="true" tabindex="-1">
@@ -23,7 +31,7 @@
                             <input type="hidden" class="form-control" id="id" name="id" value="0"
                                 required>
                             <input type="hidden" class="form-control" id="activity_id" name="activity_id"
-                                value="{{ $activity->id }}" required>
+                                value="" required>
                             <input type="hidden" class="form-control" id="user_id" name="user_id"
                                 value="{{ auth()->user()->id }}" required>
                             <input type="text" class="form-control" id="name" name="name" required>
@@ -49,44 +57,46 @@
             </div>
         </div>
     </div>
-
     <div class="d-flex m-3 p-3 flex-column">
-        <h2>{{ $activity->name }}</h2>
-        <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
-            <u>Issues</u>
-        </div>
+        <h2>Issues</h2>
         <div class="d-flex justify-contents-between my-3">
-            <button class="btn btn-primary" data-bs-toggle="modal" id="new"
-                data-bs-target="#new-issue-modal">New</button>
-                <a class="btn btn-primary mx-3" href="{{ route('activityDetail', $activity->id) }}">Back</a>
         </div>
         <div>
             <table id="data-table" class="table table-hover table-light table-striped align-middle" style="width:100%">
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Activity ID</th>
                         <th>Name</th>
+                        <th>Activity</th>
                         <th>Creator</th>
                         <th>Status</th>
                         <th>Show</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if ($activity->issues)
-                        @foreach ($activity->issues as $issue)
-                            <tr>
-                                <td> {{ $issue->id }} </td>
-                                <td> {{ $issue->name }} </td>
-                                <td> {{ $issue->user->name}} </td>
-                                <td> {{ $issue->status }} </td>
-                                <td class="d-flex justify-content-end"> </td>
-                            </tr>
+                    @forelse ($projects as $activities)
+
+                        @foreach ($activities as $activity)
+                            @foreach ($activity->issues as $issue)
+                                <tr>
+                                    <td> {{ $issue->id }} </td>
+                                    <td> {{ $activity->id }} </td>
+                                    <td> {{ $issue->name }} </td>
+                                    <td> {{ $activity->name }} </td>
+                                    <td> {{ $issue->user->name }} </td>
+                                    <td> {{ $issue->status }} </td>
+                                    <td class="d-flex justify-content-end"> </td>
+                                </tr>
+                            @endforeach
                         @endforeach
-                    @else
+
+                    @empty
+
                         <tr class="text-center">
                             <td colspan='7'>No data available !!!</td>
                         </tr>
-                    @endif
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -96,15 +106,17 @@
         $(document).ready(function() {
             var table = $('#data-table').DataTable({
                 "pageLength": 10,
-
                 "bLengthChange": false,
                 columns: [{
                         data: 'id'
+                    },{
+                        data: 'activity_id'
                     },
                     {
                         data: 'name'
-                    },
-                    {
+                    }, {
+                        data: 'activity_name'
+                    }, {
                         data: 'user'
                     },
                     {
@@ -123,7 +135,7 @@
                         }
                     },
                     {
-                        "targets": 4,
+                        "targets": 6,
                         "data": null,
                         "render": function(data, type, row, meta) {
                             return "<a class='btn btn-primary' class='showCommentkBtn' href='{{ route('comments') }}/" +
@@ -133,15 +145,9 @@
 
                 ],
                 "columnDefs": [{
-                        "targets": [0],
+                        "targets": [0,1],
                         "visible": false,
                         "searchable": false
-                    },
-                    {
-                        "targets": 4,
-                        "data": null,
-                        "orderable": false,
-                        "defaultContent": "<button class='btn btn-primary'>Show Comments</button>"
                     }
                 ],
                 order: [
@@ -154,6 +160,7 @@
             $("#new").on("click", function() {
                 $('#deleteBtn').show();
                 $('#id').val(0);
+                $('#activity_id').val(0);
                 $('#name').val("");
                 $("#deleteBtn").hide();
                 $('#new-issue-modal').modal('show');
@@ -165,8 +172,7 @@
                 $('#deleteBtn').show();
                 $('#id').val(data['id']);
                 $('#name').val(data['name']);
-
-
+                $('#activity_id').val(data['activity_id']);
                 $("#status1").prop('checked', data['status'] == 0 ? false : true);
                 $("#deleteBtn").show();
                 $('#new-issue-modal').modal('show');

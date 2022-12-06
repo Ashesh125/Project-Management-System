@@ -30,11 +30,30 @@ class IssueController extends Controller
         }
     }
 
-    public function index()
+    public function index($type)
     {
-        $issues = Issue::all();
 
-        return view('pages.issues.list')->with(compact('issues'));
+        switch (auth()->user()->role) {
+            case 0:
+                $projects = Activity::with(['project', 'issues'])->whereHas('tasks', function ($query) {
+                    return $query->where('tasks.user_id', auth()->user()->id);
+                })->get()->groupBy('project.name');
+                break;
+
+            case 1:
+                $projects = Activity::with('project')->with('issues')->where('user_id', auth()->user()->id)->get()->groupBy('project.name');
+                break;
+
+            default:
+                $projects = Activity::with(['project','issues'])->get()->groupBy('project.name');
+                break;
+        }
+
+        if($type == 'card'){
+            return view('pages.issues.issuecard')->with(compact('projects'));
+        }else{
+            return view('pages.issues.issuetable')->with(compact('projects'));
+        }
     }
 
 
@@ -111,9 +130,9 @@ class IssueController extends Controller
             'user_id' => 'required'
         ]);
 
-        if($request->status == 1){
+        if ($request->status == 1) {
             $notificationController = new NotificationController();
-            $notificationController->issueResolved(Activity::findOrFail($request->activity_id),Issue::findOrFail($request->id));
+            $notificationController->issueResolved(Activity::findOrFail($request->activity_id), Issue::findOrFail($request->id));
         }
 
         $issue->fill($request->post())->save();

@@ -8,7 +8,7 @@
         <h2>Issue : {{ $issue->name }}</h2>
         <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
             <u>Comments</u>
-            <a class="btn btn-primary mx-3" href="{{ route('issues', $issue->activity->id) }}">Back</a>
+            <a class="btn btn-danger mx-3" href="{{ route('issues', $issue->activity->id) }}">Issue</a>
         </div>
 
         <div>
