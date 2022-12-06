@@ -73,7 +73,6 @@ $(document).ready(function() {
         });
     });
 
-<<<<<<< HEAD
     $('#task-type').on("change", function() {
         updateTaskType($('#task-id').val(), $('#task-type').val());
 
@@ -81,7 +80,6 @@ $(document).ready(function() {
     });
 
 
-=======
 
     $('.activity-card').on('click', function() {
         let id = $(this).attr('id');
@@ -96,7 +94,6 @@ $(document).ready(function() {
         duration: 1500,
         delay: anime.stagger(100)
     });
->>>>>>> 4515e59 (bug-fixes-4-1)
 });
 
 
