@@ -19,7 +19,7 @@
                 @if ($projects)
                     @foreach ($projects as $index => $project)
                         <div class="m-3 project-card col-12">
-                            <div class="bg-gray card shadow h-100">
+                            <div class="bg-gray card shadow h-100 me-5">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="mx-2 d-flex flex-column justify-content-between">
@@ -27,7 +27,7 @@
                                                 <span>{{ $index }}</span>
                                                 <a class="btn btn-primary" href="{{ route('projectDetail',['id' => $project[0]->project->id]) }}">Detail</a>
                                             </div>
-                                            <div class="project-cards info-card d-flex flex-wrap">
+                                            <div class="project-cards info-card d-flex flex-wrap justify-content-start px-2">
                                                 @if ($project)
                                                     @foreach ($project as $activity)
                                                         <div class="mx-4 my-3 issue-card col-3" id="{{ $activity->id }}">

@@ -34,7 +34,8 @@
                                         <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
                                             Mark As Read </a>
                                     </span>
-                                    <div><a type="btn btn-primary"
+                                    <div><a type="btn btn-primary" class="notification-read"
+                                            id="notification_{{ $notification->id }}"
                                             href="{{ route('taskToActivity', ['id' => $notification->data['task']['id']]) }}"> Check
                                             it out </a></div>
                                 @break
@@ -51,7 +52,8 @@
                                         <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
                                             Mark As Read </a>
                                     </span>
-                                    <div><a type="btn btn-primary"
+                                    <div><a type="btn btn-primary" class="notification-read"
+                                            id="notification_{{ $notification->id }}"
                                             href="{{ route('taskToActivity', ['id' => $notification->data['task']['id']]) }}"> Check
                                             it out </a></div>
                                 @break
@@ -66,7 +68,8 @@
                                             Mark As Read </a>
                                     </span>
 
-                                    <div><a type="btn btn-primary"
+                                    <div><a type="btn btn-primary" class="notification-read"
+                                            id="notification_{{ $notification->id }}"
                                             href="{{ route('issues', ['id' => $notification->data['activity']['id']]) }}"> Check
                                             it out </a></div>
                                 @break
@@ -79,7 +82,8 @@
                                         <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
                                             Mark As Read </a>
                                     </span>
-                                    <div><a type="btn btn-primary"
+                                    <div><a type="btn btn-primary" class="notification-read"
+                                            id="notification_{{ $notification->id }}"
                                             href="{{ route('comments', ['id' => $notification->data['issue']['id']]) }}"> Check
                                             it out </a></div>
                                 @break
@@ -92,7 +96,8 @@
                                         <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
                                             Mark As Read </a>
                                     </span>
-                                    <div><a type="btn btn-primary"
+                                    <div><a type="btn btn-primary" class="notification-read"
+                                            id="notification_{{ $notification->id }}"
                                             href="{{ route('activityDetail', ['id' => $notification->data['task']['activity_id']]) }}">
                                             Check
                                             it out </a></div>
@@ -107,26 +112,28 @@
                                         <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
                                             Mark As Read </a>
                                     </span>
-                                    <div><a type="btn btn-primary"
+                                    <div><a type="btn btn-primary" class="notification-read"
+                                            id="notification_{{ $notification->id }}"
                                             href="{{ route('activityDetail', ['id' => $notification->data['activity']['id']]) }}">
                                             Check
                                             it out </a></div>
                                 @break
 
                                 @case('App\Notifications\ActivityCreatedNotification')
-                                <div class="d-inline-block">
-                                    A Activity has been Assigned to You :
-                                    <strong>{{ $notification->data['activity']['name'] }}</strong>
-                                </div>
-                                <span class="float-end">
-                                    <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
-                                        Mark As Read </a>
-                                </span>
-                                <div><a type="btn btn-primary"
-                                        href="{{ route('activityDetail', ['id' => $notification->data['activity']['id']]) }}">
-                                        Check
-                                        it out </a></div>
-                            @break
+                                    <div class="d-inline-block">
+                                        A Activity has been Assigned to You :
+                                        <strong>{{ $notification->data['activity']['name'] }}</strong>
+                                    </div>
+                                    <span class="float-end">
+                                        <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
+                                            Mark As Read </a>
+                                    </span>
+                                    <div><a type="btn btn-primary" class="notification-read"
+                                            id="notification_{{ $notification->id }}"
+                                            href="{{ route('activityDetail', ['id' => $notification->data['activity']['id']]) }}">
+                                            Check
+                                            it out </a></div>
+                                @break
 
                                 @default
                             @endswitch
@@ -173,10 +180,6 @@
                                             <strong>{{ $notification->data['task']['name'] }}</strong>
                                         </div>
 
-                                        <span class="float-end">
-                                            <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
-                                                Mark As Read </a>
-                                        </span>
                                         <div><a type="btn btn-primary"
                                                 href="{{ route('taskToActivity', ['id' => $notification->data['task']['id']]) }}">
                                                 Check
@@ -208,11 +211,6 @@
                                             <strong>{{ $notification->data['activity']['name'] }}</strong>
                                         </div>
 
-                                        <span class="float-end">
-                                            <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
-                                                Mark As Read </a>
-                                        </span>
-
                                         <div><a type="btn btn-primary"
                                                 href="{{ route('issues', ['id' => $notification->data['activity']['id']]) }}">
                                                 Check
@@ -223,10 +221,6 @@
                                         <div class="d-inline-block">
                                             A Issue has been Resolved : <strong>{{ $notification->data['issue']['name'] }}</strong>
                                         </div>
-                                        <span class="float-end">
-                                            <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
-                                                Mark As Read </a>
-                                        </span>
                                         <div><a type="btn btn-primary"
                                                 href="{{ route('comments', ['id' => $notification->data['issue']['id']]) }}"> Check
                                                 it out </a></div>
@@ -236,10 +230,6 @@
                                         <div class="d-inline-block">
                                             A Task has been Completed : <strong>{{ $notification->data['task']['name'] }}</strong>
                                         </div>
-                                        <span class="float-end">
-                                            <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
-                                                Mark As Read </a>
-                                        </span>
                                         <div><a type="btn btn-primary"
                                                 href="{{ route('activityDetail', ['id' => $notification->data['task']['activity_id']]) }}">
                                                 Check
@@ -251,10 +241,6 @@
                                             A Activity has been Completed :
                                             <strong>{{ $notification->data['activity']['name'] }}</strong>
                                         </div>
-                                        <span class="float-end">
-                                            <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
-                                                Mark As Read </a>
-                                        </span>
                                         <div><a type="btn btn-primary"
                                                 href="{{ route('activityDetail', ['id' => $notification->data['activity']['id']]) }}">
                                                 Check
@@ -266,10 +252,6 @@
                                             A Activity has been Assigned to You :
                                             <strong>{{ $notification->data['activity']['name'] }}</strong>
                                         </div>
-                                        <span class="float-end">
-                                            <a type="btn btn-primary" href="{{ route('markAsRead', ['id' => $notification->id]) }}">
-                                                Mark As Read </a>
-                                        </span>
                                         <div><a type="btn btn-primary"
                                                 href="{{ route('activityDetail', ['id' => $notification->data['activity']['id']]) }}">
                                                 Check
@@ -316,6 +298,18 @@
                             }
                         });
 
+
+                        $('.notification-read').on("click", function(e) {
+                            // e.preventDefault();
+                            let id = $(this).attr('id').split('_')[1];
+                            // alert(id);
+                            $.ajax({
+                                type: "GET",
+                                url: host + "/markAsRead/" + id,
+                                success: function(response) {},
+                                dataType: "html",
+                            });
+                        });
                     });
                 </script>
             @endsection

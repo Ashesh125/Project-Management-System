@@ -18,40 +18,37 @@ class DashboardController extends Controller
     public function index()
     {
         $arr = array();
-        if(auth()->user()->role == 2){
-            $projects = Project::all();
-        }else{
-            $projects = Project::whereHas('activities', function ($query) {
-                return $query->where('user_id', auth()->user()->id);
-            })->get();
-            // dd($projects);
-        }
 
-        switch(auth()->user()->role){
+        switch (auth()->user()->role) {
             case "0":
                 $arr = array(
-                    'all_projects' => $projects->count(),
-                    'all_users' => $this->userCount(),
-                    'all_myTasks' => $this->myTaskCount(),
-                    'all_issues' => $this->issueCount(),
+                    array('title' => 'Assigned Tasks', 'data' => $this->myTaskCount('assigned', 0), 'route' => route('myActivities', ['type' => 'card'])),
+                    array('title' => 'Ongoing Tasks', 'data' => $this->myTaskCount('ongoing', 0), 'route' => route('myActivities', ['type' => 'card'])),
+                    array('title' => 'Completed Tasks', 'data' => $this->myTaskCount('completed', 0), 'route' => route('myActivities', ['type' => 'card'])),
+                    array('title' => 'Redo Tasks', 'data' => $this->myTaskCount('completed', 2), 'route' => route('myActivities', ['type' => 'card']))
                 );
                 break;
 
             case "1":
+                $projects = Project::whereHas('activities', function ($query) {
+                    return $query->where('user_id', auth()->user()->id);
+                })->get();
+
                 $arr = array(
-                    'all_projects' => $projects->count(),
-                    'all_users' => $this->userCount(),
-                    'all_myTasks' => $this->myTaskCount(),
-                    'all_issues' => $this->issueCount(),
+                    array('title' => 'Projects', 'data' => $projects->count(), 'route' => route('myActivities', ['type' => 'card'])),
+                    array('title' => 'Review Pending', 'data' => $this->reviewTaskCount(), 'route' => route('myActivities', ['type' => 'card'])),
+                    array('title' => 'My Activities', 'data' => $this->myActivityCount('<',100), 'route' => route('myActivities', ['type' => 'table'])),
+                    array('title' => 'Issues', 'data' => $this->issueCount(), 'route' => route('issuesCard', ['type' => 'card']))
                 );
                 break;
 
             case "2":
+                $projects = Project::all();
                 $arr = array(
-                    'all_projects' => $projects->count(),
-                    'all_users' => $this->userCount(),
-                    'all_myTasks' => $this->myTaskCount(),
-                    'all_issues' => $this->issueCount(),
+                    array('title' => 'Projects', 'data' => $projects->count(), 'route' => route('projects')),
+                    array('title' => 'Users', 'data' => $this->userCount(), 'route' => route('users')),
+                    array('title' => 'Activities', 'data' => $this->activityCount(), 'route' => route('projectCard')),
+                    array('title' => 'Issues', 'data' => $this->allIssuesCount(), 'route' => route('issuesCard', ['type' => 'card']))
                 );
                 break;
         }
@@ -60,40 +57,87 @@ class DashboardController extends Controller
             return $query->where('tasks.user_id', auth()->user()->id);
         })->get();
 
-        if(auth()->user()->role != 0){
-            return view('pages.dashboard.index')->with(compact('arr','projects'));
-        }else{
+        if (auth()->user()->role != 0) {
+            return view('pages.dashboard.index')->with(compact('arr', 'projects'));
+        } else {
 
-            return view('pages.dashboard.index')->with(compact('arr','activities'));
+            return view('pages.dashboard.index')->with(compact('arr', 'activities'));
         }
     }
 
-    public function userCount()
+    protected function userCount()
     {
         return User::all()->count();
     }
 
-    public function myTaskCount()
+    protected function reviewTaskCount(){
+        $activities = Activity::with(['tasks' => function ($query) {
+            $query->where([
+                    ['tasks.status','!=' , 1],
+                    ['tasks.type','completed']
+                ]);
+        }])->where([['user_id', auth()->user()->id], ['status','<',100]])->whereHas('tasks', function ($query) {
+            return $query->where([
+                    ['tasks.status','!=' , 1],
+                    ['tasks.type','completed']
+                ]);
+        })->get();
+
+        $count = 0;
+        foreach($activities as $activity){
+            $count += $activity->tasks->count();
+        }
+        return $count;
+    }
+
+    protected function activityCount(){
+        return Activity::where('status','<',100)->get()->count();
+    }
+
+    private function issueCount(){
+        $activities = Activity::with('issues')->where('user_id',auth()->user()->id)->whereHas('issues', function ($query) {
+            return $query->where('issues.status', 0);
+        })->get();
+
+        $count = 0;
+        foreach($activities as $activitiy){
+            $count += $activitiy->issues->count();
+        }
+
+        return $count;
+    }
+
+    protected function myTaskCount($type, $status)
     {
         return Tasks::where([
             ['user_id', '=', auth()->user()->id],
-            ['status', '=', 1],
-            ['type', '=', 'completed']
+            ['status', '=', $status],
+            ['type', '!=', $type]
         ])->count();
     }
 
-    public function issueCount()
+    protected function myActivityCount($type,$status)
+    {
+        return Activity::where([
+            ['user_id', '=', auth()->user()->id],
+            ['status', $type, $status]
+        ])->count();
+    }
+
+    protected function allIssuesCount()
     {
         return Issue::all()->count();
     }
 
-    public function projectDetails($id){
-       $project = Project::with('lead')->with('activities.supervisor')->with('activities.tasks.user')->with('activities.issues')->findOrFail($id);
+    protected function projectDetails($id)
+    {
+        $project = Project::with('lead')->with('activities.supervisor')->with('activities.tasks.user')->with('activities.issues')->findOrFail($id);
 
-       return $project;
+        return $project;
     }
 
-    public function chartData(Request $request){
+    protected function chartData(Request $request)
+    {
         $project = $this->projectDetails($request->id);
 
         $json = array();
@@ -103,23 +147,23 @@ class DashboardController extends Controller
             'lead' => $project->lead->name,
             'start' => date('F j, Y', strtotime($project->start_date)),
             'end' => date('F j, Y', strtotime($project->end_date)),
-            'remaining' => Carbon::parse( $project->start_date )->diffInDays( $project->end_date)
+            'remaining' => Carbon::parse($project->start_date)->diffInDays($project->end_date)
         );
 
         $json['main'] = $temp;
 
         $temp = array();
-        foreach($project->activities as $activity){
+        foreach ($project->activities as $activity) {
             $temp[] = array(
-                    'id' => $activity->id,
-                    'name' => $activity->name,
-                    'supervisor' => $activity->supervisor->name,
-                    'status' => $activity->status,
-                    'no_of_tasks' => $activity->tasks->count(),
-                    'no_of_tasks_completed' => $activity->tasks->where('status','=',1)->count(),
-                    'no_of_users' => $activity->tasks->unique('user_id')->count(),
-                    'no_of_issues' => $activity->issues->count(),
-                    'no_of_issues_resolved' => $activity->issues->where('status','=',1)->count()
+                'id' => $activity->id,
+                'name' => $activity->name,
+                'supervisor' => $activity->supervisor->name,
+                'status' => $activity->status,
+                'no_of_tasks' => $activity->tasks->count(),
+                'no_of_tasks_completed' => $activity->tasks->where('status', '=', 1)->count(),
+                'no_of_users' => $activity->tasks->unique('user_id')->count(),
+                'no_of_issues' => $activity->issues->count(),
+                'no_of_issues_resolved' => $activity->issues->where('status', '=', 1)->count()
             );
         }
 

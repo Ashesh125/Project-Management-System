@@ -43,7 +43,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::with('lead')->get();
-        $users = User::where('role','>',0)->get();
+        $users = User::where('role','=',2)->get();
 
         return view('pages.projects.list')->with(compact('projects','users'));
     }
@@ -66,7 +66,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::with('lead')->with('activities.supervisor')->findOrFail($id);
-        $users = User::where('role','>',0)->get();
+        $users = User::where('role','=',1)->get();
 
         return view('pages.projects.detail')->with(compact('project','users'));
     }

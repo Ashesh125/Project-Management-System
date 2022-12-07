@@ -33,7 +33,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/chartDatas/{id?}', [DashboardController::class, 'chartData'])->name('chart');
 
-    Route::get('/project', [ProjectController::class, 'index'])->name('projects');
     Route::get('/projectCard', [ProjectController::class, 'cardView'])->name('projectCard');
 
     Route::get('/activity', [ActivityController::class, 'index'])->name('activity');
@@ -68,7 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/taskDatas/{id}',[TasksController::class,'taskData'])->name('taskData');
     Route::get('/calanderDatas/{id}',[ActivityController::class,'activityDataOfUser'])->name('activityDataOfUser');
 
-    Route::get('/markAsRead', [NotificationController::class, 'markAsRead'])->name('markAsRead');
+    Route::get('/markAsRead/{id}', [NotificationController::class, 'markAsRead'])->name('markAsRead');
     Route::get('/markAllAsRead', [NotificationController::class, 'markAllAsRead'])->name('markAllAsRead');
 
     Route::get('/notification',[NotificationController::class, 'index'])->name('notifications');
@@ -92,6 +91,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
         Route::post('register', [RegisteredUserController::class, 'store']);
 
+        Route::get('/project', [ProjectController::class, 'index'])->name('projects');
         Route::post('/projects', [ProjectController::class, 'check'])->name('checkProject');
         Route::post('/users', [UserController::class, 'check'])->name('checkUser');
 

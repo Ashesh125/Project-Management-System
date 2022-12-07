@@ -15,7 +15,7 @@ class TasksSeeder extends Seeder
      */
     public function run()
     {
-        Tasks::factory()->count(500)->sequence(
+        Tasks::factory()->count(1000)->sequence(
             fn($sequence) => [
                 'name' =>  'Task ' . $sequence->index
             ]

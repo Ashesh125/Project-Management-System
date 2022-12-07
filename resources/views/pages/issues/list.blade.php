@@ -77,7 +77,11 @@
                             <tr>
                                 <td> {{ $issue->id }} </td>
                                 <td> {{ $issue->name }} </td>
-                                <td> {{ $issue->user->name}} </td>
+                                <td> {{ $issue->user->name}}
+                                    @if($issue->user->deleted_at)
+                                    ( <i class="fa-solid fa-user-slash text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Deleted User"></i> )
+                                 @endif
+                                </td>
                                 <td> {{ $issue->status }} </td>
                                 <td class="d-flex justify-content-end"> </td>
                             </tr>

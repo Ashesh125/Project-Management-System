@@ -73,13 +73,13 @@
                                     <div class="form-check mx-2"><input class="form-check-input" type="radio"
                                             value='2' name="status" id="status2">
                                         <label class="form-check-label" for="status2">
-                                            Not Completed
+                                            Invalid
                                         </label>
                                     </div>
                                     <div class="form-check mx-2"><input class="form-check-input" type="radio"
                                             value='1' name="status" id="status1">
                                         <label class="form-check-label" for="status1">
-                                            Completed
+                                            Verified
                                         </label>
                                     </div>
                                     <div class="form-check mx-2">
@@ -382,9 +382,11 @@
                                 return data;
                             } else {
                                 if (data == 1) {
-                                    return '<div><i class="fa-regular fa-circle-check text-success"></i></div>';
-                                } else {
-                                    return '<div><i class="fa-regular fa-circle-xmark text-danger"></i></div>';
+                                    return '<div><i class="fa-regular fa-circle-check text-success" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Verified"></i></div>';
+                                } else if(data == 0) {
+                                    return '<div><i class="fa-regular fa-circle-xmark text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unverified"></i></div>';
+                                } else if(data == 2){
+                                    return '<div><i class="fa-solid fa-circle-info text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Invalid"></i></div>';
                                 }
                             }
                         }
@@ -422,7 +424,7 @@
                                 return data;
                             } else {
                                 return row.deleted_at == "" ? data : data +
-                                    ' ( <i class="fa-solid fa-user-slash text-danger"></i> )';
+                                    ' ( <i class="fa-solid fa-user-slash text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Deleted User"></i> )';
                             }
                         }
                     },

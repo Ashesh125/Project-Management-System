@@ -130,7 +130,7 @@ class IssueController extends Controller
             'user_id' => 'required'
         ]);
 
-        if ($request->status == 1) {
+        if ($request->status == 1 && $issue->status == 0) {
             $notificationController = new NotificationController();
             $notificationController->issueResolved(Activity::findOrFail($request->activity_id), Issue::findOrFail($request->id));
         }

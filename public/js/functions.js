@@ -75,6 +75,7 @@ function animateProgress(value) {
 }
 
 function activityHandler(datas) {
+    console.log(datas);
     datas.forEach((element) => {
         let no_of_issues_remaining =
             parseInt(element.no_of_issues) -
@@ -292,7 +293,6 @@ function calanderAllTasks(id) {
         success: function (response) {
             var json = $.parseJSON(response);
             let tasks = [];
-
             json.tasks.forEach((element) => {
                 tasks.push({
                     id: element.id,
@@ -308,6 +308,7 @@ function calanderAllTasks(id) {
                     },
                 });
             });
+
             makeCalander(tasks);
         },
         dataType: "html",
@@ -377,6 +378,9 @@ function callTaskAjax(id){
             $("#task-due-date").val(json.due_date);
             $("#task-description").val(json.description);
             $("#task-type").val(json.type);
+            if(json.status == 1){
+                $("#task-type").prop('disabled', true);
+            }
             $("#task-status").val(
                 json.status == 1
                     ? "Verified"
@@ -438,6 +442,7 @@ function updateTaskType(id, type) {
             type: type,
         },
     }).done(function (data) {
-        // console.log("done");
+
     });
+    return 1;
 }

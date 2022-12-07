@@ -10,16 +10,16 @@
             <div class="align-middle">{{ date('F j, Y') }}</div>
         </div>
         <div class="row mx-3">
-            <div class="col-xl-3 col-md-12 mb-4 dashboard-card" id="goto-projects">
+            <a class="col-xl-3 col-md-12 mb-4 dashboard-card text-decoration-none" id="goto-projects" href="{{ $arr[0]['route'] }}">
                 <div
                     class="card border-start border-bottom-0 border-top-0 border-end-0 border-5 border-primary  shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Projects</div>
+                                    {{ $arr[0]['title'] }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="total_projects">
-                                    {{ $arr['all_projects'] }}</div>
+                                    {{ $arr[0]['data'] }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fa-solid fa-boxes-stacked fa-2x text-gray-300"></i>
@@ -27,16 +27,16 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-3 col-md-12 mb-4 dashboard-card" id="goto-users">
+            </a>
+            <a class="col-xl-3 col-md-12 mb-4 dashboard-card text-decoration-none" id="goto-users" href="{{ $arr[1]['route'] }}">
                 <div
                     class="card border-start border-bottom-0 border-top-0 border-end-0 border-5 border-primary shadow h-100 py-2 goto-users">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Users</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="total_users">{{ $arr['all_users'] }}
+                                    {{ $arr[1]['title'] }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="total_users">{{ $arr[1]['data'] }}
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -45,18 +45,18 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <div class="col-xl-3 col-md-12 mb-4 dashboard-card" id="goto-mytasks">
+            <a class="col-xl-3 col-md-12 mb-4 dashboard-card text-decoration-none" id="goto-mytasks" href="{{ $arr[2]['route'] }}">
                 <div
                     class="card border-start border-bottom-0 border-top-0 border-end-0 border-5 border-success  shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    My Tasks</div>
+                                    {{ $arr[2]['title'] }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="total_categories">
-                                    {{ $arr['all_myTasks'] }}</div>
+                                    {{ $arr[2]['data'] }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-list fa-2x text-gray-300"></i>
@@ -64,18 +64,18 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <div class="col-xl-3 col-md-12 mb-4 dashboard-card" id="goto-issues">
+            <a class="col-xl-3 col-md-12 mb-4 dashboard-card text-decoration-none   " id="goto-issues" href="{{ $arr[3]['route'] }}">
                 <div
                     class="card border-start border-bottom-0 border-top-0 border-end-0 border-5 border-danger shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Issues</div>
+                                    {{ $arr[3]['title'] }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="total_issues">
-                                    {{ $arr['all_issues'] }}</div>
+                                    {{ $arr[3]['data'] }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fa-solid fa-circle-exclamation fa-2x text-gray-300"></i>
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
 
@@ -176,7 +176,7 @@
         var doughnutChart = null;
 
         $(document).ready(function() {
-            callAjax(1);
+            callAjax($("#project-select").val());
 
             $('#project-select').on('change', function(e) {
                 let id = this.value;

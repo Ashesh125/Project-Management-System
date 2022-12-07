@@ -19,19 +19,27 @@
                             {{ $comment->name }}
                         </p>
                         <hr>
+                        @if (auth()->user()->id != $comment->user_id)
+                            <div class="d-flex justify-content-end">
+                                <div class="text-end font-sm-gray text-dark">
+                                    {{ $comment->user->name }} ( {{ date('h:i:s F j, Y ', strtotime($comment->created_at)) }} )
+                                </div>
+                            </div>
+                        @else
                         <div class="d-flex justify-content-between">
+                            <div class="text-start font-sm-gray text-dark">
+                                {{ $comment->user->name }} ( {{ date('h:i:s F j, Y ', strtotime($comment->created_at)) }} )
+                            </div>
                             <div>
                                 @if($comment->user->id == auth()->user()->id || auth()->user()->role == 2)
                                 <div>
-                                    {{-- <span>C</span> --}}
                                     <span class="delete-msg" id="delete-msg-{{ $comment->id }}"><i class="fa-solid fa-trash-can p-1"></i></span>
                                 </div>
                                 @endif
                             </div>
-                            <div class="text-end font-sm-gray text-dark">
-                                {{ $comment->user->name }} ( {{ date('h:i:s F j, Y ', strtotime($comment->created_at)) }} )
-                            </div>
                         </div>
+                        @endif
+
                     </div>
                 @empty
                     <div class="rounded p-2 m-2 comment col-12">

@@ -141,7 +141,7 @@
                             } else {
                                 return data == "" ?
                                     '<i class="fa-solid fa-user text-success"></i>' :
-                                    '<i class="fa-solid fa-user-slash text-danger"></i>';
+                                    '<i class="fa-solid fa-user-slash text-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Deleted User"></i>';
                             }
                         }
                     },

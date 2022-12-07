@@ -21,7 +21,7 @@ class TasksFactory extends Factory
     public function definition()
     {
         $faker = Faker::create();
-        $start_date = Carbon::instance($faker->dateTimeBetween('-1 months','+1 months'));
+        $start_date = Carbon::instance($faker->dateTimeBetween('-z months','+1 months'));
         $end_date = (clone $start_date)->addDays(random_int(16,56));
         $type = $faker->randomElement(['assigned' ,'ongoing', 'completed']);
 

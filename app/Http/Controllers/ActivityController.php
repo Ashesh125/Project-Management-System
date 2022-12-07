@@ -71,7 +71,7 @@ class ActivityController extends Controller
     public function show($id)
     {
         $activity = Activity::with('tasks.user')->findOrFail($id);
-        $users = User::where('role','=',0)->get();
+        $users = User::where('role',0)->get();
 
         return view('pages.tasks.list', compact('activity','users'));
     }

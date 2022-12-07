@@ -17,7 +17,10 @@
         </li>
     </ul>
     <div class="d-flex m-3 p-3 flex-column">
-        <h2>{{ $activity->name }}</h2>
+        <h2>{{ $activity->name }}
+            <a class="btn btn-primary float-end"
+                href="{{ route('projectDetail', ['id' => $activity->project->id]) }}">Detail</a>
+        </h2>
         <div class="fs-2 my-3 d-flex justify-content-between">
             <div>
                 <u class="fw-bold ">My Tasks</u>
@@ -25,6 +28,8 @@
                         class="count-down">5</span>
                     <span><a href="#" onclick="window.location.reload();">Cancel</a></span>
                 </span>
+
+                <span class="float-end fs-6 align-text-bottom h-100 pt-3 ms-3 saved-info">Changes Saved</span>
             </div>
             <div>
                 <a class="btn btn-danger" href="{{ route('issues', $activity->id) }}">Issues</a>
@@ -115,9 +120,10 @@
         integrity="sha512-57oZ/vW8ANMjR/KQ6Be9v/+/h6bq9/l3f0Oc7vn6qMqyhvPd1cvKBRWWpzu0QoneImqr2SkmO4MSqU+RpHom3Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        $(function() {
+        $(document).ready(function() {
             var i = 4;
-            var myInterval,updatePostTimeout;
+            var myInterval, updatePostTimeout;
+            var arr = [];
 
             $(".task-card").draggable({
                 helper: 'clone'
@@ -139,6 +145,7 @@
 
 
             $('#goto-task-2').hide();
+            $('.saved-info').hide();
 
             $(".task-holder").droppable({
                 hoverClass: "drop-hover",
@@ -149,26 +156,52 @@
 
 
                     i = 4;
-                    $('.timer-info').show();
                     let dragged = ui.draggable.attr('id');
                     let dropable = $(this).attr('id');
-                    $("#" + dragged).appendTo("#" + dropable);
-                    $("#" + dragged).css('position', '');
-                    $("#" + dragged).find('ul').append(ui.draggable);
+
+                    let draggedParent = ui.draggable.parent().attr('id');
+
+                    if (draggedParent != dropable) {
+                        $('.timer-info').show();
+
+                        $("#" + dragged).appendTo("#" + dropable);
+                        $("#" + dragged).css('position', '');
+                        $("#" + dragged).find('ul').append(ui.draggable);
 
 
+                        myInterval = setInterval(function() {
+                            i != -1 ? $('.count-down').text(i--) : $('.timer-info').hide();
+                        }, 1000);
 
-                    myInterval = setInterval(function() {
-                        i != -1 ? $('.count-down').text(i--) : $('.timer-info').hide();
-                    }, 1000);
+                        // alert('different');
+                        arr.push(dragged.match(/\d+/)[0], dropable.split("-")[0]);
 
-                    updatePostTimeout = setTimeout(() => { clearInterval(myInterval); updateTaskType(dragged.match(/\d+/)[0], dropable.split("-")[0]);  $('.timer-info').hide();}, 5000);
+                        updatePostTimeout = setTimeout(() => {
+                            clearInterval(myInterval);
+                            updateTasks(arr);
+                            $('.timer-info').hide();
+                        }, 5000);
 
+                    }
 
-                    // stopFunction();
                 }
             });
 
+
+            function updateTasks(arr) {
+                let done = 0;
+                for (let i = 0; i < arr.length; i++) {
+                    done += parseInt(updateTaskType(arr[i++], arr[i]));
+                }
+
+                if (done == arr.length / 2) {
+                    $('.saved-info').show();
+                    setTimeout(() => {
+                        $('.saved-info').hide();
+                    }, 3000);
+                }
+                arr = [];
+            }
 
             anime({
                 targets: '.task-holder .task-card',

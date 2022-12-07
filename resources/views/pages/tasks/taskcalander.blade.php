@@ -17,6 +17,9 @@
     </ul>
     <div class="ms-4 fw-bold fs-2 my-3 d-flex justify-content-between">
         <u class="fs-3 fw-bold">{{ $activity->name }}</u>
+        <a class="btn btn-primary float-end me-4"
+        href="{{ route('projectDetail', ['id' => $activity->project->id]) }}">Detail</a>
+
     </div>
     <div class="d-flex m-3 p-3 flex-column">
         <div id='calendar' class="bg-light rounded p-4"></div>

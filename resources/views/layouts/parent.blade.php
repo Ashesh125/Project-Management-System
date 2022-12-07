@@ -87,7 +87,7 @@
                     <li>
                         <a href="{{ route('issuesCard', ['type' => 'card']) }}" class="nav-link link-dark  @yield('allissues-nav')">
                             <i class="fa-solid fa-circle-info mx-2 px-2"></i>
-                            <span class="d-sm-none d-md-inline">Issues</span>
+                            <span class="d-sm-none d-md-inline">My Issues</span>
                         </a>
                     </li>
                     <hr>

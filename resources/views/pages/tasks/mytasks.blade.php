@@ -17,7 +17,9 @@
         </li>
     </ul>
     <div class="d-flex m-3 p-3 flex-column">
-        <h2>{{ $activity->name }}</h2>
+        <h2>{{ $activity->name }}      <a class="btn btn-primary float-end"
+            href="{{ route('projectDetail', ['id' => $activity->project->id]) }}">Detail</a>
+    </h2>
         <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
             <u>My Tasks</u>
             <div>
