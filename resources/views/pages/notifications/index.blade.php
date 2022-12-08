@@ -42,7 +42,7 @@
 
                                 @case('App\Notifications\TaskReviewedNotification')
                                     <div class="d-inline-block">
-                                        A task has been Reviewed ( {!! $notification->data['task']['status'] == 0
+                                        A task has been Reviewed ( {!! $notification->data['task']['status'] == 1
                                             ? '<i class="fa-solid fa-thumbs-up text-success"></i>'
                                             : '<i class="fa-solid fa-exclamation text-danger"></i>' !!} ) :
                                         <strong>{{ $notification->data['task']['name'] }}</strong>

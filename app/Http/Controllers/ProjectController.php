@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Activity;
 use App\Models\User;
-
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -55,10 +55,18 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
+
+        $request->validate([
+            'name' => 'required|alpha_num|max:50',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'user_id' => 'required|exists:users,id',
+            'description' => 'required|alpha_num|max:255'
+        ]);
+
         $project = new Project();
         $project->fill($request->post())->save();
 
-        // return redirect('/projects');
         return redirect()->route('projects')
             ->with('success', 'Project created successfully.');
     }
