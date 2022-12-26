@@ -13,7 +13,17 @@
     </li>
 </ul>
     <div class="d-flex m-3 p-3 flex-column">
-        <div class="fw-bold fs-2"><u>Projects</u></div>
+        <div class=" d-flex justify-content-start"><u class="my-auto fw-bold fs-2">Projects</u>
+
+            @if (auth()->user()->role == 2)
+                @include('components.project-modal')
+
+                {{-- <div class="d-flex justify-contents-between my-3 m-2 mx-4">
+                    <button class="btn btn-primary" data-bs-toggle="modal" id="new"
+                        data-bs-target="#modal">New</button>
+                </div> --}}
+            @endif
+        </div>
         <div>
             <div class="project-cards info-card d-flex flex-wrap">
                 @if ($projects)

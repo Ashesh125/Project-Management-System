@@ -148,7 +148,7 @@ class UserController extends Controller
                 Storage::delete('public/user/' . $user->image);
             }
 
-            // Save the file locally in the storage/public/ folder under a new folder named /product
+            // Save the file locally in the storage/public/ folder under a new folder named /usere
             $request->image->store('user', 'public');
             User::where('id', auth()->user()->id)->update(array('image' => $request->image->hashName()));
         }

@@ -5,139 +5,9 @@
 
 @section('main-content')
 
-    @if (auth()->user()->role != 0)
-        <div class="modal fade" id="new-task-modal" data-bs-backdrop="static" data-bs-keyboard="false"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Task Info</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="form" class="row g-3 needs-validation" action="{{ route('checkTask') }}"
-                            method="POST" novalidate>
-
-                            @csrf
-                            <div class="col-md-12">
-                                <label for="name" class="form-label">Task Name</label>
-                                <input type="hidden" class="form-control" id="id" name="id" value="0"
-                                    required>
-                                <input type="hidden" class="form-control" id="activity_id" name="activity_id"
-                                    value="{{ $activity->id }}" required>
-                                <input type="hidden" class="form-control" id="status" name="status" value="0"
-                                    required>
-
-                                <input type="text" class="form-control" id="name" name="name" required>
-                                <div class="valid-feedback">
-                                    Looks good!
-                                </div>
-                            </div>
-                            <div class="col-md-6" id="userlist-holder">
-                                <label for="user_id" class="form-label">Assigned To</label>
-                                <select class="form-select w-0" data-live-search="true" id="user_id" name="user_id"
-                                    required>
-                                    <option value="0" disabled required selected>Choose...</option>
-                                    @if ($users)
-                                        @foreach ($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                                <div class="invalid-feedback">
-                                    Please select a valid User.
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="type" class="form-label col-12">Status</label>
-                                <select class="form-select" id="type" name="type" required>
-                                    <option selected value="assigned"><i class="fa-solid fa-hourglass-start"></i> Assigned
-                                    </option>
-                                    <option selected value="ongoing"><i class="fa-solid fa-bars-progress"></i>Ongoing
-                                    </option>
-                                    <option selected value="completed"><i class="fa-solid fa-check-double">Completed
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="due_date" class="form-label">Due Date</label>
-                                <input type="date" class="form-control" id="due_date" name="due_date"
-                                    max="{{ $activity->end_date }}" min="{{ $activity->start_date }}" required>
-                                <div class="valid-feedback">
-                                    Looks good!
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="status" class="form-label">Status</label>
-                                <div class="d-flex">
-                                    <div class="form-check mx-2"><input class="form-check-input" type="radio"
-                                            value='2' name="status" id="status2">
-                                        <label class="form-check-label" for="status2">
-                                            Not Completed
-                                        </label>
-                                    </div>
-                                    <div class="form-check mx-2"><input class="form-check-input" type="radio"
-                                            value='1' name="status" id="status1">
-                                        <label class="form-check-label" for="status1">
-                                            Completed
-                                        </label>
-                                    </div>
-                                    <div class="form-check mx-2">
-                                        <input class="form-check-input" type="radio" name="status" id="status0"
-                                            value='' checked>
-                                        <label class="form-check-label" for="status0">
-                                            Unverified
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="priority" class="form-label">Priority</label>
-                                <div class="d-flex">
-                                    <div class="form-check mx-2"><input class="form-check-input" type="radio"
-                                            value='2' name="priority" id="priority2">
-                                        <label class="form-check-label" for="priority2">
-                                            Urgent
-                                        </label>
-                                    </div>
-                                    <div class="form-check mx-2"><input class="form-check-input" type="radio"
-                                            value='1' name="priority" id="priority1" checked>
-                                        <label class="form-check-label" for="priority1">
-                                            Normal
-                                        </label>
-                                    </div>
-                                    <div class="form-check mx-2">
-                                        <input class="form-check-input" type="radio" name="priority" id="priority0"
-                                            value='0'>
-                                        <label class="form-check-label" for="priority0">
-                                            Low
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <textarea class="form-control" placeholder="Leave a description" id="description" name="description"
-                                        style="height: 100px" required></textarea>
-                                    <label for="description">Description</label>
-                                    <div class="valid-feedback">
-                                        Looks good!
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-center col-12 ">
-                                <button class="btn btn-primary mx-3" id="submitBtn" type="submit">Submit</button>
-                                <button class="btn btn-danger mx-3" id="deleteBtn" type="button">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
     <div class="d-flex m-3 p-3 flex-column">
         <div class="fw-bold fs-2 my-3 d-flex justify-content-between">
-            <u class="fs-3 fw-bold">{{ $activity->name }}</u>
+            <u class="fs-3 fw-bold activity-name" id="activity-{{ $activity->id }}">{{ $activity->name }}</u>
             <div>
                 <a class="btn btn-danger" href="{{ route('issues', $activity->id) }}">Issues</a>
                 <a class="btn btn-primary" href="{{ route('projectDetail', $activity->project->id) }}">Back</a>
@@ -288,7 +158,7 @@
             <div class="my-2">
                 <div class="fw-bold fs-5">Description</div>
                 <div class="col-12">
-                    <textarea class="form-control" placeholder="Leave a description" id="description" name="description"
+                    <textarea class="form-control" placeholder="Leave a description" id="activity-description" name="activity-description"
                         style="height: 100px" required disabled>{{ $activity->description }}</textarea>
 
                 </div>
@@ -298,6 +168,7 @@
         <div class="fw-bold fs-2 mt-3"><u>Tasks</u></div>
 
         @if (auth()->user()->role != 0)
+            @include('components.task-modal')
             <div class="d-flex justify-contents-between my-3">
                 <button class="btn btn-primary" data-bs-toggle="modal" id="new"
                     data-bs-target="#new-task-modal">Add
@@ -449,22 +320,6 @@
 
 
             @if (auth()->user()->role != 0)
-                $("#new").on("click", function() {
-                    $('#id').val(0);
-                    $('#name').val("");
-                    $('#user_id').val(0);
-                    $('#user_id').trigger('change');
-                    $('#end_date').val("");
-                    $("#status0").prop('checked', true);
-                    $("#priority1").prop('checked', true);
-                    $('#type').val('assigned');
-                    $('#description').val("");
-                    $("#deleteBtn").hide();
-                    $("#completeBtn1").hide();
-                    $("#undoBtn").hide();
-                    $('#new-task-modal').modal('show');
-                });
-
 
                 $('#data-table tbody').on('dblclick', 'tr', function() {
                     var data = table.row(this).data();
@@ -479,12 +334,18 @@
 
                     $('#user_id').val(data['user_id']);
                     $('#user_id').trigger('change');
-
+                    $("#method-type").val("PUT");
+                    $('#form').attr('action', '/tasks/'+$('#id').val());
 
                     $("#status" + data['status']).prop('checked', true);
                     $("#deleteBtn").show();
                     $('#new-task-modal').modal('show');
                 });
+            @else
+                $('#data-table tbody').on('dblclick', 'tr', function() {
+                    window.location.href = host+"/mytasks/kanban/"+$('.activity-name').attr('id').split("-")[1];
+                });
+
             @endif
 
         });

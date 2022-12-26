@@ -5,33 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Activity;
 use App\Models\User;
-
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-
-    public function check(Request $request)
-    {
-        switch (parent::checkOperation($request)) {
-            case "store":
-                return $this->store($request);
-                break;
-
-            case "destroy":
-                return $this->destroy(Project::find($request['id']));
-                break;
-
-            case "update":
-                return $this->update($request, Project::find($request['id']));
-                break;
-
-            default:
-                return redirect()->route('projects')
-                    ->with('error', 'Something Went Wrong.');
-        }
-    }
-
     public function tasks(int $id)
     {
         $project = Project::with('tasks.user')->findOrFail($id);
@@ -53,20 +33,28 @@ class ProjectController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        $project = new Project();
-        $project->fill($request->post())->save();
+        DB::beginTransaction();
+        try {
+            $project = Project::create($request->validated());
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->route('errors')
+            ->with('error', 'Something Went Wrong !!!');
+        }
+        DB::commit();
 
-        // return redirect('/projects');
-        return redirect()->route('projects')
+        return redirect()->back()
             ->with('success', 'Project created successfully.');
     }
+
+//bensantoenum
 
     public function show($id)
     {
         $project = Project::with('lead')->with('activities.supervisor')->findOrFail($id);
-        $users = User::where('role','>',0)->get();
+        $users = User::where('role','=',1)->get();
 
         return view('pages.projects.detail')->with(compact('project','users'));
     }
@@ -76,24 +64,33 @@ class ProjectController extends Controller
     }
 
 
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        $request->validate([
-            'name' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'description' => 'required'
-        ]);
+        DB::beginTransaction();
+        try {
+            $project->update($request->validated());
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->route('errors')
+            ->with('error', 'Something Went Wrong !!!');
+        }
+        DB::commit();
 
-        $project->fill($request->post())->save();
-        // dd($project);
         return redirect()->route('projects')
             ->with('success', 'Project Updated');
     }
 
     public function destroy(Project $project)
     {
-        $project->delete();
+        DB::beginTransaction();
+        try {
+            $project->delete();
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->route('errors')
+            ->with('error', 'Something Went Wrong !!!');
+        }
+        DB::commit();
 
         return redirect()->route('projects')
             ->with('success', 'Project deleted successfully');
@@ -101,7 +98,8 @@ class ProjectController extends Controller
 
     public function cardView(){
         $projects = Activity::with('project')->whereHas('tasks')->get()->groupBy('project.name');
+        $users = User::where('role','=',2)->get();
 
-        return view('pages.projects.projectcard', compact('projects'));
+        return view('pages.projects.projectcard', compact('projects','users'));
     }
 }

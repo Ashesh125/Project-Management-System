@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
-    <link rel="icon" href="{!! asset('images/logo.png') !!}"/>
+    <link rel="icon" href="{!! asset('images/logo.png') !!}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -20,7 +20,7 @@
         integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script src="{{ asset('js/bootstrapValidation.js') }}"></script>
+    {{-- <script src="{{ asset('js/bootstrapValidation.js') }}"></script> --}}
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/functions.js') }}"></script>
 
@@ -43,8 +43,7 @@
 <body>
     <div class="main-container d-flex flex-row justify-content-between">
         <div class="d-flex flex-column fixed-left fixed-bottom h-100 fixed-top main-nav p-3 col-lg-2 col-md-2 col-sm-1">
-            <a href="{{ route('dashboard') }}"
-                class="d-flex align-items-center link-dark text-decoration-none">
+            <a href="{{ route('dashboard') }}" class="d-flex align-items-center link-dark text-decoration-none">
                 <img src="{{ asset('images/logo.png') }}" class="logo mx-4" />
                 <div class="fs-4 text-truncate overflow-hidden">{{ auth()->user()->name }}</div>
             </a>
@@ -57,12 +56,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('notifications') }}" class="nav-link link-dark @yield('notification-nav')" aria-current="page">
+                    <a href="{{ route('notifications') }}" class="nav-link link-dark @yield('notification-nav')"
+                        aria-current="page">
                         <i class="fa-solid fa-bell mx-2 px-2"></i>
                         <span class="position-relative">
                             <span class="d-sm-none d-md-inline">Notifications</span>
-                            @if(auth()->user()->unreadNotifications->count() > 0)
-                                <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger ms-3">
+                            @if (auth()->user()->unreadNotifications->count() > 0)
+                                <span
+                                    class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger ms-3">
                                     +{{ auth()->user()->unreadNotifications->count() }}
                                 </span>
                             @endif
@@ -71,27 +72,28 @@
                 </li>
                 <hr>
                 @if (auth()->user()->role != 2)
-                <div>
-                    <li>
-                        <a href="{{ route('myActivities') }}/card" class="nav-link link-dark @yield('myprojects-nav')">
-                            <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
-                            <span class="d-sm-none d-md-inline">My Projects</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('myActivities') }}/table" class="nav-link link-dark  @yield('activities-nav')">
-                            <i class="fa-solid fa-list mx-2 px-2"></i>
-                            <span class="d-sm-none d-md-inline">My Activities</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('issuesCard', ['type' => 'card']) }}" class="nav-link link-dark  @yield('allissues-nav')">
-                            <i class="fa-solid fa-circle-info mx-2 px-2"></i>
-                            <span class="d-sm-none d-md-inline">Issues</span>
-                        </a>
-                    </li>
-                    <hr>
-                </div>
+                    <div>
+                        <li>
+                            <a href="{{ route('myActivities') }}/card" class="nav-link link-dark @yield('myprojects-nav')">
+                                <i class="fa-solid fa-boxes-stacked mx-2 px-2"></i>
+                                <span class="d-sm-none d-md-inline">My Projects</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('myActivities') }}/table" class="nav-link link-dark  @yield('activities-nav')">
+                                <i class="fa-solid fa-list mx-2 px-2"></i>
+                                <span class="d-sm-none d-md-inline">My Activities</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('issuesCard', ['type' => 'card']) }}"
+                                class="nav-link link-dark  @yield('allissues-nav')">
+                                <i class="fa-solid fa-circle-info mx-2 px-2"></i>
+                                <span class="d-sm-none d-md-inline">Issues</span>
+                            </a>
+                        </li>
+                        <hr>
+                    </div>
                 @endif
 
                 @if (auth()->user()->role == 2)
@@ -109,7 +111,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('issuesCard', ['type' => 'card']) }}" class="nav-link link-dark  @yield('allissues-nav')">
+                            <a href="{{ route('issuesCard', ['type' => 'card']) }}"
+                                class="nav-link link-dark  @yield('allissues-nav')">
                                 <i class="fa-solid fa-circle-info mx-2 px-2"></i>
                                 <span class="d-sm-none d-md-inline">Issues</span>
                             </a>
@@ -164,6 +167,18 @@
                 </div>
             @endif
 
+            @if ($errors->any())
+                @error('name')
+
+                @enderror
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             @if ($message = Session::get('error'))
                 <div class="alert alert-danger">
                     <p>{{ $message }}</p>

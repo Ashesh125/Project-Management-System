@@ -7,30 +7,14 @@ use App\Models\User;
 use App\Models\Tasks;
 use App\Notifications\ActivityCreatedNotification;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreActivityRequest;
+use App\Http\Requests\UpdateActivityRequest;
+use Exception;
+use Illuminate\Support\Facades\DB;
+
 
 class ActivityController extends Controller
 {
-    public function check(Request $request)
-    {
-        switch (parent::checkOperation($request)) {
-            case "store":
-                return $this->store($request);
-                break;
-
-            case "destroy":
-                return $this->destroy(Activity::find($request['id']));
-                break;
-
-            case "update":
-                return $this->update($request, Activity::find($request['id']));
-                break;
-
-            default:
-                return redirect()->route('activities')
-                    ->with('error', 'Something Went Wrong.');
-        }
-    }
 
     public function index()
     {
@@ -57,12 +41,18 @@ class ActivityController extends Controller
         die("OK");
     }
 
-    public function store(Request $request)
+    public function store(StoreActivityRequest $request)
     {
-        $activity = new Activity();
-        $activity->fill($request->post())->save();
-
-        Notification::send(User::findOrFail($request->user_id), new ActivityCreatedNotification($activity));
+        DB::beginTransaction();
+        try {
+            $activity = Activity::create($request->validated());
+            Notification::send(User::findOrFail($request->user_id), new ActivityCreatedNotification($activity));
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->route('errors')
+            ->with('error', 'Something Went Wrong !!!');
+        }
+        DB::commit();
 
         return redirect()->back()
             ->with('success', 'Activity Created');
@@ -101,24 +91,33 @@ class ActivityController extends Controller
 
 
 
-    public function update(Request $request, Activity $activity)
+    public function update(UpdateActivityRequest $request, Activity $activity)
     {
-        $request->validate([
-            'name' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'description' => 'required'
-        ]);
+        DB::beginTransaction();
+        try {
+            $activity->update($request->validated());
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->route('errors')
+            ->with('error', 'Something Went Wrong !!!');
+        }
+        DB::commit();
 
-        $activity->fill($request->post())->save();
-        // dd($activity);
         return redirect()->back()
             ->with('success', 'Activity Updated');
     }
 
     public function destroy(Activity $activity)
     {
-        $activity->delete();
+        DB::beginTransaction();
+        try {
+            $activity->delete();
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->route('errors')
+            ->with('error', 'Something Went Wrong !!!');
+        }
+        DB::commit();
 
         return redirect()->back()
             ->with('success', 'Activity deleted successfully');

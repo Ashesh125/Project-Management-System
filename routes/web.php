@@ -81,9 +81,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/updateProfile', [UserController::class, 'updateProfile'])->name('updateProfile');
     Route::get('/activitycalander/{id}',[ActivityController::class,'baseDetail'])->name('activityCalander');
 
+    Route::get('/errors',function () {return view('pages.errors.index');})->name('errors');
+
     /* for project manager (role = 1) or higher level of clerence  */
     Route::middleware(['role'])->group(function () {
-        Route::post('/activities', [ActivityController::class, 'check'])->name('checkActivity');
+        Route::resource('activities', ActivityController::class);
         Route::post('/tasks', [TasksController::class, 'check'])->name('checkTask');
     });
 
@@ -92,7 +94,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
         Route::post('register', [RegisteredUserController::class, 'store']);
 
-        Route::post('/projects', [ProjectController::class, 'check'])->name('checkProject');
+        Route::resource('projects', ProjectController::class);
+
         Route::post('/users', [UserController::class, 'check'])->name('checkUser');
 
         Route::get('/updateActivities', [ActivityController::class ,'globalStatusUpdater']);

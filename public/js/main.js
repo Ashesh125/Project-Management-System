@@ -1,11 +1,5 @@
 $(document).ready(function () {
-    $("#deleteBtn").on("click", function () {
-        let check = confirm("Confirm Delete");
-        if (check) {
-            $("#name").val("");
-            $("#form").submit();
-        }
-    });
+
 
     $("#restoreBtn").on("click", function () {
         let check = confirm("Confirm Restore");

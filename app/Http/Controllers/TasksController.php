@@ -124,15 +124,7 @@ class TasksController extends Controller
 
     public function update(Request $request, Tasks $task)
     {
-        $request->validate([
-            'name' => 'required',
-            'user_id' => 'required',
-            'type' => 'required',
-            'priority' => 'required',
-            'due_date' => 'required',
-            'description' => 'required',
-            'activity_id' => 'required'
-        ]);
+
 
         if($request->status != null){
             Notification::send(User::findOrFail($request->user_id), new TaskReviewedNotification($task));
